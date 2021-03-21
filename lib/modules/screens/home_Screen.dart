@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import '../widgets/most_search_item.dart';
-import '../widgets/trim_stars_item.dart';
-import '../widgets/carousel_item.dart';
+import '../../widgets/most_search_item.dart';
+import '../../widgets/trim_stars_item.dart';
+import '../../widgets/carousel_item.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
