@@ -1,47 +1,18 @@
 import 'package:flutter/material.dart';
 
-import './modules/screens/home_Screen.dart';
+import './modules/auth/screens/registration_screen.dart';
+import './constants/app_constant.dart';
 
 main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomeScreen());
-  }
-}
-
-class SplashScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            color: Color.fromARGB(50, 20, 150, 200),
-          ),
-          Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(1000)),
-              child: Container(
-                width: 200,
-                height: 200,
-                color: Colors.green,
-                child: Center(
-                  child: Text(
-                    'Trim',
-                    style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 10),
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
+    return MaterialApp(
+      theme: ThemeData(
+          textTheme: TextTheme(button: TextStyle(fontSize: defaultFontSize))),
+      // home: SplashScreen(alpha: 100, color: Color(0xff2B73A8)),
+      home: RegistrationScreen(),
     );
   }
 }

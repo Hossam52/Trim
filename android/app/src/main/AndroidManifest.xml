@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.trim">
+    package="com.trim.app">
    <application
         android:label="trim"
         android:icon="@mipmap/ic_launcher">
