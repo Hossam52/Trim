@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/auth/screens/registration_screen.dart';
 import 'package:trim/widgets/default_button.dart';
 import '../../../widgets/transparent_appbar.dart';
@@ -68,30 +69,33 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: TransparentAppBar(),
-      body: Container(
-        child: CardLayout(
-          children: [
-            if (!correctData)
-              ErrorWarning(text: 'Email or password not correct'),
-            formFields,
-            DefaultButton(
-              text: 'تسجيل الدخول',
-              formKey: _formKey,
-            ),
-            forgotPassword,
-            createAccount,
-            Divider(),
-            Text('أو يمكنك التسجيل من خلال'),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                    icon: Image.asset(facebookImagePath), onPressed: () {}),
-                IconButton(
-                    icon: Image.asset(googleImagePath), onPressed: () {}),
-              ],
-            ),
-          ],
+      body: Center(
+        child: Container(
+          height: ResponsiveFlutter.of(context).scale(460),
+          child: CardLayout(
+            children: [
+              if (!correctData)
+                ErrorWarning(text: 'Email or password not correct'),
+              formFields,
+              DefaultButton(
+                text: 'تسجيل الدخول',
+                formKey: _formKey,
+              ),
+              forgotPassword,
+              createAccount,
+              Divider(),
+              Text('أو يمكنك التسجيل من خلال'),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                      icon: Image.asset(facebookImagePath), onPressed: () {}),
+                  IconButton(
+                      icon: Image.asset(googleImagePath), onPressed: () {}),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

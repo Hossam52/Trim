@@ -1,127 +1,187 @@
-import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:responsive_flutter/responsive_flutter.dart';
 
-import '../../../widgets/most_search_item.dart';
-import '../../../widgets/trim_stars_item.dart';
-import '../../../widgets/carousel_item.dart';
+class HomeScreen extends StatelessWidget {
+  static final String routeName = 'homeScreen';
+  final bottomNavigationBar = CurvedNavigationBar(
+    height: 50,
+    color: Colors.grey[300],
+    backgroundColor: Colors.white,
+    items: [
+      Image.asset('assets/icons/settings.png'),
+      Image.asset('assets/icons/haircut.png'),
+      Image.asset('assets/icons/location.png'),
+      Image.asset('assets/icons/hair.png'),
+      Image.asset('assets/icons/shop-icon.png'),
+    ],
+    onTap: (index) {
+      print(index);
+    },
+  );
+  final heightNavigationBar = 50;
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedBottomIndex = 0;
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              CarouselSlider(
-                items: [
-                  CarouselItem(imagePath: 'assets/images/1.jpg'),
-                  CarouselItem(imagePath: 'assets/images/2.jpg')
-                ],
-                options: CarouselOptions(aspectRatio: 2),
-              ),
-              Container(
-                margin: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'الأكثر بحثا',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+    return Scaffold(
+      bottomNavigationBar: bottomNavigationBar,
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  height: ResponsiveFlutter.of(context).scale(220) -
+                      heightNavigationBar,
+                  margin: EdgeInsets.symmetric(
+                      vertical: ResponsiveFlutter.of(context).scale(2)),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(15)),
+                  child: CarouselSlider.builder(
+                    options: CarouselOptions(
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        aspectRatio: 2.9),
+                    itemCount: 3,
+                    itemBuilder: (context, index, _) => BuildOffersItem(),
+                  ),
+                ),
+                BuildButtonView(function: () {}, label: 'الأكثر بحثاً'),
+                Container(
+                  height: ResponsiveFlutter.of(context).scale(266) -
+                      heightNavigationBar,
+                  padding:
+                      EdgeInsets.all(ResponsiveFlutter.of(context).scale(2)),
+                  child: GridView.builder(
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) => Container(
+                      decoration: BoxDecoration(
+                        color: Colors.cyan,
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    Wrap(
-                      runSpacing: 20,
-                      spacing: 20,
-                      children: [
-                        MostSearchItem(imagePath: 'assets/images/1.jpg'),
-                        MostSearchItem(imagePath: 'assets/images/2.jpg'),
-                        MostSearchItem(imagePath: 'assets/images/3.jpg'),
-                        MostSearchItem(imagePath: 'assets/images/4.jpg'),
-                        MostSearchItem(imagePath: 'assets/images/5.jpg'),
-                        MostSearchItem(imagePath: 'assets/images/6.jpg'),
-                      ],
-                    )
-                  ],
+                    itemCount: 6,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 15),
+                  ),
                 ),
-              ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'نجوم تريم',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                BuildButtonView(function: () {}, label: 'نجوم تريم'),
+                Container(
+                  height: ResponsiveFlutter.of(context).scale(200) -
+                      heightNavigationBar,
+                  child: GridView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: 3,
+                    itemBuilder: (context, index) => Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10)),
+                              child: Image.asset(
+                                'assets/images/barber.jpg',
+                                height:
+                                    ResponsiveFlutter.of(context).scale(130) -
+                                        heightNavigationBar,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.all(5),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'ali ali',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  SizedBox(height: 3),
+                                  Container(
+                                    height:
+                                        ResponsiveFlutter.of(context).scale(17),
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        padding: EdgeInsets.zero,
+                                        itemCount: 5,
+                                        itemBuilder: (context, index) =>
+                                            Container(
+                                              margin: EdgeInsets.all(2),
+                                              child: Image.asset(
+                                                'assets/icons/star.png',
+                                                fit: BoxFit.fill,
+                                              ),
+                                            )),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ]),
                     ),
-                    Wrap(
-                      children: [
-                        TrimStarItem(
-                            personImagePath: 'assets/images/person1.jpg',
-                            name: 'Hossam'),
-                        TrimStarItem(
-                            personImagePath: 'assets/images/person2.jpg',
-                            name: 'Ahmed Sayed'),
-                        TrimStarItem(
-                            personImagePath: 'assets/images/person3.jpg',
-                            name: 'Salah'),
-                        TrimStarItem(
-                            personImagePath: 'assets/images/4.jpg',
-                            name: 'Fady'),
-                      ],
-                    ),
-                  ],
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 0.70,
+                        crossAxisSpacing: 10,
+                        crossAxisCount: 3),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: () {},
-          child: Icon(
-            Icons.location_pin,
-            size: 40,
-            color: Colors.blue,
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomNavigationBar(
-          iconSize: 30,
-          onTap: (int index) {
-            setState(() {
-              this._selectedBottomIndex = index;
-            });
-          },
-          currentIndex: _selectedBottomIndex,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Color.fromRGBO(238, 243, 246, 1),
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.black,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.face), label: ''),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.access_alarms_sharp), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.adb), label: ''),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home_repair_service), label: ''),
-          ],
         ),
       ),
     );
+  }
+}
+
+class BuildButtonView extends StatelessWidget {
+  final Function function;
+  final String label;
+  BuildButtonView({this.function, this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(onPressed: function, child: Text(label));
+  }
+}
+
+class BuildOffersItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: [
+      Image.asset(
+        'assets/images/barber.jpg',
+        fit: BoxFit.fill,
+        width: MediaQuery.of(context).size.width,
+      ),
+      Positioned(
+          bottom: 35,
+          child: Container(
+              padding: EdgeInsets.all(2),
+              child: Text('عرض   50%   لفترة محدودة ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold)),
+              height: ResponsiveFlutter.of(context).scale(30),
+              decoration: BoxDecoration(
+                color: Color(0xff676363).withOpacity(0.5),
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(30),
+                    topRight: Radius.circular(30)),
+              ))),
+    ]);
   }
 }

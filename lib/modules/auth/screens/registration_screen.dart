@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 
 import '../../../widgets/transparent_appbar.dart';
@@ -81,31 +82,36 @@ class RegistrationScreenState extends State<RegistrationScreen> {
     );
     return Scaffold(
         appBar: TransparentAppBar(),
-        body: CardLayout(
-          children: [
-            if (!correctData) ErrorWarning(text: 'يجب ادخال الداتا'),
-            formFields,
-            GenderSelectionWidget(
-              changeGender: changeGender,
-              selectedGender: selectedGender,
-            ),
-            DefaultButton(
-              text: 'تسجيل حساب',
-              gender: selectedGender,
-              formKey: _formKey,
-            ),
-            _alreadyHasAccount,
-            Text('أو يمكنك التسجيل من خلال'),
-            Row(
-              mainAxisSize: MainAxisSize.min,
+        body: Center(
+          child: Container(
+            height: ResponsiveFlutter.of(context).scale(620),
+            child: CardLayout(
               children: [
-                IconButton(
-                    icon: Image.asset(facebookImagePath), onPressed: () {}),
-                IconButton(
-                    icon: Image.asset(googleImagePath), onPressed: () {}),
+                if (!correctData) ErrorWarning(text: 'يجب ادخال الداتا'),
+                formFields,
+                GenderSelectionWidget(
+                  changeGender: changeGender,
+                  selectedGender: selectedGender,
+                ),
+                DefaultButton(
+                  text: 'تسجيل حساب',
+                  gender: selectedGender,
+                  formKey: _formKey,
+                ),
+                _alreadyHasAccount,
+                Text('أو يمكنك التسجيل من خلال'),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        icon: Image.asset(facebookImagePath), onPressed: () {}),
+                    IconButton(
+                        icon: Image.asset(googleImagePath), onPressed: () {}),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ));
   }
 }
