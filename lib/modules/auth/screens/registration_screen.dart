@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_builder/responsive_builder.dart';
+import 'package:trim/modules/auth/screens/login_screen.dart';
+
+import '../../../widgets/transparent_appbar.dart';
 import '../../../constants/app_constant.dart';
-import '../widgets/form_fields.dart';
+import '../widgets/frame_card_auth.dart';
+import '../../../widgets/trim_text_field.dart';
+import '../../../core/auth/register/validate.dart';
+import '../widgets/gender_selection.dart';
+import '../../../widgets/default_button.dart';
+import '../widgets/not_correct_input.dart';
 
 enum Gender {
   Male,
@@ -9,85 +16,96 @@ enum Gender {
 }
 
 class RegistrationScreen extends StatefulWidget {
+  static final String routeName = '/registration';
   @override
   RegistrationScreenState createState() => RegistrationScreenState();
 }
 
 class RegistrationScreenState extends State<RegistrationScreen> {
-  Widget _alreadyHasAccount = TextButton(
-    onPressed: () {},
-    child: Text(
-      'هل لديك حساب بالفعل؟',
-      style: TextStyle(color: Colors.grey, fontSize: 20),
-    ),
-  );
+  final TextEditingController _nameController = new TextEditingController();
+  final TextEditingController _phoneController = new TextEditingController();
+  final TextEditingController _emailController = new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
+
+  Gender selectedGender;
+  bool correctData = true;
+  void changeGender(Gender gender) {
+    setState(() {
+      selectedGender = gender;
+    });
+  }
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    double _viewCardHeight =
-        mediaQuery.size.height - kToolbarHeight - mediaQuery.padding.top;
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BackButton(),
-                Container(
-                  height: _viewCardHeight,
-                  child: Stack(
-                    children: [
-                      Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                        elevation: 20,
-                        margin: const EdgeInsets.all(30),
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                SizedBox(height: 40),
-                                FormFields(),
-                                _alreadyHasAccount,
-                                Text('أو يمكنك التسجيل من خلال'),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                        icon: Image.asset(facebookImagePath),
-                                        onPressed: () {}),
-                                    IconButton(
-                                        icon: Image.asset(googleImagePath),
-                                        onPressed: () {}),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Align(
-                              alignment: Alignment.topCenter,
-                              child: Image.asset(logoImagePath));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+    Widget _alreadyHasAccount = TextButton(
+      onPressed: () {
+        Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+      },
+      child: Text(
+        'هل لديك حساب بالفعل؟',
+        style: TextStyle(color: Colors.grey, fontSize: 20),
       ),
     );
+
+    final Widget formFields = Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TrimTextField(
+            controller: _nameController,
+            placeHolder: 'الاسم',
+            validator: validateName,
+          ),
+          TrimTextField(
+            controller: _emailController,
+            placeHolder: 'الايميل',
+            validator: validateEmail,
+            textInputType: TextInputType.emailAddress,
+          ),
+          TrimTextField(
+            controller: _phoneController,
+            placeHolder: 'رقم التليفون',
+            validator: validatePhone,
+            textInputType: TextInputType.phone,
+          ),
+          TrimTextField(
+            controller: _passwordController,
+            placeHolder: 'كلمة المرور',
+            validator: validatePassword,
+            password: true,
+          ),
+        ],
+      ),
+    );
+    return Scaffold(
+        appBar: TransparentAppBar(),
+        body: CardLayout(
+          children: [
+            if (!correctData) ErrorWarning(text: 'يجب ادخال الداتا'),
+            formFields,
+            GenderSelectionWidget(
+              changeGender: changeGender,
+              selectedGender: selectedGender,
+            ),
+            DefaultButton(
+              text: 'تسجيل حساب',
+              gender: selectedGender,
+              formKey: _formKey,
+            ),
+            _alreadyHasAccount,
+            Text('أو يمكنك التسجيل من خلال'),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                    icon: Image.asset(facebookImagePath), onPressed: () {}),
+                IconButton(
+                    icon: Image.asset(googleImagePath), onPressed: () {}),
+              ],
+            ),
+          ],
+        ));
   }
 }

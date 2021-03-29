@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import '../screens/registration_screen.dart';
+import '../modules/auth/screens/registration_screen.dart';
 
-class RegisterButton extends StatelessWidget {
+class DefaultButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final Gender gender;
+  final String text;
 
-  const RegisterButton({Key key, @required this.formKey, @required this.gender})
+  const DefaultButton(
+      {Key key, @required this.formKey, this.gender, @required this.text})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -14,18 +16,9 @@ class RegisterButton extends StatelessWidget {
       child: Container(
         width: double.infinity,
         child: ElevatedButton(
-          child: Text('تسجيل حساب'),
+          child: Text(text),
           onPressed: () {
-            if (formKey.currentState.validate()) {
-              if (gender == null) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('يجب اختيار النوع')));
-                return;
-              }
-              formKey.currentState.save();
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text('تم التسجيل بنجاح')));
-            }
+            if (formKey.currentState.validate()) {}
           },
           style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(

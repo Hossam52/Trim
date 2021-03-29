@@ -11,7 +11,7 @@ class TrimTextField extends StatelessWidget {
   const TrimTextField({
     @required this.controller,
     @required this.placeHolder,
-    @required this.validator,
+    this.validator,
     this.textInputType = TextInputType.text,
     this.password = false,
   });
