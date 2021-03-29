@@ -33,7 +33,7 @@ class TrimTextField extends StatelessWidget {
           filled: true,
           hintText: placeHolder,
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(textInputRadius),
+              borderRadius: BorderRadius.circular(roundedRadius),
               borderSide: BorderSide.none),
         ),
       ),

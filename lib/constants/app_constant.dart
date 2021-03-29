@@ -8,7 +8,7 @@ class Splash {
 final String logoImagePath = 'assets/images/logo.png';
 
 final Color filledColor = Color(0xFFF6F6F6);
-final double textInputRadius = 40.0;
+final double roundedRadius = 40.0;
 final double backSize = 55;
 
 final double defaultFontSize = 22;

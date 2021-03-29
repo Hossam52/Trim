@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/constants/app_constant.dart';
 import '../screens/registration_screen.dart';
 
 class RegisterButton extends StatelessWidget {
@@ -26,13 +27,12 @@ class RegisterButton extends StatelessWidget {
                   .showSnackBar(SnackBar(content: Text('تم التسجيل بنجاح')));
             }
           },
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
+          style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(roundedRadius),
               ),
-            ),
-          ),
+              primary: Color(0xff2B72A6),
+              padding: const EdgeInsets.symmetric(vertical: 5)),
         ),
       ),
     );
