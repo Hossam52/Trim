@@ -6,9 +6,13 @@ class DefaultButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final Gender gender;
   final String text;
-
+  final VoidCallback onPressed;
   const DefaultButton(
-      {Key key, @required this.formKey, this.gender, @required this.text})
+      {Key key,
+      @required this.formKey,
+      this.gender,
+      @required this.text,
+      this.onPressed})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,9 @@ class DefaultButton extends StatelessWidget {
         child: ElevatedButton(
           child: Text(text),
           onPressed: () {
-            if (formKey.currentState.validate()) {}
+            if (formKey.currentState.validate()) {
+              onPressed();
+            }
           },
           style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(

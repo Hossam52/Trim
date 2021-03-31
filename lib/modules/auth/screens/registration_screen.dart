@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/modules/auth/repositries/register_repositry.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
+import 'package:trim/utils/services/register_service.dart';
 
 import '../../../widgets/transparent_appbar.dart';
 import '../../../constants/app_constant.dart';
@@ -28,6 +30,8 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _emailController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
 
+  RegisterService _service = RegisterService();
+  String errorMessage = 'يجب ادخال البيانات';
   Gender selectedGender;
   bool correctData = true;
   void changeGender(Gender gender) {
@@ -81,13 +85,14 @@ class RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: TransparentAppBar(),
         body: Center(
           child: Container(
             height: ResponsiveFlutter.of(context).scale(620),
             child: CardLayout(
               children: [
-                if (!correctData) ErrorWarning(text: 'يجب ادخال الداتا'),
+                if (!correctData) ErrorWarning(text: errorMessage),
                 formFields,
                 GenderSelectionWidget(
                   changeGender: changeGender,
@@ -97,6 +102,30 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                   text: 'تسجيل حساب',
                   gender: selectedGender,
                   formKey: _formKey,
+                  onPressed: () {
+                    if (!correctData)
+                      setState(() {
+                        correctData = true;
+                      });
+                    RegisterReposistry user = RegisterReposistry(
+                      name: _nameController.text,
+                      phone: _phoneController.text,
+                      password: _passwordController.text,
+                      confirmPassword: _passwordController.text,
+                      gender: selectedGender == Gender.Male ? 'male' : 'female',
+                      email: _emailController.text,
+                    );
+                    _service.signUp(user).then((response) {
+                      if (response.error) {
+                        setState(() {
+                          correctData = false;
+                          errorMessage = response.errorMessage;
+                        });
+                        print(response.errorMessage);
+                      } else
+                        print('Succissiful');
+                    });
+                  },
                 ),
                 _alreadyHasAccount,
                 Text('أو يمكنك التسجيل من خلال'),

@@ -9,9 +9,10 @@ class ErrorWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
-        color: Colors.red.withAlpha(155),
+        padding: const EdgeInsets.all(10.0),
+        color: Colors.blue.withAlpha(155),
         width: constraints.maxWidth,
-        height: 50,
+        //height: 50,
         child: Center(
             child: Text(text,
                 style:

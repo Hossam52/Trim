@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/modules/auth/repositries/api_reponse.dart';
+import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/screens/registration_screen.dart';
+import 'package:trim/utils/services/login_service.dart';
 import 'package:trim/widgets/default_button.dart';
 import '../../../widgets/transparent_appbar.dart';
 import '../widgets/frame_card_auth.dart';
@@ -21,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = new TextEditingController();
 
   bool correctData = true;
+  final LoginService service = LoginService();
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +84,23 @@ class _LoginScreenState extends State<LoginScreen> {
               DefaultButton(
                 text: 'تسجيل الدخول',
                 formKey: _formKey,
+                onPressed: () {
+                  setState(() {
+                    correctData = true;
+                  });
+                  service
+                      .makeLogin(
+                          _userNameController.text, _passwordController.text)
+                      .then(
+                    (value) {
+                      if (value.error) {
+                        setState(() {
+                          correctData = false;
+                        });
+                      }
+                    },
+                  );
+                },
               ),
               forgotPassword,
               createAccount,
