@@ -1,12 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/widgets/not_correct_input.dart';
 import 'package:trim/utils/services/verification_code_service.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 
 class VerificationCodeScreen extends StatefulWidget {
+  static const routeName = '/verification-code';
+  // final String verificationCode; //The code that come from api
+  // final String token;
+
+  const VerificationCodeScreen({
+    Key key,
+    // @required this.verificationCode, @required this.token
+  }) : super(key: key);
   @override
   _VerificationCodeScreenState createState() => _VerificationCodeScreenState();
 }
@@ -85,6 +94,10 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Map arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    String token = arguments['token'];
+    String verificationCode = arguments['verificationCode'];
     final node = FocusScope.of(context);
     return GestureDetector(
       onTap: () {
@@ -125,34 +138,32 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                               }
                               userEnteredVerificationCode += controller.text;
                             }
-                            ActivationProcessServices()
-                                .getVerificationCode("01115425561", "1234567")
-                                .then((value) {
-                              if (value.error)
-                                setState(() {
-                                  correctData = false;
-                                  errorMessage = value.errorMessage;
-                                });
-                              else {
-                                print(value.data);
-                                setState(() {
-                                  ActivationProcessServices()
-                                      .activate(userEnteredVerificationCode);
-                                  if (userEnteredVerificationCode ==
-                                      value.data) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content:
-                                          Text('VerificationCode is correct'),
-                                    ));
-                                    correctData = true;
-                                  } else
+                            if (userEnteredVerificationCode ==
+                                verificationCode) {
+                              ActivationProcessServices()
+                                  .activate(verificationCode, token)
+                                  .then((value) {
+                                if (value.error)
+                                  setState(() {
                                     correctData = false;
-                                  errorMessage =
-                                      'VerificationCode is inccorect';
-                                });
-                              }
-                            });
+                                    errorMessage = 'Server error';
+                                  });
+                                else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content:
+                                              Text('Successiful activation')));
+
+                                  Navigator.pushReplacementNamed(
+                                      context, LoginScreen.routeName);
+                                }
+                              });
+                            } else {
+                              setState(() {
+                                errorMessage = "Your code not correct";
+                                correctData = false;
+                              });
+                            }
                           }),
                       button(
                           text: 'Reset',

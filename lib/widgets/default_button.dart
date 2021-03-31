@@ -4,16 +4,14 @@ import '../modules/auth/screens/registration_screen.dart';
 
 class DefaultButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
-  final Gender gender;
   final String text;
   final VoidCallback onPressed;
-  const DefaultButton(
-      {Key key,
-      @required this.formKey,
-      this.gender,
-      @required this.text,
-      this.onPressed})
-      : super(key: key);
+  const DefaultButton({
+    Key key,
+    this.formKey,
+    @required this.text,
+    this.onPressed,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -22,9 +20,10 @@ class DefaultButton extends StatelessWidget {
         child: ElevatedButton(
           child: Text(text),
           onPressed: () {
-            if (formKey.currentState.validate()) {
+            if (formKey != null && formKey.currentState.validate()) {
               onPressed();
-            }
+            } else
+              onPressed();
           },
           style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(

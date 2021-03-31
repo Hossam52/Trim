@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/auth/repositries/register_repositry.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
+import 'package:trim/modules/auth/screens/verification_code_screen.dart';
 import 'package:trim/utils/services/register_service.dart';
+import 'package:trim/utils/services/verification_code_service.dart';
 
 import '../../../widgets/transparent_appbar.dart';
 import '../../../constants/app_constant.dart';
@@ -38,6 +40,48 @@ class RegistrationScreenState extends State<RegistrationScreen> {
     setState(() {
       selectedGender = gender;
     });
+  }
+
+  void onRegisteration() async {
+    if (!correctData)
+      setState(() {
+        correctData = true;
+      });
+    RegisterReposistry user = RegisterReposistry(
+      name: _nameController.text,
+      phone: _phoneController.text,
+      password: _passwordController.text,
+      confirmPassword: _passwordController.text,
+      gender: selectedGender == Gender.Male ? 'male' : 'female',
+      email: _emailController.text,
+    );
+
+    _service.signUp(user).then((response) {
+      if (response.error) {
+        setState(() {
+          correctData = false;
+          errorMessage = response.errorMessage;
+        });
+        print(response.errorMessage);
+      } else {
+        print('Succissiful');
+        String token = response.data;
+        ActivationProcessServices()
+            .getVerificationCode(
+                _emailController.text, _passwordController.text, token)
+            .then((value) {
+          print(value.data);
+
+          Navigator.pushReplacementNamed(
+              context, VerificationCodeScreen.routeName,
+              arguments: {
+                "verificationCode": value.data,
+                "token": token,
+              });
+        });
+      }
+    });
+    return;
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -100,32 +144,8 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 DefaultButton(
                   text: 'تسجيل حساب',
-                  gender: selectedGender,
                   formKey: _formKey,
-                  onPressed: () {
-                    if (!correctData)
-                      setState(() {
-                        correctData = true;
-                      });
-                    RegisterReposistry user = RegisterReposistry(
-                      name: _nameController.text,
-                      phone: _phoneController.text,
-                      password: _passwordController.text,
-                      confirmPassword: _passwordController.text,
-                      gender: selectedGender == Gender.Male ? 'male' : 'female',
-                      email: _emailController.text,
-                    );
-                    _service.signUp(user).then((response) {
-                      if (response.error) {
-                        setState(() {
-                          correctData = false;
-                          errorMessage = response.errorMessage;
-                        });
-                        print(response.errorMessage);
-                      } else
-                        print('Succissiful');
-                    });
-                  },
+                  onPressed: onRegisteration,
                 ),
                 _alreadyHasAccount,
                 Text('أو يمكنك التسجيل من خلال'),

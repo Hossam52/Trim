@@ -19,11 +19,12 @@ class LoginService {
           body: {"text": user, "password": password}).then((data) {
         final Map<String, dynamic> jsonData = json.decode(data.body);
         if (jsonData['success'] as bool) {
-          print(jsonData['data']['user']);
+          print(jsonData['data']);
           return APIResponse<LoginRepositry>(
-            data: LoginRepositry.fromJson(jsonData['data']['user']),
+            data: LoginRepositry.fromJson(jsonData['data']),
           );
         }
+        errorMessage = jsonData['message'];
         return APIResponse<LoginRepositry>(
             error: true, errorMessage: errorMessage);
       }).catchError((_) =>

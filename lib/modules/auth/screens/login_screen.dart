@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/auth/repositries/api_reponse.dart';
 import 'package:trim/modules/auth/repositries/login_repositries.dart';
+import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/registration_screen.dart';
 import 'package:trim/utils/services/login_service.dart';
 import 'package:trim/widgets/default_button.dart';
@@ -24,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = new TextEditingController();
 
   bool correctData = true;
+  String errorMessage = "Email or password not correct";
   final LoginService service = LoginService();
 
   @override
@@ -52,7 +54,9 @@ class _LoginScreenState extends State<LoginScreen> {
       highlightColor: Colors.transparent,
       padding: const EdgeInsets.only(top: 10),
       constraints: BoxConstraints(),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, ForgotPassword.routeName);
+      },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       child: Text('هل نسيت الرقم السري؟',
           style: TextStyle(color: Colors.grey, fontSize: 20)),
@@ -78,8 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
           height: ResponsiveFlutter.of(context).scale(460),
           child: CardLayout(
             children: [
-              if (!correctData)
-                ErrorWarning(text: 'Email or password not correct'),
+              if (!correctData) ErrorWarning(text: errorMessage),
               formFields,
               DefaultButton(
                 text: 'تسجيل الدخول',
@@ -96,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value.error) {
                         setState(() {
                           correctData = false;
+                          errorMessage = value.errorMessage;
                         });
                       }
                     },

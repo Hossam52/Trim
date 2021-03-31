@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:trim/constants/api_path.dart';
@@ -7,20 +8,23 @@ import 'package:trim/modules/auth/repositries/api_reponse.dart';
 
 class ActivationProcessServices {
   //return token of the current user
-  Future<APIResponse<String>> activateAccount(
-      String userName, String password, String verificationCode) {
-    return getVerificationCode(userName, password).then((value) {
-      if (!value.error) {
-        return activate(value.data).then((response) {
-          return response;
-        });
-      } else
-        return value;
-    });
-  }
+  // Future<APIResponse<String>> activateAccount(
+  //     String userName, String password, String verificationCode) {
+  //   return getVerificationCode(userName, password).then((value) {
+  //     if (!value.error) {
+  //       return activate(value.data).then((response) {
+  //         return response;
+  //       });
+  //     } else
+  //       return value;
+  //   });
+  // }
 
-  Future<APIResponse<String>> activate(String verificationCode) {
-    const headers = {'api_key': 'd3fa02e7-e373-4ebf-ba0d-0496149d34c4'};
+  Future<APIResponse<String>> activate(String verificationCode, String token) {
+    Map<String, String> headers = {
+      'api_key': 'd3fa02e7-e373-4ebf-ba0d-0496149d34c4',
+      HttpHeaders.authorizationHeader: token
+    };
     Map<String, dynamic> body = {"sms_token": verificationCode};
     Uri url = Uri.parse(activateApi);
     return http.post(url, headers: headers, body: body).then((response) {
@@ -36,9 +40,10 @@ class ActivationProcessServices {
   }
 
   Future<APIResponse<String>> getVerificationCode(
-      String userName, String password) {
-    const headers = {
+      String userName, String password, String token) {
+    Map<String, String> headers = {
       'api_key': 'c63fd642-b0a5-41a2-8a29-f229657f46fa',
+      HttpHeaders.authorizationHeader: token
     };
     Map<String, dynamic> body = {'text': userName, 'password': password};
     try {

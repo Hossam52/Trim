@@ -19,7 +19,7 @@ String validateLogin(String login) {
 
 String validatePhone(String phone) {
   if (phone == null || phone.isEmpty) return 'يجب ملء رقم الهاتف';
-  if (phone.length != 11) return 'ادخل رقم هاتف صالح';
+  if (phone.length != 12) return 'ادخل رقم هاتف صالح';
   return null;
 }
 

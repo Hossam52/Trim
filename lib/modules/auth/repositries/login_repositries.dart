@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
+
 class LoginRepositry {
+  String token;
   String id;
   String name;
   String phone;
@@ -8,6 +11,7 @@ class LoginRepositry {
   String gender;
 
   LoginRepositry({
+    @required this.token,
     this.id,
     this.name,
     this.phone,
@@ -19,12 +23,13 @@ class LoginRepositry {
 
   factory LoginRepositry.fromJson(Map<String, dynamic> data) {
     return LoginRepositry(
-        id: data['id'].toString(),
-        name: data['name'],
-        phone: data['phone'],
-        email: data['email'],
-        image: data['image'],
-        gender: data['gender'],
-        cover: data['cover']);
+        token: data['token'],
+        id: data['user']['id'].toString(),
+        name: data['user']['name'],
+        phone: data['user']['phone'],
+        email: data['user']['email'],
+        image: data['user']['image'],
+        gender: data['user']['gender'],
+        cover: data['user']['cover']);
   }
 }

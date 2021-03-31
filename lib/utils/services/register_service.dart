@@ -8,7 +8,7 @@ class RegisterService {
   Map<String, String> headers = {
     "api_key": "982fc481-9ad9-4dec-a62c-5bd054c3dbc9"
   };
-  Future<APIResponse<bool>> signUp(RegisterReposistry data) {
+  Future<APIResponse<String>> signUp(RegisterReposistry data) {
     String errorMessage = 'Unknown error has occured';
     try {
       return http
@@ -17,20 +17,21 @@ class RegisterService {
         Map<String, dynamic> jsonData = json.decode(response.body);
 
         if (response.statusCode == 200) {
-          return APIResponse<bool>(data: true);
+          return APIResponse<String>(
+              data: jsonData['data']['token']['accessToken']);
         }
         //print(jsonData['errors']);
         Map<String, dynamic> errors = jsonData['errors'];
         if (errors['email'] != null)
           errorMessage = errors['email'][0];
         else if (errors['phone'] != null) errorMessage = errors['phone'][0];
-        return APIResponse<bool>(error: true, errorMessage: errorMessage);
+        return APIResponse<String>(error: true, errorMessage: errorMessage);
       }).catchError(
-        (_) => APIResponse<bool>(error: true, errorMessage: errorMessage),
+        (_) => APIResponse<String>(error: true, errorMessage: errorMessage),
       );
     } catch (e) {
       return Future.value(
-          APIResponse<bool>(error: true, errorMessage: errorMessage));
+          APIResponse<String>(error: true, errorMessage: errorMessage));
     }
   }
 }
