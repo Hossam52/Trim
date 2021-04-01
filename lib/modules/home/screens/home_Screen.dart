@@ -90,63 +90,68 @@ class BuildStarsPersonsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: ResponsiveFlutter.of(context).scale(200) - heightNavigationBar,
-      child: GridView.builder(
-        padding: EdgeInsets.zero,
+      child: ListView.builder(
         itemCount: 3,
-        itemBuilder: (context, index) => Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(10),
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) => BuildStarPersonItem(),
+      ),
+    );
+  }
+}
+
+class BuildStarPersonItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 7),
+      width: MediaQuery.of(context).size.width / 3.2,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+            child: Image.asset(
+              'assets/images/barber.jpg',
+              fit: BoxFit.cover,
+            ),
           ),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10)),
-                child: Image.asset(
-                  'assets/images/barber.jpg',
-                  fit: BoxFit.cover,
+        ),
+        Container(
+          margin: EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'ali ali',
+                style: TextStyle(
+                  fontSize: ResponsiveFlutter.of(context).fontSize(2),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'ali ali',
-                    style: TextStyle(
-                      fontSize: ResponsiveFlutter.of(context).fontSize(2),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 3),
-                  Container(
-                    height: ResponsiveFlutter.of(context).scale(17),
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.zero,
-                        itemCount: 5,
-                        itemBuilder: (context, index) => Container(
-                              margin: EdgeInsets.all(2),
-                              child: Image.asset(
-                                'assets/icons/star.png',
-                                fit: BoxFit.fill,
-                              ),
-                            )),
-                  )
-                ],
-              ),
-            ),
-          ]),
+              SizedBox(height: 3),
+              Container(
+                height: ResponsiveFlutter.of(context).scale(17),
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.zero,
+                    itemCount: 5,
+                    itemBuilder: (context, index) => Container(
+                          margin: EdgeInsets.all(2),
+                          child: Image.asset(
+                            'assets/icons/star.png',
+                            fit: BoxFit.fill,
+                          ),
+                        )),
+              )
+            ],
+          ),
         ),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 0.70, crossAxisSpacing: 10, crossAxisCount: 3),
-      ),
+      ]),
     );
   }
 }
@@ -162,19 +167,25 @@ class BuildMostSearchedSalons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ResponsiveFlutter.of(context).scale(266) - heightNavigationBar,
+      height: ResponsiveFlutter.of(context).scale(280) - heightNavigationBar,
       padding: EdgeInsets.all(ResponsiveFlutter.of(context).scale(2)),
       child: GridView.builder(
-        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        padding: EdgeInsets.all(3.0),
         itemBuilder: (context, index) => Container(
           decoration: BoxDecoration(
             color: Colors.cyan,
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(25),
           ),
         ),
         itemCount: 6,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, crossAxisSpacing: 8, mainAxisSpacing: 15),
+          crossAxisCount: 3,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 15,
+          childAspectRatio: 2.1,
+        ),
       ),
     );
   }
