@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
             textTheme: TextTheme(button: TextStyle(fontSize: defaultFontSize))),
         // home: SplashScreen(alpha: 100, color: Color(0xff2B73A8)),
         builder: DevicePreview.appBuilder,
-        home: RegistrationScreen(),
+        home: HomeScreen(),
         routes: routes);
   }
 }
