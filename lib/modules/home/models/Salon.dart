@@ -37,4 +37,14 @@ List<Salon> salonsData = [
       salonName: 'الكسندرا صالون',
       salonStatus: false,
       salonRate: 4.5),
+  Salon(
+      imagePath: '5',
+      salonName: 'الكسندرا صالون',
+      salonStatus: false,
+      salonRate: 4.5),
+  Salon(
+      imagePath: '6',
+      salonName: 'الكسندرا صالون',
+      salonStatus: true,
+      salonRate: 4.5),
 ];
