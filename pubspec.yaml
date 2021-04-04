@@ -15,7 +15,7 @@ dependencies:
   responsive_flutter:
   curved_navigation_bar:
   http: ^0.13.1
-  flutter_verification_code: ^1.0.1
+  intl:
 
     
 

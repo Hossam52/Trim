@@ -7,6 +7,7 @@ class TrimTextField extends StatelessWidget {
   final bool password;
   final Function(String) validator;
   final TextInputType textInputType;
+  final Widget prefix;
 
   const TrimTextField({
     @required this.controller,
@@ -14,6 +15,7 @@ class TrimTextField extends StatelessWidget {
     this.validator,
     this.textInputType = TextInputType.text,
     this.password = false,
+    this.prefix,
   });
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class TrimTextField extends StatelessWidget {
         textDirection: TextDirection.rtl,
         controller: controller,
         decoration: InputDecoration(
+          prefixIcon: prefix,
           hintTextDirection: TextDirection.rtl,
           contentPadding: const EdgeInsets.symmetric(horizontal: 25),
           fillColor: filledColor,

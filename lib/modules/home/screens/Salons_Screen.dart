@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/screens/salon_detail_screen.dart';
 
 class SalonsScreen extends StatefulWidget {
   static final String routeName = 'salonScreen';
@@ -95,6 +96,7 @@ class BuildItemGrid extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('pressed');
+        Navigator.pushNamed(context, SalonDetailScreen.routeName);
       },
       child: Container(
         child: Column(
