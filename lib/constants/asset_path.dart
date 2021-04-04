@@ -1,7 +1,7 @@
 const String logo = 'assets/images/logo.png';
 const String backgroundImage = 'assets/images/splash-background.png';
 const String backIcon = 'assets/icons/back.png';
-const String Icon = 'assets/icons/Barber-pana.png';
+const String barberPanarIcon = 'assets/icons/Barber-pana.png';
 const String barberIcon = 'assets/icons/barber.png';
 const String bellIcon = 'assets/icons/bell.png';
 const String calendarIcon = 'assets/icons/calendar.png';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/salon_detail_screen.dart';
 
@@ -50,7 +51,7 @@ class BuildSearchWidget extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {},
-          child: Image.asset('assets/icons/settings-icon.png'),
+          child: Image.asset(settings),
           style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.white),
               shape: MaterialStateProperty.all(RoundedRectangleBorder(

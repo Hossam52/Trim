@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/settings_screen.dart';
@@ -29,11 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.grey[300],
         backgroundColor: Colors.white,
         items: [
-          Image.asset('assets/icons/settings.png'),
-          Image.asset('assets/icons/haircut.png'),
-          Image.asset('assets/icons/location.png'),
-          Image.asset('assets/icons/hair.png'),
-          Image.asset('assets/icons/shop-icon.png'),
+          Image.asset(settingsIcon),
+          Image.asset(haircutIcon),
+          Image.asset(locationIcon),
+          Image.asset(hairIcon),
+          Image.asset(marketIcon),
         ],
         onTap: (index) {
           setState(() {
@@ -184,7 +185,7 @@ class BuildStarPersonItem extends StatelessWidget {
                     itemBuilder: (context, index) => Container(
                           margin: EdgeInsets.all(2),
                           child: Image.asset(
-                            'assets/icons/star.png',
+                            starIcon,
                             fit: BoxFit.fill,
                           ),
                         )),
