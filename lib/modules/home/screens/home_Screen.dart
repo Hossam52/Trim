@@ -2,8 +2,13 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/settings_screen.dart';
+import 'package:trim/modules/home/screens/trimStars_Screen.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String routeName = 'homeScreen';
@@ -52,37 +57,73 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class BuildHomeWidget extends StatelessWidget {
   const BuildHomeWidget({
-    Key key,
     @required this.heightNavigationBar,
-  }) : super(key: key);
-
+  });
   final int heightNavigationBar;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            BuildOffersWidgetItem(heightNavigationBar: heightNavigationBar),
-            BuildButtonView(function: () {}, label: 'الأكثر بحثاً'),
-            BuildMostSearchedSalons(heightNavigationBar: heightNavigationBar),
-            BuildButtonView(function: () {}, label: 'نجوم تريم'),
-            BuildStarsPersonsWidget(heightNavigationBar: heightNavigationBar),
-          ],
-        ),
-      ),
+    return InfoWidget(
+      responsiveWidget: (context, deviceInfo) {
+        double fontSize = getFontSize(deviceInfo);
+        return Container(
+          height: deviceInfo.localHeight,
+          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  height: deviceInfo.orientation == Orientation.portrait
+                      ? deviceInfo.localHeight / 3
+                      : deviceInfo.localHeight / 2,
+                  child: InfoWidget(
+                    responsiveWidget: (context, de) {
+                      return Container(
+                        child: BuildOffersWidgetItem(
+                            heightNavigationBar: heightNavigationBar),
+                      );
+                    },
+                  ),
+                ),
+                BuildButtonView(
+                  function: () {},
+                  label: 'الأكثر بحثاً',
+                  textSize: fontSize,
+                ),
+                Container(
+                  height: deviceInfo.orientation == Orientation.portrait
+                      ? deviceInfo.localHeight / 3
+                      : deviceInfo.localHeight,
+                  child: BuildMostSearchedSalons(),
+                ),
+                BuildButtonView(
+                  function: () {
+                    Navigator.pushNamed(context, TrimStarsScreen.routeName);
+                  },
+                  label: 'نجوم تريم',
+                  textSize: fontSize,
+                ),
+                Container(
+                  height: deviceInfo.orientation == Orientation.portrait
+                      ? deviceInfo.localHeight / 3
+                      : deviceInfo.localHeight / 2,
+                  child: BuildStarsPersonsWidget(
+                      heightNavigationBar: heightNavigationBar),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
 class BuildStarsPersonsWidget extends StatelessWidget {
   const BuildStarsPersonsWidget({
-    Key key,
     @required this.heightNavigationBar,
-  }) : super(key: key);
+  });
 
   final int heightNavigationBar;
 
@@ -147,7 +188,7 @@ class BuildStarPersonItem extends StatelessWidget {
                             fit: BoxFit.fill,
                           ),
                         )),
-              )
+              ),
             ],
           ),
         ),
@@ -157,36 +198,34 @@ class BuildStarPersonItem extends StatelessWidget {
 }
 
 class BuildMostSearchedSalons extends StatelessWidget {
-  const BuildMostSearchedSalons({
-    Key key,
-    @required this.heightNavigationBar,
-  }) : super(key: key);
-
-  final int heightNavigationBar;
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: ResponsiveFlutter.of(context).scale(280) - heightNavigationBar,
-      padding: EdgeInsets.all(ResponsiveFlutter.of(context).scale(2)),
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        padding: EdgeInsets.all(3.0),
-        itemBuilder: (context, index) => Container(
-          decoration: BoxDecoration(
-            color: Colors.cyan,
-            borderRadius: BorderRadius.circular(25),
+    return InfoWidget(
+      responsiveWidget: (context, deviceInfo) {
+        print(deviceInfo.localHeight);
+        return GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.all(2),
+          itemBuilder: (context, index) => GestureDetector(
+            onTap: () {},
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Image.asset(
+                "assets/images/${salonsData[index].imagePath}.jpg",
+                fit: BoxFit.fill,
+              ),
+            ),
           ),
-        ),
-        itemCount: 6,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 15,
-          childAspectRatio: 2.1,
-        ),
-      ),
+          itemCount: 6,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 4,
+            childAspectRatio:
+                (deviceInfo.localWidth / (deviceInfo.localHeight) / 1.5),
+          ),
+        );
+      },
     );
   }
 }
@@ -202,7 +241,6 @@ class BuildOffersWidgetItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ResponsiveFlutter.of(context).scale(220) - heightNavigationBar,
       margin: EdgeInsets.symmetric(
           vertical: ResponsiveFlutter.of(context).scale(2)),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
@@ -219,11 +257,19 @@ class BuildOffersWidgetItem extends StatelessWidget {
 class BuildButtonView extends StatelessWidget {
   final Function function;
   final String label;
-  BuildButtonView({this.function, this.label});
+  final textSize;
+  BuildButtonView({this.function, this.label, this.textSize});
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(onPressed: function, child: Text(label));
+    return Align(
+        alignment: Alignment.topRight,
+        child: TextButton(
+            onPressed: function,
+            child: Text(
+              label,
+              style: TextStyle(fontSize: textSize),
+            )));
   }
 }
 
@@ -237,16 +283,16 @@ class BuildOffersItem extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
       ),
       Positioned(
-          bottom: 35,
+          bottom: 30,
           child: Container(
-              padding: EdgeInsets.all(2),
+              padding: EdgeInsets.all(4),
               child: Text('عرض   50%   لفترة محدودة ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.bold)),
-              height: ResponsiveFlutter.of(context).scale(30),
+              // height: ResponsiveFlutter.of(context).scale(30),
               decoration: BoxDecoration(
                 color: Color(0xff676363).withOpacity(0.5),
                 borderRadius: BorderRadius.only(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 
 class Splash {
   static const String splashBacground = "assets/images/splash-background.png";
@@ -16,3 +18,10 @@ final double defaultFontSize = 22;
 //socail
 final String facebookImagePath = 'assets/icons/facebook.png';
 final String googleImagePath = 'assets/icons/google-plus.png';
+double getFontSize(DeviceInfo deviceInfo) {
+  return deviceInfo.type == deviceType.mobile
+      ? 20
+      : deviceInfo.type == deviceType.tablet
+          ? 35
+          : 45;
+}
