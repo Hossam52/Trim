@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
-<<<<<<< HEAD
 import 'package:trim/modules/home/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/screens/TrimStarReservationScreen.dart';
-=======
 import 'package:trim/modules/home/screens/salon_detail_screen.dart';
 import 'package:trim/modules/home/screens/time_selection_screen.dart';
->>>>>>> 0258ccc813714d4e9c5d2a8f79ad87682c941018
 import 'package:trim/modules/home/screens/trimStars_Screen.dart';
 import '../../modules/auth/screens/registration_screen.dart';
 import '../../modules/auth/screens/login_screen.dart';

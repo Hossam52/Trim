@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/screens/trimStars_Screen.dart';
+import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
-import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/widgets/BuildBackButtonWidget.dart';
-import 'package:trim/widgets/BuildTrimStarItem.dart';
+import 'package:trim/widgets/BuildTrimStarItem.dart' as star;
 
 class TrimStarReservationScreen extends StatelessWidget {
   static final String routeName = 'trimStarReservationScreen';
@@ -15,7 +13,7 @@ class TrimStarReservationScreen extends StatelessWidget {
       backgroundColor: Colors.grey,
       body: SafeArea(
         child: Padding(
-          padding: kPadding,
+          padding: constants.kPadding,
           child: InfoWidget(
             responsiveWidget: (context, deviceInfo) {
               return Column(
@@ -52,7 +50,7 @@ class TrimStarReservationScreen extends StatelessWidget {
                               ? deviceInfo.localHeight / 4
                               : deviceInfo.localHeight / 2.4,
                           margin: EdgeInsets.symmetric(horizontal: 5),
-                          child: buildTrimStarItem(starItemScreen: true),
+                          child: star.buildTrimStarItem(starItemScreen: true),
                         ),
                         if (deviceInfo.orientation == Orientation.portrait)
                           Divider(
@@ -106,8 +104,8 @@ class BuildButtonStarItem extends StatelessWidget {
         onPressed: pressed,
         child: Text(
           label,
-          style:
-              TextStyle(color: Colors.white, fontSize: getFontSize(deviceInfo)),
+          style: TextStyle(
+              color: Colors.white, fontSize: constants.getFontSize(deviceInfo)),
         ),
         color: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
