@@ -2,8 +2,10 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
+import 'package:trim/modules/home/screens/ShoppingScreen.dart';
 import 'package:trim/modules/home/screens/settings_screen.dart';
 import 'package:trim/modules/home/screens/trimStars_Screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
@@ -50,7 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget selectedItem(int index) {
     if (index == 0)
       return SettingsScreen();
-    else if (index == 3) return SalonsScreen();
+    else if (index == 3)
+      return SalonsScreen();
+    else if (index == 2) return ShoppingScreen();
     return BuildHomeWidget(heightNavigationBar: heightNavigationBar);
   }
 }
@@ -292,7 +296,6 @@ class BuildOffersItem extends StatelessWidget {
                       fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.bold)),
-              // height: ResponsiveFlutter.of(context).scale(30),
               decoration: BoxDecoration(
                 color: Color(0xff676363).withOpacity(0.5),
                 borderRadius: BorderRadius.only(

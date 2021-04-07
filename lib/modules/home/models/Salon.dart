@@ -1,6 +1,7 @@
 class Salon {
   final String imagePath;
   final String salonName;
+  final String salonLocation;
   final String startTime;
   final String endTime;
   List<DateTime> availableDatas = [];
@@ -13,6 +14,7 @@ class Salon {
       this.salonStatus,
       this.endTime,
       this.availableDatas,
+      this.salonLocation,
       this.startTime});
 }
 
@@ -21,22 +23,27 @@ List<Salon> salonsData = [
       imagePath: '1',
       salonName: 'الكسندرا صالون',
       salonStatus: true,
-      salonRate: 4.5),
+      salonRate: 3.5,
+      salonLocation: 'nasr'),
   Salon(
       imagePath: '2',
       salonName: 'Bianca beauty (hair salon)',
       salonStatus: true,
-      salonRate: 4.5),
+      salonRate: 5,
+      salonLocation: 'cairo'),
   Salon(
-      imagePath: '3',
-      salonName: 'الكسندرا صالون',
-      salonStatus: false,
-      salonRate: 4.5),
+    imagePath: '3',
+    salonName: 'الكسندرا صالون',
+    salonStatus: false,
+    salonRate: 4.5,
+    salonLocation: 'cairo',
+  ),
   Salon(
       imagePath: '4',
       salonName: 'الكسندرا صالون',
       salonStatus: false,
-      salonRate: 4.5),
+      salonRate: 4.5,
+      salonLocation: 'nasr'),
   Salon(
       imagePath: '5',
       salonName: 'الكسندرا صالون',

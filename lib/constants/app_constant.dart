@@ -25,3 +25,5 @@ double getFontSize(DeviceInfo deviceInfo) {
           ? 35
           : 45;
 }
+
+final kPadding = const EdgeInsets.only(bottom: 8, left: 8, right: 8);
