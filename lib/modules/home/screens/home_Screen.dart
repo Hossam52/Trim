@@ -2,8 +2,14 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+<<<<<<< HEAD
 import 'package:trim/constants/app_constant.dart';
+=======
+import 'package:trim/constants/app_constant.dart' as constants;
+import 'package:trim/constants/asset_path.dart';
+>>>>>>> 0258ccc813714d4e9c5d2a8f79ad87682c941018
 import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/ShoppingScreen.dart';
 import 'package:trim/modules/home/screens/settings_screen.dart';
@@ -11,6 +17,7 @@ import 'package:trim/modules/home/screens/trimStars_Screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String routeName = 'homeScreen';
@@ -31,11 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.grey[300],
         backgroundColor: Colors.white,
         items: [
-          Image.asset('assets/icons/settings.png'),
-          Image.asset('assets/icons/haircut.png'),
-          Image.asset('assets/icons/location.png'),
-          Image.asset('assets/icons/hair.png'),
-          Image.asset('assets/icons/shop-icon.png'),
+          Image.asset(settingsIcon),
+          Image.asset(haircutIcon),
+          Image.asset(locationIcon),
+          Image.asset(hairIcon),
+          Image.asset(marketIcon),
         ],
         onTap: (index) {
           setState(() {
@@ -136,67 +143,81 @@ class BuildStarsPersonsWidget extends StatelessWidget {
     return Container(
       height: ResponsiveFlutter.of(context).scale(200) - heightNavigationBar,
       child: ListView.builder(
-        itemCount: 3,
+        itemCount: barbers.length,
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) => BuildStarPersonItem(),
+        itemBuilder: (context, index) => BuildStarPersonItem(
+          barber: barbers[index],
+        ),
       ),
     );
   }
 }
 
 class BuildStarPersonItem extends StatelessWidget {
+  final Barber barber;
+
+  const BuildStarPersonItem({Key key, @required this.barber}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 7),
-      width: MediaQuery.of(context).size.width / 3.2,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-            child: Image.asset(
-              'assets/images/barber.jpg',
-              fit: BoxFit.cover,
+    return InkWell(
+      onTap: () {
+        personDetailsDialog(context, barber);
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 7),
+        width: MediaQuery.of(context).size.width / 3.2,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+              child: Image.asset(
+                barber.image,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'ali ali',
-                style: TextStyle(
-                  fontSize: ResponsiveFlutter.of(context).fontSize(2),
-                  fontWeight: FontWeight.bold,
+          Container(
+            margin: EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  barber.name,
+                  style: TextStyle(
+                    fontSize: ResponsiveFlutter.of(context).fontSize(2),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(height: 3),
-              Container(
-                height: ResponsiveFlutter.of(context).scale(17),
-                child: ListView.builder(
+                SizedBox(height: 3),
+                Container(
+                  height: ResponsiveFlutter.of(context).scale(17),
+                  child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.zero,
                     itemCount: 5,
                     itemBuilder: (context, index) => Container(
-                          margin: EdgeInsets.all(2),
-                          child: Image.asset(
-                            'assets/icons/star.png',
-                            fit: BoxFit.fill,
-                          ),
-                        )),
-              ),
-            ],
+                      margin: EdgeInsets.all(2),
+                      child: index > barber.stars
+                          ? Icon(Icons.star_outline_sharp, size: 13)
+                          : Image.asset(
+                              starIcon,
+                              fit: BoxFit.fill,
+                            ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

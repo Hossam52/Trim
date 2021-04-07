@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
+<<<<<<< HEAD
 import 'package:trim/modules/home/models/availableCities.dart';
 import 'package:trim/widgets/BuildSearchWidget.dart';
+=======
+import 'package:trim/modules/home/screens/salon_detail_screen.dart';
+>>>>>>> 0258ccc813714d4e9c5d2a8f79ad87682c941018
 
 class SalonsScreen extends StatefulWidget {
   static final String routeName = 'salonScreen';
@@ -94,12 +99,25 @@ class _SalonsScreenState extends State<SalonsScreen> {
 class BuildAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return Card(
       child: AlertDialog(
         insetPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 24),
         scrollable: true,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
+=======
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: () {},
+          child: Image.asset(settings),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.white),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  side: BorderSide(color: Colors.cyan, width: 1)))),
+>>>>>>> 0258ccc813714d4e9c5d2a8f79ad87682c941018
         ),
         content: Builder(
           builder: (context) => Container(
@@ -121,6 +139,7 @@ class BuildItemGrid extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('pressed');
+        Navigator.pushNamed(context, SalonDetailScreen.routeName);
       },
       child: Card(
         shape: RoundedRectangleBorder(
