@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/modules/home/screens/time_selection_screen.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
@@ -84,7 +85,7 @@ class SalonDetailScreen extends StatelessWidget {
         child: Row(
           children: [
             ImageIcon(
-              AssetImage('assets/icons/pin.png'),
+              AssetImage(pinIcon),
             ),
             Expanded(
                 child: Text('Ibrahime saqr, tagoa el 3 beside tawla cafee')),
@@ -104,7 +105,7 @@ class SalonDetailScreen extends StatelessWidget {
           child: Column(
             children: [
               ImageIcon(
-                AssetImage('assets/icons/location.png'),
+                AssetImage(locationIcon),
                 color: Colors.blue,
                 size: 50,
               ),
@@ -134,7 +135,7 @@ class Openions extends StatelessWidget {
     List<Widget> allStars = List.generate(
         stars,
         (index) => Image.asset(
-              'assets/icons/star.png',
+              starIcon,
             ));
     allStars
         .addAll(List.generate(5 - stars, (index) => Icon(Icons.star_border)));

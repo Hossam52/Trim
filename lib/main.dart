@@ -2,6 +2,7 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
 import 'package:trim/modules/home/screens/home_screen.dart';
+import 'package:trim/modules/home/screens/map_screen.dart';
 import 'package:trim/utils/services/verification_code_service.dart';
 
 import './modules/auth/screens/registration_screen.dart';

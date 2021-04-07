@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
 
 class TrimStarsScreen extends StatelessWidget {
   static final String routeName = 'TrimStarsScreen';
@@ -28,10 +30,11 @@ class TrimStarsScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: ListView.builder(
-                        itemCount: 3,
+                        itemCount: barbers.length,
                         itemBuilder: (context, index) => GestureDetector(
                               onTap: () {
                                 print('Enter Here');
+                                personDetailsDialog(context, barbers[index]);
                               },
                               child: Container(
                                   width: deviceInfo.localWidth,
@@ -39,7 +42,7 @@ class TrimStarsScreen extends StatelessWidget {
                                           Orientation.portrait
                                       ? deviceInfo.localHeight / 4.5
                                       : deviceInfo.localHeight / 2.5,
-                                  child: buildTrimStarItem()),
+                                  child: buildTrimStarItem(barbers[index])),
                             )),
                   )
                 ],
@@ -60,7 +63,7 @@ double getFontSize(DeviceInfo deviceInfo) {
           : 45;
 }
 
-Widget buildTrimStarItem() {
+Widget buildTrimStarItem(Barber barber) {
   return InfoWidget(
     responsiveWidget: (context, deviceInfo) {
       print(deviceInfo.type);
@@ -74,7 +77,7 @@ Widget buildTrimStarItem() {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'assets/images/1.jpg',
+                  barber.image,
                   fit: BoxFit.cover,
                   height: double.infinity,
                 ),
@@ -88,7 +91,7 @@ Widget buildTrimStarItem() {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      'احمد محمد',
+                      barber.name,
                       style: TextStyle(
                           color: Colors.cyan,
                           fontWeight: FontWeight.bold,
@@ -108,10 +111,12 @@ Widget buildTrimStarItem() {
                           itemCount: 5,
                           itemBuilder: (context, index) => Container(
                                 margin: EdgeInsets.all(2),
-                                child: Image.asset(
-                                  'assets/icons/star.png',
-                                  fit: BoxFit.fill,
-                                ),
+                                child: index > barber.stars
+                                    ? Icon(Icons.star_border_sharp)
+                                    : Image.asset(
+                                        'assets/icons/star.png',
+                                        fit: BoxFit.fill,
+                                      ),
                               )),
                     ),
                     SizedBox(
@@ -121,7 +126,7 @@ Widget buildTrimStarItem() {
                       child: Container(
                         child: SingleChildScrollView(
                           child: Text(
-                            'واحد من افضل الصالونات من حيث العناية والنظافة',
+                            barber.discription ?? 'No discription available',
                             style: TextStyle(fontSize: getFontSize(deviceInfo)),
                             textDirection: TextDirection.rtl,
                           ),

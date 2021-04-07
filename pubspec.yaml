@@ -16,6 +16,8 @@ dependencies:
   curved_navigation_bar:
   http: ^0.13.1
   intl:
+  google_maps_flutter:
+  location:
 
     
 
