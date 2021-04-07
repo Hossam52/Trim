@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/screens/salon_detail_screen.dart';
+import 'package:trim/modules/home/models/availableCities.dart';
+import 'package:trim/widgets/BuildSearchWidget.dart';
 
 class SalonsScreen extends StatefulWidget {
   static final String routeName = 'salonScreen';
@@ -11,6 +12,26 @@ class SalonsScreen extends StatefulWidget {
 }
 
 class _SalonsScreenState extends State<SalonsScreen> {
+  String selectedCity = 'all';
+  List<Salon> filterSalonsData = [];
+  List<Salon> filterSalons() {
+    filterSalonsData = salonsData
+        .where((element) => element.salonLocation == selectedCity)
+        .toList();
+    return filterSalonsData;
+  }
+
+  Future<void> showCities(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return BuildAlertDialog();
+        }).then((value) {
+      selectedCity = value;
+      print(value);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,20 +40,47 @@ class _SalonsScreenState extends State<SalonsScreen> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              BuildSearchWidget(),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      await showCities(context);
+                      setState(() {
+                        filterSalons();
+                      });
+                    },
+                    child: Image.asset('assets/icons/settings-icon.png'),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            side: BorderSide(color: Colors.cyan, width: 1)),
+                      ),
+                    ),
+                  ),
+                  BuildSearchWidget(
+                    pressed: () {},
+                  ),
+                ],
+              ),
               Container(
                 child: Expanded(
                   child: GridView.builder(
                       physics: BouncingScrollPhysics(),
                       padding: EdgeInsets.symmetric(vertical: 10),
-                      itemCount: salonsData.length,
+                      itemCount: selectedCity != 'all'
+                          ? filterSalonsData.length
+                          : salonsData.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 0.84,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10),
                       itemBuilder: (context, index) => BuildItemGrid(
-                            salon: salonsData[index],
+                            salon: selectedCity != 'all'
+                                ? filterSalonsData[index]
+                                : salonsData[index],
                           )),
                 ),
               ),
@@ -44,47 +92,24 @@ class _SalonsScreenState extends State<SalonsScreen> {
   }
 }
 
-class BuildSearchWidget extends StatelessWidget {
+class BuildAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        ElevatedButton(
-          onPressed: () {},
-          child: Image.asset(settings),
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.white),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  side: BorderSide(color: Colors.cyan, width: 1)))),
+    return Card(
+      child: AlertDialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 24),
+        scrollable: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
-        Expanded(
-            child: Form(
-                child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 7),
-          height: ResponsiveFlutter.of(context).scale(40),
-          child: TextFormField(
-            decoration: InputDecoration(
-                hintText: 'ابحث عن',
-                prefixIcon: ElevatedButton(
-                    onPressed: () {},
-                    child: Icon(
-                      Icons.search,
-                      color: Colors.white,
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.cyan),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25))))),
-                fillColor: Colors.grey[200],
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide.none,
-                )),
+        content: Builder(
+          builder: (context) => Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: BuildCitiesRadio(),
           ),
-        ))),
-      ],
+        ),
+      ),
     );
   }
 }
@@ -97,9 +122,11 @@ class BuildItemGrid extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('pressed');
-        Navigator.pushNamed(context, SalonDetailScreen.routeName);
       },
-      child: Container(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -132,12 +159,27 @@ class BuildItemGrid extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text('${salon.salonRate}',
-                        style: TextStyle(
-                            color: Colors.cyan,
-                            fontSize:
-                                ResponsiveFlutter.of(context).fontSize(1.9),
-                            fontWeight: FontWeight.bold)),
+                    Container(
+                      height: ResponsiveFlutter.of(context).scale(14),
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: salon.salonRate.toInt(),
+                          itemBuilder: (context, index) => Container(
+                                margin: EdgeInsets.all(2),
+                                child: Image.asset(
+                                  'assets/icons/star.png',
+                                  fit: BoxFit.fill,
+                                ),
+                              )),
+                    ),
+                    //Text('${salon.salonRate}',
+                    // style: TextStyle(
+                    //     color: Colors.cyan,
+                    //     fontSize:
+                    //         ResponsiveFlutter.of(context).fontSize(1.9),
+                    //     fontWeight: FontWeight.bold)),
                     Text(
                       salon.salonStatus ? 'مفتوح الأن' : 'مغلق الأن',
                       style: TextStyle(
@@ -151,16 +193,65 @@ class BuildItemGrid extends StatelessWidget {
             )
           ],
         ),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey[300],
-                offset: Offset(0, 2),
-              )
-            ]),
       ),
+    );
+  }
+}
+
+class BuildCitiesRadio extends StatefulWidget {
+  @override
+  _BuildCitiesRadioState createState() => _BuildCitiesRadioState();
+}
+
+class _BuildCitiesRadioState extends State<BuildCitiesRadio> {
+  String selectedCity = availableCities[0];
+  List<Widget> buildSelectedCity() {
+    List<Widget> widgets = [];
+    for (String city in availableCities) {
+      widgets.add(
+        ListTile(
+          leading: Radio<String>(
+            value: city,
+            groupValue: selectedCity,
+            onChanged: (value) {
+              setState(() {
+                selectedCity = value;
+              });
+            },
+          ),
+          title: Text(city),
+        ),
+      );
+    }
+    return widgets;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Column(
+          children: buildSelectedCity(),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: MaterialButton(
+            onPressed: () {
+              Navigator.pop(context, selectedCity);
+            },
+            child: Text(
+              'ابحث الأن',
+              style: TextStyle(color: Colors.white),
+            ),
+            color: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
