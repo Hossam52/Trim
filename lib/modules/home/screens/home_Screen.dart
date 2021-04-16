@@ -28,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int initialIndex = -1;
+  int initialIndex = 3;
   final heightNavigationBar = 50;
 
   @override
