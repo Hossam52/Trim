@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.trim.app">
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- This Line -->
+
    <application
         android:label="trim"
         android:icon="@mipmap/ic_launcher"> 
+        android:usesCleartextTraffic="true" <!-- This Line -->
         <meta-data android:name="com.google.android.geo.API_KEY"
               android:value="AIzaSyC3QZTLUUQAxlik3D9MtzsxaHJG5Y75B8M"/>
         <activity

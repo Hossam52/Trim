@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
+import 'package:trim/modules/home/screens/direction_map_screen.dart';
+import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/screens/time_selection_screen.dart';
+import 'package:trim/modules/home/widgets/available_times.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
+import 'package:trim/modules/home/widgets/select_date_sliver.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 
 class SalonDetailScreen extends StatelessWidget {
@@ -32,7 +36,26 @@ class SalonDetailScreen extends StatelessWidget {
   }
 
   void reserveSalon(context) {
-    Navigator.pushNamed(context, TimeSelectionScreen.routeName);
+    final List<String> _availableTimes = [
+      '07:00 pm',
+      '12:00am',
+      '01:00pm',
+      '07:00 pm',
+      '12:00am',
+      '01:00pm',
+      '07:00 pm',
+      '12:00am',
+      '01:00pm'
+    ];
+    Navigator.pushNamed(context, ReserveScreen.routeName, arguments: {
+      'selectDateWidget': SelectDateSliver(),
+      'availableDatesWidget': AvailableTimes(
+        availableDates: _availableTimes,
+        updateSelectedIndex: (index) {},
+      ),
+      'servicesWidget': SalonServices(),
+      'offersWidget': SalonOffers()
+    });
   }
 
   @override
@@ -44,7 +67,11 @@ class SalonDetailScreen extends StatelessWidget {
           margin: const EdgeInsets.all(25),
           child: Column(
             children: [
-              SalonLogo(),
+              SalonLogo(
+                isFavorite: false,
+                height: 200,
+                imagePath: 'assets/images/2.jpg',
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 18.0),
                 child: IntrinsicHeight(
@@ -63,7 +90,7 @@ class SalonDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(child: addressWidget, flex: 3),
-                    Expanded(child: getDirections)
+                    Expanded(child: directionWidget(context))
                   ],
                 ),
               ),
@@ -95,27 +122,31 @@ class SalonDetailScreen extends StatelessWidget {
     ),
   );
 
-  final Widget getDirections = InkWell(
-    child: Card(
-      elevation: 10,
-      child: InkWell(
-        onTap: () {},
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              ImageIcon(
-                AssetImage(locationIcon),
-                color: Colors.blue,
-                size: 50,
-              ),
-              Text('Get directions'),
-            ],
+  Widget directionWidget(BuildContext context) {
+    return InkWell(
+      child: Card(
+        elevation: 10,
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, DirectionMapScreen.routeName);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                ImageIcon(
+                  AssetImage(locationIcon),
+                  color: Colors.blue,
+                  size: 50,
+                ),
+                Text('Get directions'),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
   final Widget availabilityTime = Card(
     elevation: 10,

@@ -18,6 +18,10 @@ dependencies:
   intl:
   google_maps_flutter:
   location:
+  flutter_polyline_points: ^0.2.6
+  dio: ^4.0.0
+
+
 
     
 

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:trim/modules/auth/screens/personal_detail_screen.dart';
+import 'package:trim/modules/home/screens/favourties_screen.dart';
+import 'package:trim/modules/settings/screens/coupons_screen.dart';
+import 'package:trim/modules/settings/screens/customer_serviceScreen.dart';
+import 'package:trim/modules/settings/screens/notifications_screen.dart';
+import 'package:trim/modules/settings/screens/wallet_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   static final String routeName = 'settings';
@@ -17,32 +23,44 @@ class SettingsScreen extends StatelessWidget {
             BuildItemSetting(
               imagename: 'bell',
               label: 'الأشعارات',
-              function: () {},
+              function: () {
+                Navigator.pushNamed(context, NotificationScreen.routeName);
+              },
             ),
             BuildItemSetting(
               imagename: 'user',
               label: 'الملف الشخصي',
-              function: () {},
+              function: () {
+                Navigator.pushNamed(context, PersonDetailScreen.routeName);
+              },
             ),
             BuildItemSetting(
               imagename: 'wallet',
               label: 'محفظتي',
-              function: () {},
+              function: () {
+                Navigator.pushNamed(context, WalletScreen.routeName);
+              },
             ),
             BuildItemSetting(
               imagename: 'coupon',
               label: 'الكوبونات',
-              function: () {},
+              function: () {
+                Navigator.pushNamed(context, CouponsScreen.routeName);
+              },
             ),
             BuildItemSetting(
               imagename: 'favourite',
               label: 'مفضلتي',
-              function: () {},
+              function: () {
+                Navigator.pushNamed(context, FavouritesScreen.routeName);
+              },
             ),
             BuildItemSetting(
               imagename: 'support',
               label: 'خدمة العملاء',
-              function: () {},
+              function: () {
+                Navigator.pushNamed(context, CustomerServiceScreen.routeName);
+              },
             ),
           ],
         ),
