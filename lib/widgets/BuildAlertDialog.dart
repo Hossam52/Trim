@@ -5,20 +5,17 @@ class BuildAlertDialog extends StatelessWidget {
   BuildAlertDialog({this.child});
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: AlertDialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 15),
-        
-        scrollable: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        content: Builder(
-          builder: (context) => Container(
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            child: child,
-          ),
+    return AlertDialog(
+      insetPadding: EdgeInsets.symmetric(horizontal: 15),
+      scrollable: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      content: Builder(
+        builder: (context) => Container(
+          width: MediaQuery.of(context).size.width,
+          margin: EdgeInsets.symmetric(horizontal: 20),
+          child: child,
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 
@@ -42,8 +43,10 @@ class FavouritesScreen extends StatelessWidget {
                                 ),
                                 Container(
                                     width: width * 0.4,
-                                    child: buildStars(width, height,
-                                        favouriteSalons[index].salonRate)),
+                                    child: BuildStars(
+                                        width: width / 1.5,
+                                        stars:
+                                            favouriteSalons[index].salonRate)),
                               ],
                             ),
                           ),
@@ -60,30 +63,6 @@ class FavouritesScreen extends StatelessWidget {
                     child: BackButton(color: Colors.black)),
                 color: Colors.grey[200].withAlpha(150)),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildStars(double width, double height, double stars) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(
-        5,
-        (starIndex) => Flexible(
-          child: Container(
-            margin: EdgeInsets.all(2),
-            child: stars - (starIndex) == 0.5
-                ? Icon(Icons.star_half_sharp,
-                    color: Colors.yellow[800], size: width * 0.1)
-                : starIndex + 1 > stars
-                    ? Icon(Icons.star_outline_sharp, size: width * 0.1)
-                    : Icon(
-                        Icons.star,
-                        color: Colors.yellow[800],
-                        size: width * 0.1,
-                      ),
-          ),
         ),
       ),
     );

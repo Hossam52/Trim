@@ -31,7 +31,9 @@ class _SalonsScreenState extends State<SalonsScreen> {
             child: BuildCitiesRadio(),
           );
         }).then((value) {
-      selectedCity = value;
+      if (value != null) //selected one
+        selectedCity = value;
+
       print(value);
     });
   }
@@ -193,6 +195,11 @@ class _BuildCitiesRadioState extends State<BuildCitiesRadio> {
     for (String city in availableCities) {
       widgets.add(
         ListTile(
+          onTap: () {
+            setState(() {
+              selectedCity = city;
+            });
+          },
           leading: Radio<String>(
             value: city,
             groupValue: selectedCity,
@@ -215,9 +222,7 @@ class _BuildCitiesRadioState extends State<BuildCitiesRadio> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Column(
-          children: buildSelectedCity(),
-        ),
+        ...buildSelectedCity(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40),
           child: MaterialButton(
