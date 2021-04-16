@@ -40,15 +40,12 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         items: [
           Image.asset(settingsIcon),
-          Image.asset(haircutIcon),
+          Image.asset(marketIcon), //shopping
           Image.asset(locationIcon),
+          Image.asset(haircutIcon), //home
           Image.asset(hairIcon),
-          Image.asset(marketIcon),
         ],
         onTap: (index) {
-          if (index == 2) {
-            Navigator.of(context).pushNamed(MapScreen.routeName);
-          }
           setState(() {
             initialIndex = index;
           });
@@ -63,9 +60,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget selectedItem(int index) {
     if (index == 0)
       return SettingsScreen();
-    else if (index == 3) return SalonsScreen();
-    //else if (index == 2) return ShoppingScreen();
-    return BuildHomeWidget(heightNavigationBar: heightNavigationBar);
+    else if (index == 3)
+      return BuildHomeWidget(heightNavigationBar: heightNavigationBar);
+    else if (index == 4)
+      return SalonsScreen();
+    else if (index == 1)
+      return ShoppingScreen();
+    else if (index == 2)
+      return MapScreen();
+    else
+      return Container();
   }
 }
 
