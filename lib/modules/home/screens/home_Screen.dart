@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/ShoppingScreen.dart';
 import 'package:trim/modules/home/screens/settings_screen.dart';

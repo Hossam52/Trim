@@ -8,6 +8,7 @@ import './modules/auth/screens/registration_screen.dart';
 import './constants/app_constant.dart';
 import './modules/auth/screens/login_screen.dart';
 import './config/routes/routes_builder.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 main() => runApp(DevicePreview(builder: (_) => MyApp()));
 
@@ -20,6 +21,15 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', ''), // English, no country code
+          const Locale('ar', ''),
+        ],
         theme: ThemeData(
             textTheme: TextTheme(button: TextStyle(fontSize: defaultFontSize))),
         // home: SplashScreen(alpha: 100, color: Color(0xff2B73A8)),

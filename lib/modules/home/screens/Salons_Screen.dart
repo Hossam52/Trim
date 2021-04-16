@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/availableCities.dart';
+import 'package:trim/widgets/BuildAlertDialog.dart';
 import 'package:trim/widgets/BuildSearchWidget.dart';
 
 class SalonsScreen extends StatefulWidget {
@@ -24,7 +25,9 @@ class _SalonsScreenState extends State<SalonsScreen> {
     return showDialog(
         context: context,
         builder: (context) {
-          return BuildAlertDialog();
+          return BuildAlertDialog(
+            child: BuildCitiesRadio(),
+          );
         }).then((value) {
       selectedCity = value;
       print(value);
@@ -84,28 +87,6 @@ class _SalonsScreenState extends State<SalonsScreen> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class BuildAlertDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: AlertDialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 24),
-        scrollable: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        content: Builder(
-          builder: (context) => Container(
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            child: BuildCitiesRadio(),
           ),
         ),
       ),

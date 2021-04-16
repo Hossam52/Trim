@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/screens/ReservationsScreen.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class SettingsScreen extends StatelessWidget {
   static final String routeName = 'settings';
@@ -12,7 +15,9 @@ class SettingsScreen extends StatelessWidget {
             BuildItemSetting(
               imagename: 'calendar',
               label: 'حجوازتي',
-              function: () {},
+              function: () {
+                Navigator.pushNamed(context, ReservationsScreen.routeName);
+              },
             ),
             BuildItemSetting(
               imagename: 'bell',
@@ -59,13 +64,18 @@ class BuildItemSetting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: function,
-      leading: Image.asset('assets/icons/$imagename.png'),
-      title: Text(
-        label,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
+    return InfoWidget(
+      responsiveWidget: (context, deviceInfo) {
+        return ListTile(
+          onTap: function,
+          leading: Image.asset('assets/icons/$imagename.png'),
+          title: Text(
+            label,
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: getFontSize(deviceInfo)),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,50 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/models/Product.dart';
+import 'package:trim/modules/home/screens/BadgeScreen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/widgets/BuildRawMaterialButton.dart';
 import 'package:trim/widgets/BuildSearchWidget.dart';
 
 class CategoryProductsScreen extends StatelessWidget {
   static final routeName = 'categoryProductScreen';
+  final String categoryId;
+  CategoryProductsScreen({@required this.categoryId});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: InfoWidget(
-            responsiveWidget: (context, deviceInfo) {
-              return Column(
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      BuildSearchWidget(
-                        pressed: () {},
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                      child: Padding(
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: InfoWidget(
+          responsiveWidget: (context, deviceInfo) {
+            return Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                    ),
+                    BuildSearchWidget(
+                      pressed: () {},
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GridView.builder(
-                        itemCount: 4,
+                        itemCount: products.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
-                          crossAxisSpacing: 5,
+                          crossAxisSpacing: 7,
                           mainAxisSpacing: 10,
-                          childAspectRatio: 0.5,
+                          childAspectRatio: 0.47,
                         ),
                         itemBuilder: (context, index) {
-                          return BuildProductItem(deviceInfo);
+                          return BuildProductItem(
+                            deviceInfo: deviceInfo,
+                            prodcut: products[index],
+                          );
                         }),
-                  ))
-                ],
-              );
-            },
-          ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, BadgeScrren.routeName);
+                  },
+                  child: Text('Enter To Products'),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -53,8 +66,8 @@ class CategoryProductsScreen extends StatelessWidget {
 
 class BuildProductItem extends StatelessWidget {
   final DeviceInfo deviceInfo;
-
-  BuildProductItem(this.deviceInfo);
+  final Prodcut prodcut;
+  BuildProductItem({this.deviceInfo, this.prodcut});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -79,62 +92,48 @@ class BuildProductItem extends StatelessWidget {
                 topRight: Radius.circular(25),
               ),
               child: Image.asset(
-                'assets/images/person3.jpg',
+                'assets/images/${prodcut.productImage}',
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),
             ),
           ),
           Expanded(
-              child: Text(
-            'name',
-            style: TextStyle(
-                fontSize: getFontSize(deviceInfo), fontWeight: FontWeight.bold),
-          )),
+            flex: 2,
+            child: Text(
+              prodcut.productName,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: getFontSize(deviceInfo),
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
           Expanded(
-              child: Text('Price',
+              child: Text(prodcut.productPrice.toString(),
                   style: TextStyle(
                       fontSize: getFontSize(deviceInfo), color: Colors.green))),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  BuildRawMaterialButton(
-                    icon: Icons.add,
-                    pressed: () {},
-                  ),
-                  Text('0'),
-                  BuildRawMaterialButton(
-                    icon: Icons.remove,
-                    pressed: () {},
-                  ),
-                ],
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                BuildRawMaterialButton(
+                  icon: Icons.add,
+                  pressed: () {},
+                  deviceInfo: deviceInfo,
+                ),
+                Text(
+                  '0',
+                  style: TextStyle(fontSize: getFontSize(deviceInfo)),
+                ),
+                BuildRawMaterialButton(
+                  icon: Icons.remove,
+                  pressed: () {},
+                  deviceInfo: deviceInfo,
+                ),
+              ],
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class BuildRawMaterialButton extends StatelessWidget {
-  final IconData icon;
-  final Function pressed;
-  BuildRawMaterialButton({this.icon, this.pressed});
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: pressed,
-        child: Icon(icon),
-        shape: const CircleBorder(
-            side: BorderSide(
-          width: 1,
-          color: Colors.black,
-        )),
       ),
     );
   }
