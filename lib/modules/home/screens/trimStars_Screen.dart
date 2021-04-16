@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/modules/home/models/barber.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/screens/TrimStarReservationScreen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
@@ -28,8 +34,8 @@ class TrimStarsScreen extends StatelessWidget {
                       itemCount: 3,
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(
-                              context, TrimStarReservationScreen.routeName);
+                          // Navigator.pushNamed(
+                          //     context, TrimStarReservationScreen.routeName);
                         },
                         child: Container(
                             width: deviceInfo.localWidth,

@@ -10,7 +10,7 @@ import 'package:trim/widgets/BuildSearchWidget.dart';
 class CategoryProductsScreen extends StatelessWidget {
   static final routeName = 'categoryProductScreen';
   final String categoryId;
-  CategoryProductsScreen({@required this.categoryId});
+  CategoryProductsScreen({this.categoryId});
   @override
   Widget build(BuildContext context) {
     return SafeArea(

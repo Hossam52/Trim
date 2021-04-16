@@ -106,6 +106,7 @@ class _DateBuilderState extends State<DateBuilder> {
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
+              physics: BouncingScrollPhysics(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

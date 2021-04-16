@@ -55,3 +55,38 @@ List<Salon> salonsData = [
       salonStatus: true,
       salonRate: 4.5),
 ];
+
+List<Salon> favouriteSalons = [
+  Salon(
+      imagePath: 'assets/images/4.jpg',
+      salonName: 'الكسندرا صالون',
+      salonStatus: false,
+      salonRate: 2.5,
+      salonLocation: 'nasr'),
+  Salon(
+      imagePath: 'assets/images/3.jpg',
+      salonName: 'الكسندرا صالون',
+      salonStatus: false,
+      salonRate: 4.5),
+  Salon(
+      imagePath: 'assets/images/2.jpg',
+      salonName: 'الكسندرا صالون',
+      salonStatus: true,
+      salonRate: 5),
+  Salon(
+      imagePath: 'assets/images/4.jpg',
+      salonName: 'الكسندرا صالون',
+      salonStatus: false,
+      salonRate: 2.5,
+      salonLocation: 'nasr'),
+  Salon(
+      imagePath: 'assets/images/3.jpg',
+      salonName: 'الكسندرا صالون',
+      salonStatus: false,
+      salonRate: 4.5),
+  Salon(
+      imagePath: 'assets/images/2.jpg',
+      salonName: 'الكسندرا صالون',
+      salonStatus: true,
+      salonRate: 5),
+];

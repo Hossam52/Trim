@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/availableCities.dart';
 import 'package:trim/widgets/BuildAlertDialog.dart';
+import 'package:trim/modules/home/screens/salon_detail_screen.dart';
 import 'package:trim/widgets/BuildSearchWidget.dart';
 
 class SalonsScreen extends StatefulWidget {
@@ -102,6 +104,7 @@ class BuildItemGrid extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('pressed');
+        Navigator.pushNamed(context, SalonDetailScreen.routeName);
       },
       child: Card(
         shape: RoundedRectangleBorder(

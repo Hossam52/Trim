@@ -16,6 +16,12 @@ dependencies:
   curved_navigation_bar:
   http: ^0.13.1
   intl:
+  google_maps_flutter:
+  location:
+  flutter_polyline_points: ^0.2.6
+  dio: ^4.0.0
+
+
 
     
 
