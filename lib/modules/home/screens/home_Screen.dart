@@ -11,6 +11,7 @@ import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/map_screen.dart';
 import 'package:trim/modules/home/screens/settings_screen.dart';
 import 'package:trim/modules/home/screens/trimStars_Screen.dart';
+import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
@@ -30,21 +31,38 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int initialIndex = 3;
   final heightNavigationBar = 50;
+  List<Map<String, Widget>> pagesBuilder;
+  @override
+  void initState() {
+    super.initState();
+    pagesBuilder = [
+      {'icon': Image.asset(settingsIcon), 'page': SettingsScreen()},
+      {'icon': Image.asset(marketIcon), 'page': ShoppingScreen()},
+      {'icon': Image.asset(locationIcon), 'page': MapScreen()},
+      {'icon': Image.asset(hairIcon), 'page': SalonsScreen()},
+      {
+        'icon': Image.asset(haircutIcon),
+        'page': BuildHomeWidget(heightNavigationBar: heightNavigationBar)
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: CurvedNavigationBar(
+        index: initialIndex,
         height: 50,
         color: Colors.grey[300],
         backgroundColor: Colors.white,
-        items: [
-          Image.asset(settingsIcon),
-          Image.asset(marketIcon), //shopping
-          Image.asset(locationIcon),
-          Image.asset(haircutIcon), //home
-          Image.asset(hairIcon),
-        ],
+        // items: [
+        //   Image.asset(settingsIcon),
+        //   Image.asset(marketIcon), //shopping
+        //   Image.asset(locationIcon),
+        //   Image.asset(haircutIcon), //home
+        //   Image.asset(hairIcon),
+        // ],
+        items: pagesBuilder.map((widget) => widget['icon']).toList(),
         onTap: (index) {
           setState(() {
             initialIndex = index;
@@ -52,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       body: SafeArea(
-        child: selectedItem(initialIndex),
+        child: pagesBuilder[initialIndex]['page'],
       ),
     );
   }
@@ -60,14 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget selectedItem(int index) {
     if (index == 0)
       return SettingsScreen();
-    else if (index == 3)
-      return BuildHomeWidget(heightNavigationBar: heightNavigationBar);
-    else if (index == 4)
-      return SalonsScreen();
     else if (index == 1)
       return ShoppingScreen();
     else if (index == 2)
       return MapScreen();
+    else if (index == 3)
+      return BuildHomeWidget(heightNavigationBar: heightNavigationBar);
+    else if (index == 4)
+      return SalonsScreen();
     else
       return Container();
   }
@@ -205,20 +223,23 @@ class BuildStarPersonItem extends StatelessWidget {
                 SizedBox(height: 3),
                 Container(
                   height: ResponsiveFlutter.of(context).scale(17),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.zero,
-                    itemCount: 5,
-                    itemBuilder: (context, index) => Container(
-                      margin: EdgeInsets.all(2),
-                      child: index > barber.stars
-                          ? Icon(Icons.star_outline_sharp, size: 13)
-                          : Image.asset(
-                              starIcon,
-                              fit: BoxFit.fill,
-                            ),
-                    ),
-                  ),
+                  // child: ListView.builder(
+                  //   scrollDirection: Axis.horizontal,
+                  //   padding: EdgeInsets.zero,
+                  //   itemCount: 5,
+                  //   itemBuilder: (context, index) => Container(
+                  //     margin: EdgeInsets.all(2),
+                  //     child: index > barber.stars
+                  //         ? Icon(Icons.star_outline_sharp, size: 13)
+                  //         : Image.asset(
+                  //             starIcon,
+                  //             fit: BoxFit.fill,
+                  //           ),
+                  //   ),
+                  // ),
+                  child: BuildStars(
+                      width: MediaQuery.of(context).size.width / 2,
+                      stars: barber.stars),
                 ),
               ],
             ),

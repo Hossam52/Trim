@@ -2,7 +2,7 @@ class Barber {
   final String id;
   final String name;
   final String image;
-  final int stars;
+  final double stars;
   final int noOfRaters;
   final String discription;
   Barber({

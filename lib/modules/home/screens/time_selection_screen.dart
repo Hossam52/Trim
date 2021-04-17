@@ -7,6 +7,8 @@ import 'package:trim/modules/home/widgets/price_information.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
 import 'package:trim/modules/home/widgets/select_date_sliver.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/widgets/default_button.dart';
 import 'package:trim/widgets/trim_text_field.dart';
 
@@ -32,10 +34,10 @@ class TimeSelectionScreen extends StatelessWidget {
     print(index);
   }
 
-  Widget buildOffers() {
+  Widget buildOffers(DeviceInfo deviceInfo) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SalonOffers(),
+      child: SalonOffers(deviceInfo),
     );
   }
 
@@ -53,7 +55,8 @@ class TimeSelectionScreen extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        body: SafeArea(
+          body: InfoWidget(
+        responsiveWidget: (context, deviceInfo) => SafeArea(
           child: CustomScrollView(
             slivers: [
               SelectDateSliver(),
@@ -65,14 +68,14 @@ class TimeSelectionScreen extends StatelessWidget {
                 ),
                 Divider(),
                 buildServices(),
-                buildOffers(),
+                buildOffers(deviceInfo),
                 PriceInformation(),
                 DefaultButton(text: 'Reserve now')
               ]))
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }
