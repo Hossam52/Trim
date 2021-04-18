@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
-import 'package:trim/modules/home/screens/time_selection_screen.dart';
 
 class SalonServices extends StatefulWidget {
   final Widget child;

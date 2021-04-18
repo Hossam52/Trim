@@ -13,7 +13,6 @@ import 'package:trim/modules/home/screens/ReservationDetailsScreen.dart';
 import 'package:trim/modules/home/screens/ReservationsScreen.dart';
 import 'package:trim/modules/home/screens/TrimStarReservationScreen.dart';
 import 'package:trim/modules/home/screens/salon_detail_screen.dart';
-import 'package:trim/modules/home/screens/time_selection_screen.dart';
 import 'package:trim/modules/home/screens/trimStars_Screen.dart';
 import 'package:trim/modules/settings/screens/customer_serviceScreen.dart';
 import 'package:trim/modules/settings/screens/notifications_screen.dart';
@@ -27,7 +26,6 @@ final Map<String, WidgetBuilder> routes = {
   VerificationCodeScreen.routeName: (_) => VerificationCodeScreen(),
   ForgotPassword.routeName: (_) => ForgotPassword(),
   SalonDetailScreen.routeName: (_) => SalonDetailScreen(),
-  TimeSelectionScreen.routeName: (_) => TimeSelectionScreen(),
   TrimStarsScreen.routeName: (_) => TrimStarsScreen(),
   MapScreen.routeName: (_) => MapScreen(),
   TrimStarReservationScreen.routeName: (_) => TrimStarReservationScreen(),

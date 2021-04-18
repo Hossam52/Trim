@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
+import 'package:trim/modules/home/widgets/trim_app_bar.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 
 class FavouritesScreen extends StatelessWidget {
@@ -55,13 +56,7 @@ class FavouritesScreen extends StatelessWidget {
                     );
                   }),
             ),
-            Container(
-                width: double.infinity,
-                child: Align(
-                    heightFactor: 1,
-                    alignment: Alignment.centerLeft,
-                    child: BackButton(color: Colors.black)),
-                color: Colors.grey[200].withAlpha(150)),
+            TrimAppBar(),
           ],
         ),
       ),

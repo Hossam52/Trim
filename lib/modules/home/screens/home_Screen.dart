@@ -55,13 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
         height: 50,
         color: Colors.grey[300],
         backgroundColor: Colors.white,
-        // items: [
-        //   Image.asset(settingsIcon),
-        //   Image.asset(marketIcon), //shopping
-        //   Image.asset(locationIcon),
-        //   Image.asset(haircutIcon), //home
-        //   Image.asset(hairIcon),
-        // ],
         items: pagesBuilder.map((widget) => widget['icon']).toList(),
         onTap: (index) {
           setState(() {
@@ -124,7 +117,8 @@ class BuildHomeWidget extends StatelessWidget {
                 ),
                 BuildButtonView(
                   function: () {},
-                  label: 'الأكثر بحثاً',
+                  //label: 'الأكثر بحثاً',
+                  label: 'Most search',
                   textSize: fontSize,
                 ),
                 Container(
@@ -137,7 +131,8 @@ class BuildHomeWidget extends StatelessWidget {
                   function: () {
                     Navigator.pushNamed(context, TrimStarsScreen.routeName);
                   },
-                  label: 'نجوم تريم',
+                  // label: 'نجوم تريم',
+                  label: 'Trim stars',
                   textSize: fontSize,
                 ),
                 Container(
@@ -223,20 +218,6 @@ class BuildStarPersonItem extends StatelessWidget {
                 SizedBox(height: 3),
                 Container(
                   height: ResponsiveFlutter.of(context).scale(17),
-                  // child: ListView.builder(
-                  //   scrollDirection: Axis.horizontal,
-                  //   padding: EdgeInsets.zero,
-                  //   itemCount: 5,
-                  //   itemBuilder: (context, index) => Container(
-                  //     margin: EdgeInsets.all(2),
-                  //     child: index > barber.stars
-                  //         ? Icon(Icons.star_outline_sharp, size: 13)
-                  //         : Image.asset(
-                  //             starIcon,
-                  //             fit: BoxFit.fill,
-                  //           ),
-                  //   ),
-                  // ),
                   child: BuildStars(
                       width: MediaQuery.of(context).size.width / 2,
                       stars: barber.stars),
@@ -339,7 +320,9 @@ class BuildOffersItem extends StatelessWidget {
           bottom: 30,
           child: Container(
               padding: EdgeInsets.all(4),
-              child: Text('عرض   50%   لفترة محدودة ',
+              child: Text(
+                  // 'عرض   50%   لفترة محدودة '
+                  'Limited offer 50%',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 20,

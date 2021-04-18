@@ -64,10 +64,17 @@ class CategoryProductsScreen extends StatelessWidget {
   }
 }
 
-class BuildProductItem extends StatelessWidget {
+class BuildProductItem extends StatefulWidget {
   final DeviceInfo deviceInfo;
   final Prodcut prodcut;
   BuildProductItem({this.deviceInfo, this.prodcut});
+
+  @override
+  _BuildProductItemState createState() => _BuildProductItemState();
+}
+
+class _BuildProductItemState extends State<BuildProductItem> {
+  int quantity = 0;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,7 +99,7 @@ class BuildProductItem extends StatelessWidget {
                 topRight: Radius.circular(25),
               ),
               child: Image.asset(
-                'assets/images/${prodcut.productImage}',
+                'assets/images/${widget.prodcut.productImage}',
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),
@@ -101,34 +108,49 @@ class BuildProductItem extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              prodcut.productName,
+              widget.prodcut.productName,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: getFontSize(deviceInfo),
+                  fontSize: getFontSize(widget.deviceInfo),
                   fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(
-              child: Text(prodcut.productPrice.toString(),
+              child: Text(widget.prodcut.productPrice.toString(),
                   style: TextStyle(
-                      fontSize: getFontSize(deviceInfo), color: Colors.green))),
+                      fontSize: getFontSize(widget.deviceInfo),
+                      color: Colors.green))),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 BuildRawMaterialButton(
                   icon: Icons.add,
-                  pressed: () {},
-                  deviceInfo: deviceInfo,
+                  pressed: quantity == 10
+                      ? null
+                      : () {
+                          if (quantity != 10)
+                            setState(() {
+                              quantity++;
+                            });
+                        },
+                  deviceInfo: widget.deviceInfo,
                 ),
                 Text(
-                  '0',
-                  style: TextStyle(fontSize: getFontSize(deviceInfo)),
+                  '$quantity',
+                  style: TextStyle(fontSize: getFontSize(widget.deviceInfo)),
                 ),
                 BuildRawMaterialButton(
                   icon: Icons.remove,
-                  pressed: () {},
-                  deviceInfo: deviceInfo,
+                  pressed: quantity == 0
+                      ? null
+                      : () {
+                          if (quantity != 0)
+                            setState(() {
+                              quantity--;
+                            });
+                        },
+                  deviceInfo: widget.deviceInfo,
                 ),
               ],
             ),

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/modules/home/screens/direction_map_screen.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
-import 'package:trim/modules/home/screens/time_selection_screen.dart';
 import 'package:trim/modules/home/widgets/available_times.dart';
+import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
 import 'package:trim/modules/home/widgets/select_date_sliver.dart';
+import 'package:trim/modules/home/widgets/trim_app_bar.dart';
+import 'package:trim/widgets/default_button.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 
 class SalonDetailScreen extends StatelessWidget {
@@ -60,67 +63,81 @@ class SalonDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Salon salonData = ModalRoute.of(context).settings.arguments as Salon;
     return Scaffold(
-      appBar: TransparentAppBar(),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(25),
-          child: Column(
-            children: [
-              SalonLogo(
-                isFavorite: false,
-                height: 200,
-                imagePath: 'assets/images/2.jpg',
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 18.0),
-                child: IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(child: Openions(), flex: 2),
-                      Expanded(child: availabilityTime),
-                    ],
-                  ),
-                ),
-              ),
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.all(25),
+                child: Column(
                   children: [
-                    Expanded(child: addressWidget, flex: 3),
-                    Expanded(child: directionWidget(context))
+                    SalonLogo(
+                      isFavorite: false,
+                      height: 200,
+                      imagePath: 'assets/images/${salonData.imagePath}.jpg',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 18.0),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                                child: Openions(salonData: salonData), flex: 2),
+                            Expanded(child: availabilityTime),
+                          ],
+                        ),
+                      ),
+                    ),
+                    IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(child: addressWidget(salonData), flex: 3),
+                          Expanded(child: directionWidget(context))
+                        ],
+                      ),
+                    ),
+                    SalonServices(
+                        child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DefaultButton(
+                          text: 'Reserve now',
+                          onPressed: () => reserveSalon(context),
+                          color: Colors.black),
+                    )),
+                    SalonOffers(),
                   ],
                 ),
               ),
-              SalonServices(child: reserveButton(context)),
-              SalonOffers(),
-            ],
-          ),
+            ),
+            TrimAppBar(),
+          ],
         ),
       ),
     );
   }
 
-  final Widget addressWidget = Card(
-    elevation: 10,
-    child: InkWell(
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            ImageIcon(
-              AssetImage(pinIcon),
+  Widget addressWidget(Salon salonData) => Card(
+        elevation: 10,
+        child: InkWell(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                ImageIcon(
+                  AssetImage(pinIcon),
+                ),
+                Expanded(child: Text(salonData.address)),
+              ],
             ),
-            Expanded(
-                child: Text('Ibrahime saqr, tagoa el 3 beside tawla cafee')),
-          ],
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   Widget directionWidget(BuildContext context) {
     return InkWell(
@@ -162,18 +179,9 @@ class SalonDetailScreen extends StatelessWidget {
 }
 
 class Openions extends StatelessWidget {
-  Widget starsBuilder(int stars) {
-    List<Widget> allStars = List.generate(
-        stars,
-        (index) => Image.asset(
-              starIcon,
-            ));
-    allStars
-        .addAll(List.generate(5 - stars, (index) => Icon(Icons.star_border)));
-    return Row(
-      children: allStars,
-    );
-  }
+  final Salon salonData;
+
+  const Openions({Key key, @required this.salonData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +192,12 @@ class Openions extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            starsBuilder(5),
+            Expanded(
+              child: BuildStars(
+                stars: salonData.salonRate,
+                width: MediaQuery.of(context).size.width / 2,
+              ),
+            ),
             FittedBox(child: Text('20 openions'), fit: BoxFit.fill),
           ],
         ),

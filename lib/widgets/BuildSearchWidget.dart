@@ -12,8 +12,8 @@ class BuildSearchWidget extends StatelessWidget {
       child: TextFormField(
         decoration: InputDecoration(
             contentPadding: EdgeInsets.only(right: 10),
-            hintTextDirection: TextDirection.rtl,
-            hintText: 'ابحث عن',
+            //hintTextDirection: TextDirection.rtl,
+            hintText: 'Search for',
             prefixIcon: ElevatedButton(
                 onPressed: pressed,
                 child: Icon(

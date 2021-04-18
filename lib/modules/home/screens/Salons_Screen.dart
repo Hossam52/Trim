@@ -3,9 +3,11 @@ import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/availableCities.dart';
+import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/widgets/BuildAlertDialog.dart';
 import 'package:trim/modules/home/screens/salon_detail_screen.dart';
 import 'package:trim/widgets/BuildSearchWidget.dart';
+import 'package:trim/widgets/default_button.dart';
 
 class SalonsScreen extends StatefulWidget {
   static final String routeName = 'salonScreen';
@@ -106,7 +108,8 @@ class BuildItemGrid extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('pressed');
-        Navigator.pushNamed(context, SalonDetailScreen.routeName);
+        Navigator.pushNamed(context, SalonDetailScreen.routeName,
+            arguments: salon);
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -146,30 +149,15 @@ class BuildItemGrid extends StatelessWidget {
                     ),
                     Container(
                       height: ResponsiveFlutter.of(context).scale(14),
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          reverse: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: salon.salonRate.toInt(),
-                          itemBuilder: (context, index) => Container(
-                                margin: EdgeInsets.all(2),
-                                child: Image.asset(
-                                  'assets/icons/star.png',
-                                  fit: BoxFit.fill,
-                                ),
-                              )),
+                      child: BuildStars(
+                          stars: salon.salonRate,
+                          width: MediaQuery.of(context).size.width / 2),
                     ),
-                    //Text('${salon.salonRate}',
-                    // style: TextStyle(
-                    //     color: Colors.cyan,
-                    //     fontSize:
-                    //         ResponsiveFlutter.of(context).fontSize(1.9),
-                    //     fontWeight: FontWeight.bold)),
                     Text(
-                      salon.salonStatus ? 'مفتوح الأن' : 'مغلق الأن',
+                      salon.salonStatus ? 'Open now' : 'Closed now',
                       style: TextStyle(
                           fontSize: ResponsiveFlutter.of(context).fontSize(1.9),
-                          color: Colors.green,
+                          color: salon.salonStatus ? Colors.green : Colors.red,
                           fontWeight: FontWeight.bold),
                     )
                   ],
@@ -224,21 +212,14 @@ class _BuildCitiesRadioState extends State<BuildCitiesRadio> {
       children: [
         ...buildSelectedCity(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: MaterialButton(
-            onPressed: () {
-              Navigator.pop(context, selectedCity);
-            },
-            child: Text(
-              'ابحث الأن',
-              style: TextStyle(color: Colors.white),
-            ),
-            color: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: DefaultButton(
+              text: 'Search now',
+              onPressed: () {
+                Navigator.pop(context, selectedCity);
+              },
+              color: Colors.black,
+            )),
       ],
     );
   }

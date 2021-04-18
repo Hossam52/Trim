@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/settings/screens/coupons_screen.dart';
 import 'package:trim/widgets/trim_text_field.dart';
 
 class PriceInformation extends StatelessWidget {
-  Widget getCopunTextField() {
+  Widget getCopunTextField(BuildContext context) {
     return TrimTextField(
       controller: TextEditingController(),
       readOnly: true,
@@ -11,6 +12,7 @@ class PriceInformation extends StatelessWidget {
       prefix: ElevatedButton(
         onPressed: () {
           print('hello');
+          Navigator.pushNamed(context, CouponsScreen.routeName);
         },
         child: Text('Get coupon'),
         style: ButtonStyle(
@@ -48,7 +50,7 @@ class PriceInformation extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        getCopunTextField(),
+        getCopunTextField(context),
         reservationDetails(),
       ],
     );

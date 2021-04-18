@@ -9,26 +9,32 @@ class Category {
 List<Category> categories = [
   Category(
       id: DateTime.now().toIso8601String(),
-      name: 'عناية بالشعر',
+      // name: 'عناية بالشعر',
+      name: 'Hair care',
       imageName: 'hairstyle'),
   Category(
       id: DateTime.now().toIso8601String(),
-      name: 'مجفف شعر',
+      // name: 'مجفف شعر',
+      name: 'Hair dryer',
       imageName: 'hair-dryer'),
   Category(
       id: DateTime.now().toIso8601String(),
-      name: 'اكسسوار شعر',
+      // name: 'اكسسوار شعر',
+      name: 'Hair Accessories',
       imageName: 'headband'),
   Category(
       id: DateTime.now().toIso8601String(),
-      name: 'عناية بالبشرة',
+      // name: 'عناية بالبشرة',
+      name: 'Skin care',
       imageName: 'shower-gel'),
   Category(
       id: DateTime.now().toIso8601String(),
-      name: 'منتجات الكيرلي',
+      // name: 'منتجات الكيرلي',
+      name: 'Curely products',
       imageName: 'person'),
   Category(
       id: DateTime.now().toIso8601String(),
-      name: 'مكواه',
+      // name: 'مكواه',
+      name: 'hair iron',
       imageName: 'beauty-salon'),
 ];

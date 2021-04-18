@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 Widget buildTrimStarItem({bool starItemScreen}) {
@@ -39,23 +40,25 @@ Widget buildTrimStarItem({bool starItemScreen}) {
                     SizedBox(
                       height: 3,
                     ),
-                    Container(
-                      height: deviceInfo.orientation == Orientation.portrait
-                          ? deviceInfo.localHeight / 6
-                          : deviceInfo.localHeight / 5,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          reverse: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: 5,
-                          itemBuilder: (context, index) => Container(
-                                margin: EdgeInsets.all(2),
-                                child: Image.asset(
-                                  'assets/icons/star.png',
-                                  fit: BoxFit.fill,
-                                ),
-                              )),
-                    ),
+                    // Container(
+                    //   height: deviceInfo.orientation == Orientation.portrait
+                    //       ? deviceInfo.localHeight / 6
+                    //       : deviceInfo.localHeight / 5,
+                    //   child: ListView.builder(
+                    //     scrollDirection: Axis.horizontal,
+                    //     reverse: true,
+                    //     padding: EdgeInsets.zero,
+                    //     itemCount: 5,
+                    //     itemBuilder: (context, index) => Container(
+                    //       margin: EdgeInsets.all(2),
+                    //       child: Image.asset(
+                    //         'assets/icons/star.png',
+                    //         fit: BoxFit.fill,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    BuildStars(stars: 5, width: deviceInfo.localWidth / 1.8),
                     SizedBox(
                       height: 3,
                     ),

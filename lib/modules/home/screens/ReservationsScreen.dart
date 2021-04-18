@@ -21,7 +21,7 @@ class ReservationsScreen extends StatelessWidget {
               buildAppBar(
                   localHeight: deviceInfo.localHeight,
                   fontSize: fontSize,
-                  screenName: 'حجوزاتي'),
+                  screenName: 'My reservations'),
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.symmetric(vertical: 4),

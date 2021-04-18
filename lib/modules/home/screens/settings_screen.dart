@@ -16,59 +16,126 @@ class SettingsScreen extends StatelessWidget {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: buildPersonWidget(),
+            ),
+            Divider(),
             BuildItemSetting(
               imagename: 'calendar',
-              label: 'حجوازتي',
+              //label: 'حجوازتي',
+              label: 'My reservations',
               function: () {
                 Navigator.pushNamed(context, ReservationsScreen.routeName);
               },
             ),
             BuildItemSetting(
               imagename: 'bell',
-              label: 'الأشعارات',
+              // label: 'الأشعارات',
+              label: 'Notifications',
               function: () {
                 Navigator.pushNamed(context, NotificationScreen.routeName);
               },
             ),
             BuildItemSetting(
               imagename: 'user',
-              label: 'الملف الشخصي',
+              //label: 'الملف الشخصي',
+              label: 'Personal profile',
               function: () {
                 Navigator.pushNamed(context, PersonDetailScreen.routeName);
               },
             ),
             BuildItemSetting(
               imagename: 'wallet',
-              label: 'محفظتي',
+              // label: 'محفظتي',
+
+              label: 'My wallet',
               function: () {
                 Navigator.pushNamed(context, WalletScreen.routeName);
               },
             ),
             BuildItemSetting(
               imagename: 'coupon',
-              label: 'الكوبونات',
+              // label: 'الكوبونات',
+              label: 'Copouns',
               function: () {
                 Navigator.pushNamed(context, CouponsScreen.routeName);
               },
             ),
             BuildItemSetting(
               imagename: 'favourite',
-              label: 'مفضلتي',
+              // label: 'مفضلتي',
+              label: 'My favorites',
               function: () {
                 Navigator.pushNamed(context, FavouritesScreen.routeName);
               },
             ),
             BuildItemSetting(
               imagename: 'support',
-              label: 'خدمة العملاء',
+              // label: 'خدمة العملاء',
+              label: 'Support',
               function: () {
                 Navigator.pushNamed(context, CustomerServiceScreen.routeName);
               },
             ),
+            InfoWidget(
+              responsiveWidget: (context, deviceInfo) {
+                return ListTile(
+                  onTap: () {},
+                  leading: Icon(Icons.logout, color: Colors.blue),
+                  title: Text(
+                    // 'تسجيل الخروج',
+                    'Log out',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: getFontSize(deviceInfo)),
+                  ),
+                );
+              },
+            )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildPersonWidget() {
+    return InfoWidget(
+      responsiveWidget: (_, deviceInfo) => Row(
+        children: [
+          Container(
+            height: deviceInfo.screenHeight * 0.2,
+            width: deviceInfo.screenWidth * 0.4,
+            //width: 120,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                    image: AssetImage('assets/images/barber.jpg'),
+                    fit: BoxFit.fill)),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  FittedBox(
+                      child: Text('Hossam Hassan',
+                          style: TextStyle(
+                              fontSize: getFontSize(deviceInfo),
+                              fontWeight: FontWeight.bold))),
+                  FittedBox(
+                    child: Text('hossam.fcis@gmail.com',
+                        style: TextStyle(
+                            fontSize: getFontSize(deviceInfo),
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

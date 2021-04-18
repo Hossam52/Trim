@@ -10,7 +10,7 @@ List<Widget> buildItemRowTable({String key, String value, double fontSize}) {
       ),
     ),
     Padding(
-      padding: const EdgeInsets.only(right: 5, bottom: 5, top: 5),
+      padding: const EdgeInsets.all(10),
       child: Text(
         value,
         style: TextStyle(fontSize: fontSize),

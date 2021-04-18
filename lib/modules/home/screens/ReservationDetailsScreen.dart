@@ -9,6 +9,7 @@ import 'package:trim/widgets/BuildAlertDialog.dart';
 import 'package:trim/widgets/BuildAppBar.dart';
 import 'package:trim/widgets/BuildCardWidget.dart';
 import 'package:trim/widgets/BuildItemReservation.dart';
+import 'package:trim/widgets/default_button.dart';
 
 class ReservationDetailsScreen extends StatelessWidget {
   static final String routeName = 'reservationDetailsScreen';
@@ -18,77 +19,49 @@ class ReservationDetailsScreen extends StatelessWidget {
     return showDialog(
         context: context,
         builder: (context) {
-          return Card(
-            child: Center(
+          return InfoWidget(
+            responsiveWidget: (context, deviceInfo) => Dialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
               child: SingleChildScrollView(
-                  child: InfoWidget(
-                responsiveWidget: (context, deviceInfo) => Dialog(
-                  backgroundColor: Colors.transparent,
-                  child: Stack(
-                    children: [
-                      Column(
-                        children: [
-                          SizedBox(
-                              height:
-                                  deviceInfo.orientation == Orientation.portrait
-                                      ? deviceInfo.type == deviceType.mobile
-                                          ? 45
-                                          : 80
-                                      : deviceInfo.type == deviceType.mobile
-                                          ? 80
-                                          : 95),
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 25, vertical: 15),
-                              child: BuildListCanceledReasons(deviceInfo),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Align(
-                        heightFactor: 1,
-                        alignment: Alignment.topCenter,
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: MediaQuery.of(context).size.width /
-                              (deviceInfo.orientation == Orientation.portrait
-                                  ? 5
-                                  : 6),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )),
-            ),
-          );
-
-          BuildAlertDialog(
-            child: Stack(children: [
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
+                child: Stack(
                   children: [
-                    ListTile(title: Text('1')),
-                    ListTile(title: Text('1')),
-                    ListTile(title: Text('1')),
-                    ListTile(title: Text('1')),
-                    ListTile(title: Text('1')),
-                    ListTile(title: Text('1')),
-                    ListTile(title: Text('1')),
-                    TextFormField(),
-                    RawMaterialButton(
-                      child: Text('موافق'),
-                      onPressed: () {},
+                    Column(
+                      children: [
+                        SizedBox(
+                            height:
+                                deviceInfo.orientation == Orientation.portrait
+                                    ? deviceInfo.type == deviceType.mobile
+                                        ? 45
+                                        : 80
+                                    : deviceInfo.type == deviceType.mobile
+                                        ? 80
+                                        : 95),
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 15),
+                            child: BuildListCanceledReasons(deviceInfo),
+                          ),
+                        ),
+                      ],
                     ),
-                  ]),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Image.asset('assets/images/logo.png'),
+                    Align(
+                      heightFactor: 1,
+                      alignment: Alignment.topCenter,
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: MediaQuery.of(context).size.width /
+                            (deviceInfo.orientation == Orientation.portrait
+                                ? 5
+                                : 6),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ]),
+            ),
           );
         });
   }
@@ -105,7 +78,7 @@ class ReservationDetailsScreen extends StatelessWidget {
               buildAppBar(
                   localHeight: deviceInfo.localHeight,
                   fontSize: fontSize,
-                  screenName: 'تفاصيل الحجز'),
+                  screenName: 'Reservation details'),
               Expanded(
                 child: SingleChildScrollView(
                   child: buildCardWidget(
@@ -113,7 +86,7 @@ class ReservationDetailsScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 5),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           buildItemReservation(
                               reservationData, fontSize, false, context),
@@ -126,32 +99,42 @@ class ReservationDetailsScreen extends StatelessWidget {
                             thickness: 1,
                           ),
                           Text(
-                            'الاجمالي : 230 ',
+                            'Total : 230 ',
                             style: TextStyle(fontSize: fontSize),
                           ),
                           Text(
-                            'الخصم : 20',
+                            'Dicount : 20',
                             style: TextStyle(fontSize: fontSize),
                           ),
                           Text(
-                            'الاجمالي بعدالخصم : 210',
+                            'Total after dicount : 210',
                             style: TextStyle(fontSize: fontSize),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              buildButton(
-                                  name: 'تعديل الطلب',
-                                  function: () {},
-                                  color: Colors.cyanAccent,
-                                  fontSize: fontSize),
-                              buildButton(
-                                  name: 'الغاء الطلب',
-                                  function: () async {
-                                    await showReasonCancelled(context);
-                                  },
-                                  color: Colors.black,
-                                  fontSize: fontSize),
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: DefaultButton(
+                                  text: 'Modify order',
+                                  fontSize: fontSize,
+                                  onPressed: () {},
+                                ),
+                              )),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: DefaultButton(
+                                    text: 'Cancel order',
+                                    color: Colors.black,
+                                    fontSize: fontSize,
+                                    onPressed: () async {
+                                      await showReasonCancelled(context);
+                                    },
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -290,22 +273,27 @@ class _BuildListCanceledReasonsState extends State<BuildListCanceledReasons> {
               ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: ElevatedButton(
-            child: Text(
-              'موافق',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              if (selectedvalue != '') Navigator.pop(context, selectedvalue);
-            },
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.black),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                )),
-          ),
+          // child: ElevatedButton(
+          //   child: Text(
+          //     'موافق',
+          //     style: TextStyle(color: Colors.white),
+          //   ),
+          //   onPressed: () {
+          //     if (selectedvalue != '') Navigator.pop(context, selectedvalue);
+          //   },
+          //   style: ButtonStyle(
+          //       backgroundColor: MaterialStateProperty.all(Colors.black),
+          //       shape: MaterialStateProperty.all(
+          //         RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(20),
+          //         ),
+          //       )),
+          child: DefaultButton(
+              onPressed: () {
+                if (selectedvalue != '') Navigator.pop(context, selectedvalue);
+              },
+              text: 'موافق',
+              color: Colors.black),
         ),
       ],
     );

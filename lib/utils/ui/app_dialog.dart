@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/barber.dart';
+import 'package:trim/modules/home/widgets/build_stars.dart';
 
 Widget elevatedButton(String text, [Color color = Colors.blue]) {
   return Container(
@@ -45,24 +46,9 @@ void personDetailsDialog(BuildContext context, Barber barber) {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(barber.name),
-                            Row(
-                              children: List.generate(
-                                5,
-                                (index) => Expanded(
-                                  child: Container(
-                                    margin: EdgeInsets.all(2),
-                                    child: index > barber.stars
-                                        ? Icon(Icons.star_outline_sharp,
-                                            size: 20)
-                                        : Image.asset(
-                                            starIcon,
-                                            fit: BoxFit.fill,
-                                            scale: 0.6,
-                                          ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            BuildStars(
+                                stars: barber.stars,
+                                width: MediaQuery.of(context).size.width / 2),
                             Text('${barber.noOfRaters} Openion')
                           ],
                         ),
