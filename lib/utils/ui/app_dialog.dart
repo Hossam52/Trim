@@ -6,22 +6,22 @@ import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 
-Widget elevatedButton(String text, [Color color = Colors.blue]) {
-  return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      width: double.infinity,
-      child: ElevatedButton(
-          style: ButtonStyle(
-            padding: MaterialStateProperty.all(const EdgeInsets.all(10)),
-            backgroundColor: MaterialStateProperty.all(color),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(roundedRadius))),
-          ),
-          onPressed: () {},
-          child: Text(text)));
-}
-
 void personDetailsDialog(BuildContext context, Barber barber) {
+  Widget elevatedButton(String text, [Color color = Colors.blue]) {
+    return Container(
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        width: double.infinity,
+        child: ElevatedButton(
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(const EdgeInsets.all(10)),
+              backgroundColor: MaterialStateProperty.all(color),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(roundedRadius))),
+            ),
+            onPressed: () {},
+            child: FittedBox(child: Text(text))));
+  }
+
   showDialog(
       context: context,
       builder: (_) {
@@ -65,4 +65,29 @@ void personDetailsDialog(BuildContext context, Barber barber) {
           ),
         );
       });
+}
+
+Future<bool> exitConfirmationDialog(BuildContext context) async {
+  return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+            title: Text('Alert'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                  child: Text('Cancel')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: Text('Yes', style: TextStyle(color: Colors.red))),
+            ],
+            content: Text('Are you sure to exit?'),
+            contentTextStyle: TextStyle(
+                fontSize: MediaQuery.of(context).size.width / 15,
+                color: Colors.black),
+            contentPadding: const EdgeInsets.all(15),
+          ));
 }

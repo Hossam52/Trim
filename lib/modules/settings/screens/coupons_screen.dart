@@ -54,30 +54,33 @@ class CouponsScreen extends StatelessWidget {
   }
 
   Widget _buildDicountWidget(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text('${20} %', style: Theme.of(context).textTheme.headline2),
-        InfoWidget(
-          responsiveWidget: (_, deviceInfo) => Text('Dicsount of your invoice',
-              style: TextStyle(
-                  color: Colors.white, fontSize: getFontSize(deviceInfo))),
-        ),
-        SizedBox(height: 50),
-        Image.asset(
-          'assets/icons/horizontal.png',
-          width: double.infinity,
-          fit: BoxFit.fitWidth,
-        ),
-        InfoWidget(
-          responsiveWidget: (_, deviceInfo) => Text('Dicount code',
-              style: TextStyle(
-                  fontSize: getFontSize(deviceInfo), color: Colors.white)),
-        ),
-        _buildDiscountAmount(),
-        _buildAvailableUntil(),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('${20} %', style: Theme.of(context).textTheme.headline2),
+          InfoWidget(
+            responsiveWidget: (_, deviceInfo) => Text(
+                'Dicsount of your invoice',
+                style: TextStyle(
+                    color: Colors.white, fontSize: getFontSize(deviceInfo))),
+          ),
+          SizedBox(height: 50),
+          Image.asset(
+            'assets/icons/horizontal.png',
+            width: double.infinity,
+            fit: BoxFit.fitWidth,
+          ),
+          InfoWidget(
+            responsiveWidget: (_, deviceInfo) => Text('Dicount code',
+                style: TextStyle(
+                    fontSize: getFontSize(deviceInfo), color: Colors.white)),
+          ),
+          _buildDiscountAmount(),
+          _buildAvailableUntil(),
+        ],
+      ),
     );
   }
 
@@ -113,6 +116,7 @@ class CouponsScreen extends StatelessWidget {
                 fontSize: getFontSize(deviceInfo), color: Colors.white)));
   }
 
+//المفروض متبقاش كده اللي برا هو اللي سكرول مش اللي جوه؟؟
   Widget backgroundGradient() {
     return Container(
       decoration: BoxDecoration(

@@ -42,7 +42,16 @@ class _SalonsScreenState extends State<SalonsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, bool>;
+    bool hasBackButton = arguments != null ? arguments['hasBackButton'] : null;
     return Scaffold(
+      appBar: hasBackButton != null
+          ? AppBar(
+              backgroundColor: Colors.blue[800],
+              title: Text('All Salons'),
+            )
+          : null,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),

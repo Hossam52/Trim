@@ -11,7 +11,9 @@ import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-main() => runApp(DevicePreview(builder: (_) => MyApp()));
+main() => runApp(
+      MyApp(),
+    );
 
 class MyApp extends StatefulWidget {
   @override

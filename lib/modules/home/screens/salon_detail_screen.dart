@@ -13,12 +13,86 @@ import 'package:trim/modules/home/widgets/salon_services.dart';
 import 'package:trim/modules/home/widgets/select_date_sliver.dart';
 import 'package:trim/modules/home/widgets/trim_app_bar.dart';
 import 'package:trim/widgets/default_button.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 
 class SalonDetailScreen extends StatelessWidget {
   static const String routeName = '/salon-detail';
+  @override
+  Widget build(BuildContext context) {
+    Salon salonData = ModalRoute.of(context).settings.arguments as Salon;
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            InfoWidget(
+              responsiveWidget: (context, deviceInfo) {
+                return SingleChildScrollView(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      margin: const EdgeInsets.all(25),
+                      child: Column(
+                        children: [
+                          SalonLogo(
+                            isFavorite: false,
+                            imagePath:
+                                'assets/images/${salonData.imagePath}.jpg',
+                            deviceInfo: deviceInfo,
+                            height:
+                                deviceInfo.orientation == Orientation.portrait
+                                    ? deviceInfo.localHeight * 0.3
+                                    : deviceInfo.localHeight * 0.6,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 18.0),
+                            child: IntrinsicHeight(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                      child: Openions(
+                                        deviceInfo: deviceInfo,
+                                        salonData: salonData,
+                                      ),
+                                      flex: 2),
+                                  Expanded(child: availabilityTime(deviceInfo)),
+                                ],
+                              ),
+                            ),
+                          ),
+                          IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                    child: addressWidget(deviceInfo), flex: 3),
+                                Expanded(
+                                    child: directionWidget(context, deviceInfo))
+                              ],
+                            ),
+                          ),
+                          SalonServices(
+                              child: reserveButton(context, deviceInfo),
+                              deviceInfo: deviceInfo),
+                          SalonOffers(deviceInfo),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            TrimAppBar(),
+          ],
+        ),
+      ),
+    );
+  }
 
-  Widget reserveButton(context) {
+  Widget reserveButton(context, DeviceInfo deviceInfo) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: ElevatedButton(
@@ -33,12 +107,12 @@ class SalonDetailScreen extends StatelessWidget {
               EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             ),
           ),
-          onPressed: () => reserveSalon(context),
+          onPressed: () => reserveSalon(context, deviceInfo),
           child: const Text('Reserve now')),
     );
   }
 
-  void reserveSalon(context) {
+  void reserveSalon(context, DeviceInfo deviceInfo) {
     final List<String> _availableTimes = [
       '07:00 pm',
       '12:00am',
@@ -56,90 +130,44 @@ class SalonDetailScreen extends StatelessWidget {
         availableDates: _availableTimes,
         updateSelectedIndex: (index) {},
       ),
-      'servicesWidget': SalonServices(),
-      'offersWidget': SalonOffers()
+      'servicesWidget': SalonServices(
+        deviceInfo: deviceInfo,
+      ),
+      'offersWidget': SalonOffers(deviceInfo)
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Salon salonData = ModalRoute.of(context).settings.arguments as Salon;
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                margin: const EdgeInsets.all(25),
-                child: Column(
-                  children: [
-                    SalonLogo(
-                      isFavorite: false,
-                      height: 200,
-                      imagePath: 'assets/images/${salonData.imagePath}.jpg',
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 18.0),
-                      child: IntrinsicHeight(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(
-                                child: Openions(salonData: salonData), flex: 2),
-                            Expanded(child: availabilityTime),
-                          ],
-                        ),
-                      ),
-                    ),
-                    IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(child: addressWidget(salonData), flex: 3),
-                          Expanded(child: directionWidget(context))
-                        ],
-                      ),
-                    ),
-                    SalonServices(
-                        child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DefaultButton(
-                          text: 'Reserve now',
-                          onPressed: () => reserveSalon(context),
-                          color: Colors.black),
-                    )),
-                    SalonOffers(),
-                  ],
-                ),
+  Widget addressWidget(DeviceInfo deviceInfo) {
+    return Card(
+      elevation: 10,
+      child: InkWell(
+        onTap: () {},
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              ImageIcon(
+                AssetImage(pinIcon),
               ),
-            ),
-            TrimAppBar(),
-          ],
+              Expanded(
+                  child: Text(
+                'Ibrahime saqr, tagoa el 3 beside tawla cafee',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: deviceInfo.localWidth *
+                      (deviceInfo.type == deviceType.mobile
+                          ? 0.075 * 0.75
+                          : 0.042 * 0.75),
+                ),
+              )),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget addressWidget(Salon salonData) => Card(
-        elevation: 10,
-        child: InkWell(
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                ImageIcon(
-                  AssetImage(pinIcon),
-                ),
-                Expanded(child: Text(salonData.address)),
-              ],
-            ),
-          ),
-        ),
-      );
-
-  Widget directionWidget(BuildContext context) {
+  Widget directionWidget(BuildContext context, DeviceInfo deviceInfo) {
     return InkWell(
       child: Card(
         elevation: 10,
@@ -156,7 +184,17 @@ class SalonDetailScreen extends StatelessWidget {
                   color: Colors.blue,
                   size: 50,
                 ),
-                Text('Get directions'),
+                Text(
+                  'Get directions',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: deviceInfo.localWidth *
+                          (deviceInfo.type == deviceType.mobile
+                              ? 0.15 * 0.25
+                              : 0.13 * 0.25)),
+                ),
               ],
             ),
           ),
@@ -165,32 +203,91 @@ class SalonDetailScreen extends StatelessWidget {
     );
   }
 
-  final Widget availabilityTime = Card(
-    elevation: 10,
-    child: Column(
-      children: [
-        Text('Open', style: TextStyle(color: Colors.green)),
-        Text('11:00 am', style: TextStyle(color: Colors.green)),
-        Text('To'),
-        Text('10:00 pm', style: TextStyle(color: Colors.green))
-      ],
-    ),
-  );
+  Widget availabilityTime(DeviceInfo deviceInfo) {
+    final fontSize = deviceInfo.localWidth *
+        (deviceInfo.type == deviceType.mobile ? 0.14 * 0.25 : 0.11 * 0.25);
+    return Card(
+      elevation: 10,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Open',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              '11:00 am',
+              style: TextStyle(
+                color: Colors.green,
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              ' To ',
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              '10:00 pm',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+                fontSize: fontSize,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class Openions extends StatelessWidget {
   final Salon salonData;
 
-  const Openions({Key key, @required this.salonData}) : super(key: key);
+  final DeviceInfo deviceInfo;
+  const Openions({Key key, this.deviceInfo, @required this.salonData})
+      : super(key: key);
+
+  Widget starsBuilder(int stars) {
+    bool isPortrait = deviceInfo.orientation == Orientation.portrait;
+    double heightStar = isPortrait
+        ? deviceInfo.localHeight * 0.07
+        : deviceInfo.localHeight * 0.16;
+    List<Widget> allStars = List.generate(
+        stars,
+        (index) => Image.asset(
+              starIcon,
+              height: heightStar * 0.45,
+              fit: BoxFit.cover,
+            ));
+    allStars
+        .addAll(List.generate(5 - stars, (index) => Icon(Icons.star_border)));
+    return Row(
+      children: allStars,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 10.0,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(right: 10, left: 4),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: BuildStars(
@@ -198,7 +295,19 @@ class Openions extends StatelessWidget {
                 width: MediaQuery.of(context).size.width / 2,
               ),
             ),
-            FittedBox(child: Text('20 openions'), fit: BoxFit.fill),
+            Flexible(
+              child: Text(
+                '20 openions',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: (deviceInfo.localWidth *
+                      (deviceInfo.type == deviceType.mobile
+                          ? 0.063 * 0.75
+                          : 0.04 * 0.75)),
+                ),
+                softWrap: true,
+              ),
+            ),
           ],
         ),
       ),

@@ -3,16 +3,16 @@ import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
 import 'package:trim/modules/home/widgets/trim_app_bar.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 
 class FavouritesScreen extends StatelessWidget {
   static const routeName = '/favourite-screen';
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: SafeArea(
+    return Scaffold(body: InfoWidget(responsiveWidget: (context, deviceInfo) {
+      final width = deviceInfo.localWidth;
+      return SafeArea(
         child: Stack(
           children: [
             Padding(
@@ -25,8 +25,12 @@ class FavouritesScreen extends StatelessWidget {
                       child: Stack(
                         children: [
                           SalonLogo(
+                              deviceInfo: deviceInfo,
                               isFavorite: true,
-                              height: height * 0.3,
+                              height:
+                                  deviceInfo.orientation == Orientation.portrait
+                                      ? deviceInfo.localHeight * 0.3
+                                      : deviceInfo.localHeight * 0.6,
                               imagePath: favouriteSalons[index].imagePath),
                           Positioned(
                             bottom: 20,
@@ -39,13 +43,13 @@ class FavouritesScreen extends StatelessWidget {
                                   favouriteSalons[index].salonName,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: width * 0.08,
+                                      fontSize: width * 0.05,
                                       color: Colors.white),
                                 ),
                                 Container(
-                                    width: width * 0.4,
+                                    //  width: width * 0.4,
                                     child: BuildStars(
-                                        width: width / 1.5,
+                                        width: width / 1.8,
                                         stars:
                                             favouriteSalons[index].salonRate)),
                               ],
@@ -59,7 +63,7 @@ class FavouritesScreen extends StatelessWidget {
             TrimAppBar(),
           ],
         ),
-      ),
-    );
+      );
+    }));
   }
 }

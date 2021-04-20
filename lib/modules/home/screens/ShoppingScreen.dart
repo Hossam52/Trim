@@ -9,6 +9,9 @@ import 'package:trim/widgets/BuildSearchWidget.dart';
 
 class ShoppingScreen extends StatefulWidget {
   static final routeName = 'shoppingScreen';
+  final void Function(int categoryIndex) setCategoryIndex;
+
+  const ShoppingScreen({Key key, this.setCategoryIndex}) : super(key: key);
 
   @override
   _ShoppingScreenState createState() => _ShoppingScreenState();
@@ -16,72 +19,86 @@ class ShoppingScreen extends StatefulWidget {
 
 class _ShoppingScreenState extends State<ShoppingScreen> {
   bool swapWidget = false;
-  String categoryId;
+  int categoryIndex;
+
+  @override
+  void dispose() {
+    print('Dispose shopping screen');
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return swapWidget
-        ? CategoryProductsScreen(
-            categoryId: categoryId,
-          )
-        : SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: InfoWidget(
-                responsiveWidget: (context, deviceInfo) {
-                  print(deviceInfo.type);
-                  return Container(
-                    height: deviceInfo.localHeight,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 20,
-                              ),
-                              BuildSearchWidget(
-                                pressed: () {},
-                              ),
-                            ],
+    return
+        //  swapWidget
+        //     ? CategoryProductsScreen(
+        //         //categoryId: categoryId,
+        //         categoryIndex: categoryIndex,
+        //       )
+        //     :
+        Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: InfoWidget(
+            responsiveWidget: (context, deviceInfo) {
+              print(deviceInfo.type);
+              return Container(
+                height: deviceInfo.localHeight,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
                           ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: GridView.builder(
-                              itemBuilder: (context, index) => GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    swapWidget = true;
-                                    categoryId = categories[index].id;
-                                  });
-                                },
-                                child: BuildCategoryItem(
-                                  category: categories[index],
-                                  deviceInfo: deviceInfo,
-                                ),
-                              ),
-                              itemCount: categories.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 5,
-                                      childAspectRatio:
-                                          deviceInfo.type == deviceType.mobile
-                                              ? 0.78
-                                              : 1.4,
-                                      mainAxisSpacing: 10),
+                          BuildSearchWidget(
+                            pressed: () {},
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: GridView.builder(
+                          itemBuilder: (context, index) => GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                swapWidget = true;
+                                categoryIndex = index;
+                                widget.setCategoryIndex(index);
+                                // dispose();
+                              });
+                            },
+                            child: BuildCategoryItem(
+                              category: categories[index],
+                              deviceInfo: deviceInfo,
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
+                          itemCount: categories.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 5,
+                                  childAspectRatio:
+                                      deviceInfo.type == deviceType.mobile
+                                          ? 0.78
+                                          : 1.4,
+                                  mainAxisSpacing: 10),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
 
