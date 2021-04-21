@@ -18,17 +18,7 @@ class ReserveScreen extends StatelessWidget {
   }
 
   Widget buildServices() {
-    //هفطر عليك انتا مباصي نفس الفانكشن
-    // عارف وانا معرفش انك حطيتها فاسكرين تانية
-    // اديك عرفت
-    //امشي
-    //لا
-    //جرب
-    //استنا انا نسيت حاجة اعملها
-    //خلاص فاكس
-    //وريني اللي انتا عامله غير دول
-    //فيه ريسبونسف
-    //من الرن
+    
     return InfoWidget(
       responsiveWidget: (_, deviceInfo) => Padding(
         padding: const EdgeInsets.all(8.0),

@@ -13,9 +13,11 @@ Widget buildItemReservation(Reservation reservation, double fontSize,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Reservation no: ${reservation.requestNumber} ',
-              style: TextStyle(fontSize: fontSize),
+            Flexible(
+                          child: Text(
+                'Reservation no: ${reservation.requestNumber} ',
+                style: TextStyle(fontSize: fontSize),
+              ),
             ),
             if (reservationScreen)
               TextButton(

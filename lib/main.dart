@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
@@ -11,9 +12,13 @@ import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-main() => runApp(
-      MyApp(),
-    );
+void main() => runApp(
+  DevicePreview(
+    enabled: !kReleaseMode,
+    builder: (context) => MyApp(), // Wrap your app
+  ),
+);
+
 
 class MyApp extends StatefulWidget {
   @override

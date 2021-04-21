@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -13,9 +14,8 @@ class SalonServices extends StatefulWidget {
 }
 
 class _SalonServicesState extends State<SalonServices> {
-  bool isPortrait;
   double fontSize;
-  TextStyle kTextStyle;
+
   final List<SalonService> services = [
     SalonService(
       serviceName: 'Hair cut',
@@ -37,21 +37,23 @@ class _SalonServicesState extends State<SalonServices> {
   ];
 
   Widget serviceDiscription(SalonService service) {
+    fontSize = getFontSizeVersion2(widget.deviceInfo)
+       ;
     if (service.discription == null)
       return null;
     else
       return Text(
         service.discription,
-        style: kTextStyle.copyWith(
-          color: Colors.blue,
-          fontSize: fontSize - 3,
-        ),
+        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold
+        ,color: Colors.lightBlue),
       );
   }
 
   List<Widget> allServices() {
     final List<Widget> returnedServices = [];
-
+    fontSize = getFontSizeVersion2(widget.deviceInfo) 
+        ;
+    final ktextStyle = TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
     for (int i = 0; i < services.length; i++)
       returnedServices.add(
         ListTile(
@@ -62,14 +64,14 @@ class _SalonServicesState extends State<SalonServices> {
           },
           title: Text(
             services[i].serviceName,
-            style: kTextStyle,
+            style: ktextStyle,
           ),
           subtitle: serviceDiscription(
             services[i],
           ),
           trailing: Text(
             services[i].price.toString(),
-            style: kTextStyle,
+            style: ktextStyle,
           ),
           leading: Checkbox(
             onChanged: (bool value) {
@@ -82,19 +84,6 @@ class _SalonServicesState extends State<SalonServices> {
         ),
       );
     return returnedServices;
-  }
-
-  @override
-  void initState() {
-    isPortrait = widget.deviceInfo.orientation == Orientation.portrait;
-    fontSize = isPortrait
-        ? widget.deviceInfo.localWidth *
-            (widget.deviceInfo.type == deviceType.mobile ? 0.035 : 0.062)
-        : widget.deviceInfo.type == deviceType.mobile
-            ? widget.deviceInfo.localWidth * 0.044
-            : widget.deviceInfo.localWidth * 0.057;
-    kTextStyle = TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
-    super.initState();
   }
 
   @override

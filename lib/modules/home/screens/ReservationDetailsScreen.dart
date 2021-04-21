@@ -72,7 +72,7 @@ class ReservationDetailsScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(child: InfoWidget(
         responsiveWidget: (context, deviceInfo) {
-          fontSize = getFontSize(deviceInfo);
+          fontSize = getFontSizeVersion2(deviceInfo);
           return Column(
             children: [
               buildAppBar(
@@ -165,7 +165,6 @@ class _BuildListCanceledReasonsState extends State<BuildListCanceledReasons> {
   FocusNode focusNode;
   @override
   void initState() {
-    fontSize = getFontSize(widget.deviceInfo);
     focusNode = FocusNode();
     super.initState();
   }
@@ -178,6 +177,7 @@ class _BuildListCanceledReasonsState extends State<BuildListCanceledReasons> {
 
   @override
   Widget build(BuildContext context) {
+    fontSize = getFontSize(widget.deviceInfo);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,

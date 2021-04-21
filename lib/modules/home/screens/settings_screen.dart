@@ -151,13 +151,16 @@ class BuildItemSetting extends StatelessWidget {
   Widget build(BuildContext context) {
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
-        return ListTile(
-          onTap: function,
-          leading: Image.asset('assets/icons/$imagename.png'),
-          title: Text(
-            label,
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: getFontSize(deviceInfo)),
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: ListTile(
+            onTap: function,
+            leading: Image.asset('assets/icons/$imagename.png'),
+            title: Text(
+              label,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: getFontSizeVersion2(deviceInfo)),
+            ),
           ),
         );
       },

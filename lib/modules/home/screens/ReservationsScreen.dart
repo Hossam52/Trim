@@ -6,6 +6,8 @@ import 'package:trim/widgets/BuildAppBar.dart';
 import 'package:trim/widgets/BuildCardWidget.dart';
 import 'package:trim/widgets/BuildItemReservation.dart';
 
+import '../../../constants/app_constant.dart';
+
 class ReservationsScreen extends StatelessWidget {
   static final String routeName = 'ReservationsScreen';
   double fontSize = 0;
@@ -15,7 +17,8 @@ class ReservationsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: InfoWidget(responsiveWidget: (context, deviceInfo) {
-          fontSize = getFontSize(deviceInfo);
+          fontSize = getFontSizeVersion2(deviceInfo);
+
           return Column(
             children: [
               buildAppBar(

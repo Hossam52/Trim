@@ -18,6 +18,10 @@ import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 
+import '../../../constants/app_constant.dart';
+import '../../../constants/app_constant.dart';
+import '../../../constants/app_constant.dart';
+
 class SalonDetailScreen extends StatelessWidget {
   static const String routeName = '/salon-detail';
   @override
@@ -154,10 +158,7 @@ class SalonDetailScreen extends StatelessWidget {
                 'Ibrahime saqr, tagoa el 3 beside tawla cafee',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: deviceInfo.localWidth *
-                      (deviceInfo.type == deviceType.mobile
-                          ? 0.075 * 0.75
-                          : 0.042 * 0.75),
+                  fontSize: getFontSizeVersion2(deviceInfo),
                 ),
               )),
             ],
@@ -184,16 +185,15 @@ class SalonDetailScreen extends StatelessWidget {
                   color: Colors.blue,
                   size: 50,
                 ),
-                Text(
-                  'Get directions',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: deviceInfo.localWidth *
-                          (deviceInfo.type == deviceType.mobile
-                              ? 0.15 * 0.25
-                              : 0.13 * 0.25)),
+                FittedBox(
+                                  child: Text(
+                    'Get directions',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: getFontSizeVersion2(deviceInfo)),
+                  ),
                 ),
               ],
             ),
@@ -300,10 +300,7 @@ class Openions extends StatelessWidget {
                 '20 openions',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: (deviceInfo.localWidth *
-                      (deviceInfo.type == deviceType.mobile
-                          ? 0.063 * 0.75
-                          : 0.04 * 0.75)),
+                  fontSize: getFontSizeVersion2(deviceInfo),
                 ),
                 softWrap: true,
               ),
