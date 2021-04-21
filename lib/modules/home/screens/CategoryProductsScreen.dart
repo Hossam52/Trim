@@ -121,8 +121,10 @@ class BuildProductItem extends StatefulWidget {
 
 class _BuildProductItemState extends State<BuildProductItem> {
   int quantity = 0;
+  double fontSize = 0;
   @override
   Widget build(BuildContext context) {
+    fontSize = getFontSizeVersion2(widget.deviceInfo);
     return Container(
       padding: const EdgeInsets.only(bottom: 5),
       decoration: BoxDecoration(
@@ -157,14 +159,14 @@ class _BuildProductItemState extends State<BuildProductItem> {
               widget.prodcut.productName,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: getFontSize(widget.deviceInfo),
+                  fontSize: fontSize,
                   fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(
               child: Text(widget.prodcut.productPrice.toString(),
                   style: TextStyle(
-                      fontSize: getFontSize(widget.deviceInfo),
+                      fontSize: fontSize,
                       color: Colors.green))),
           Expanded(
             child: Row(
@@ -184,7 +186,8 @@ class _BuildProductItemState extends State<BuildProductItem> {
                 ),
                 Text(
                   '$quantity',
-                  style: TextStyle(fontSize: getFontSize(widget.deviceInfo)),
+                  style: TextStyle(
+                      fontSize: fontSize),
                 ),
                 BuildRawMaterialButton(
                   icon: Icons.remove,

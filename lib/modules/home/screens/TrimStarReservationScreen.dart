@@ -105,7 +105,7 @@ class BuildButtonStarItem extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-              color: Colors.white, fontSize: constants.getFontSize(deviceInfo)),
+              color: Colors.white, fontSize: constants.getFontSizeVersion2(deviceInfo)),
         ),
         color: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),

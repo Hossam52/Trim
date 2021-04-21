@@ -95,7 +95,7 @@ class _ProductItemState extends State<ProductItem> {
         child: Text(
           'Delete This Item',
           style: TextStyle(
-              fontSize: getFontSize(widget.deviceInfo), color: Colors.red),
+              fontSize: getFontSizeVersion2(widget.deviceInfo), color: Colors.red),
         ),
       ),
       direction: DismissDirection.endToStart,
@@ -109,7 +109,7 @@ class _ProductItemState extends State<ProductItem> {
       child: Container(
         height: widget.deviceInfo.orientation == Orientation.portrait
             ? widget.deviceInfo.localHeight / 4
-            : widget.deviceInfo.localHeight / 2.4,
+            : widget.deviceInfo.localHeight / 2,
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -170,7 +170,7 @@ class _ProductItemState extends State<ProductItem> {
         ),
         Text(
           '$quantity',
-          style: TextStyle(fontSize: getFontSize(deviceInfo) - 5),
+          style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo) - 5),
         ),
         BuildRawMaterialButton(
           icon: Icons.remove,
@@ -193,7 +193,7 @@ class _ProductItemState extends State<ProductItem> {
       child: Text(
         'Total price: $totalPrice',
         style: TextStyle(
-            fontSize: getFontSize(deviceInfo) - 6, color: Colors.green),
+            fontSize: getFontSizeVersion2(deviceInfo) - 6, color: Colors.green),
       ),
     );
   }
@@ -203,7 +203,7 @@ class _ProductItemState extends State<ProductItem> {
       child: Text(
         'Product name',
         style: TextStyle(
-            fontSize: getFontSize(deviceInfo) - 6, color: Colors.lightBlue),
+            fontSize: getFontSizeVersion2(deviceInfo) - 6, color: Colors.lightBlue),
       ),
     );
   }
