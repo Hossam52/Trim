@@ -2,19 +2,26 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class SalonLogo extends StatefulWidget {
   final double height;
-  final String imagePath;
-  final bool isFavorite;
+  //final String imagePath;
+  //final bool isFavorite;
   final DeviceInfo deviceInfo;
+  //final String salonName;
+  final Salon salon;
+  final bool showBottomName;
   const SalonLogo(
       {Key key,
       @required this.height,
-      @required this.imagePath,
-      @required this.isFavorite,
-      @required this.deviceInfo})
+      // @required this.imagePath,
+      // @required this.isFavorite,
+      @required this.deviceInfo,
+      // @required this.salonName,
+      @required this.salon,
+      @required this.showBottomName})
       : super(key: key);
 
   @override
@@ -25,6 +32,7 @@ class _SalonLogoState extends State<SalonLogo> {
   bool isPortrait;
   @override
   Widget build(BuildContext context) {
+    print(widget.deviceInfo.localWidth);
     // final screenWidth = MediaQuery.of(context).size.width;
     //final screenHeight = MediaQuery.of(context).size.height;
     isPortrait =
@@ -37,7 +45,7 @@ class _SalonLogoState extends State<SalonLogo> {
         child: Stack(
           children: [
             Image.asset(
-              widget.imagePath,
+              widget.salon.imagePath,
               width: double.infinity,
               fit: BoxFit.fill,
             ),
@@ -50,6 +58,11 @@ class _SalonLogoState extends State<SalonLogo> {
                   child: buildFavoriteContainer(widget.deviceInfo.screenWidth,
                       widget.deviceInfo.screenHeight)),
             ),
+            widget.showBottomName
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: buildSalonNameWidget())
+                : Container(),
           ],
         ),
       ),
@@ -71,9 +84,26 @@ class _SalonLogoState extends State<SalonLogo> {
         padding: EdgeInsets.zero,
         iconSize: availableWidth * 0.06,
         icon: Icon(
-            widget.isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+            widget.salon.isFavorite != null && widget.salon.isFavorite
+                ? Icons.favorite
+                : Icons.favorite_border_outlined,
             color: Color(0xff4678A3)),
         onPressed: () {},
+      ),
+    );
+  }
+
+  Widget buildSalonNameWidget() {
+    return Container(
+      width: double.infinity,
+      color: Colors.grey.withAlpha(150),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(widget.salon.salonName,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: getFontSize(widget.deviceInfo))),
       ),
     );
   }

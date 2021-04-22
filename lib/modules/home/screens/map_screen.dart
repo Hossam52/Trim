@@ -2,9 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/screens/Salons_Screen.dart'
+    show BuildItemGrid;
 import 'package:intl/intl.dart';
 
 import 'package:location/location.dart' as LocationManager;
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class MapScreen extends StatefulWidget {
   static const routeName = '/map-screen';
@@ -19,39 +26,21 @@ class _MapScreenState extends State<MapScreen> {
   DateTime _selectedDate = DateTime.now();
   String _time;
   bool correctData = true;
+  bool showSalonsWidget = true;
+  final itemScrollController = ItemScrollController();
+  final itemPositionsListener = ItemPositionsListener.create();
 
   Widget _buildMap() {
-    return Expanded(
-      flex: 3,
-      child: GoogleMap(
-        mapType: MapType.terrain,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(30.136685, 31.27448000000001),
-          zoom: 15,
-        ),
-        markers: allMarkers,
-        onTap: (pos) {
-          print(allMarkers.length);
-          Marker f = Marker(
-              markerId: MarkerId(Random().nextInt(1000).toString()),
-              icon: customIcon1,
-              position: pos,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(
-                    'Clicked',
-                  ),
-                  duration: Duration(milliseconds: 100),
-                ));
-              });
-
-          setState(() {
-            allMarkers.add(f);
-          });
-        },
+    return GoogleMap(
+      mapType: MapType.terrain,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: true,
+      initialCameraPosition: CameraPosition(
+        target: LatLng(30.136685, 31.27448000000001),
+        zoom: 15,
       ),
+      markers: allMarkers,
+      onTap: (pos) {},
     );
   }
 
@@ -98,6 +87,25 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  Widget actionButton(
+      {DeviceInfo deviceInfo, String title, IconData icon, bool whenPressed}) {
+    return Container(
+      child: TextButton.icon(
+        onPressed: () {
+          setState(() {
+            showSalonsWidget = whenPressed;
+          });
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.black),
+          foregroundColor: MaterialStateProperty.all(Colors.white),
+        ),
+        label: Text(title, style: TextStyle(fontSize: getFontSize(deviceInfo))),
+        icon: Icon(icon, size: getFontSize(deviceInfo)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     initMarkerIcon(context);
@@ -106,32 +114,52 @@ class _MapScreenState extends State<MapScreen> {
             child: SizedBox(
       height: MediaQuery.of(context).size.height,
       child: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
             _buildMap(),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30))),
-                height: 300,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: FittedBox(
-                        child: Text('Choose suitable appointment and service'),
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                    _buildDateSelectionWidget(),
-                    _buildTimeSelectionWidget(),
-                    _buildButton()
-                  ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 30),
+                child: InfoWidget(
+                  responsiveWidget: (_, deviceInfo) => showSalonsWidget == false
+                      ? actionButton(
+                          deviceInfo: deviceInfo,
+                          title: 'Show',
+                          icon: Icons.arrow_upward,
+                          whenPressed: true)
+                      : Container(
+                          height: deviceInfo.localHeight / 2.1,
+                          width: double.infinity,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              actionButton(
+                                  deviceInfo: deviceInfo,
+                                  title: 'Hide',
+                                  icon: Icons.arrow_downward,
+                                  whenPressed: false),
+                              Expanded(
+                                child: ScrollablePositionedList.builder(
+                                  itemScrollController: itemScrollController,
+                                  itemPositionsListener: itemPositionsListener,
+                                  physics: BouncingScrollPhysics(),
+                                  itemCount: mapSalons.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (_, index) => Container(
+                                    width: deviceInfo.localWidth / 2.5,
+                                    child:
+                                        BuildItemGrid(salon: mapSalons[index]),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -181,22 +209,22 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void makeSalonsMarkers(List<LatLng> salonsLocations) {
-    salonsLocations.forEach((e) {
+    for (int i = 0; i < mapSalons.length; i++) {
       Marker f = Marker(
           markerId: MarkerId(Random().nextInt(1000).toString()),
           icon: customIcon1,
-          position: e,
+          position: mapSalons[i].latLng,
+          infoWindow: InfoWindow(title: mapSalons[i].salonName),
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Clicked',
-              ),
-              duration: Duration(milliseconds: 100),
-            ));
+            if (showSalonsWidget)
+              itemScrollController.scrollTo(
+                  index: i,
+                  duration: Duration(milliseconds: 400),
+                  curve: Curves.easeInOutCubic);
           });
 
       allMarkers.add(f);
-    });
+    }
   }
 
   Future<void> initMarkerIcon(context) async {

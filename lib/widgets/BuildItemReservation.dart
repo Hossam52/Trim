@@ -13,20 +13,24 @@ Widget buildItemReservation(Reservation reservation, double fontSize,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Reservation no: ${reservation.requestNumber} ',
-              style: TextStyle(fontSize: fontSize),
+            Flexible(
+              child: Text(
+                'Reservation no: ${reservation.requestNumber} ',
+                style: TextStyle(fontSize: fontSize),
+              ),
             ),
             if (reservationScreen)
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                      context, ReservationDetailsScreen.routeName,
-                      arguments: reservation);
-                },
-                child: Text(
-                  'More details',
-                  style: TextStyle(fontSize: fontSize, color: Colors.green),
+              Flexible(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                        context, ReservationDetailsScreen.routeName,
+                        arguments: reservation);
+                  },
+                  child: Text(
+                    'More details',
+                    style: TextStyle(fontSize: fontSize, color: Colors.green),
+                  ),
                 ),
               ),
           ],

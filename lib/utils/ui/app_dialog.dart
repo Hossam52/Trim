@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/barber.dart';
+import 'package:trim/modules/home/models/salon_detail_model.dart';
+import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 
 void personDetailsDialog(BuildContext context, Barber barber) {
-  Widget elevatedButton(String text, [Color color = Colors.blue]) {
+  Widget elevatedButton(String text, VoidCallback onPressed,
+      [Color color = Colors.blue]) {
     return Container(
         margin: const EdgeInsets.symmetric(vertical: 10),
         width: double.infinity,
@@ -18,7 +21,7 @@ void personDetailsDialog(BuildContext context, Barber barber) {
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(roundedRadius))),
             ),
-            onPressed: () {},
+            onPressed: onPressed,
             child: FittedBox(child: Text(text))));
   }
 
@@ -58,8 +61,24 @@ void personDetailsDialog(BuildContext context, Barber barber) {
                 ),
                 SizedBox(height: 10),
                 Divider(),
-                elevatedButton('Reserve now'),
-                elevatedButton('Reserve appointment', Colors.black),
+                elevatedButton('Reserve now', () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, ReserveScreen.routeName,
+                      arguments: SalonDetailModel(
+                          showDateWidget: false,
+                          showAvailableTimes: true,
+                          showServiceWidget: true,
+                          showOffersWidget: false));
+                }),
+                elevatedButton('Reserve appointment', () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, ReserveScreen.routeName,
+                      arguments: SalonDetailModel(
+                          showDateWidget: true,
+                          showAvailableTimes: true,
+                          showServiceWidget: true,
+                          showOffersWidget: true));
+                }, Colors.black),
               ],
             ),
           ),

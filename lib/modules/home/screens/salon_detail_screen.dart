@@ -17,6 +17,7 @@ import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
+import 'package:trim/modules/home/models/salon_detail_model.dart';
 
 class SalonDetailScreen extends StatelessWidget {
   static const String routeName = '/salon-detail';
@@ -36,9 +37,8 @@ class SalonDetailScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           SalonLogo(
-                            isFavorite: false,
-                            imagePath:
-                                'assets/images/${salonData.imagePath}.jpg',
+                            showBottomName: true,
+                            salon: salonData,
                             deviceInfo: deviceInfo,
                             height:
                                 deviceInfo.orientation == Orientation.portrait
@@ -68,7 +68,9 @@ class SalonDetailScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Expanded(
-                                    child: addressWidget(deviceInfo), flex: 3),
+                                    child: addressWidget(
+                                        deviceInfo, salonData.address),
+                                    flex: 3),
                                 Expanded(
                                     child: directionWidget(context, deviceInfo))
                               ],
@@ -113,37 +115,21 @@ class SalonDetailScreen extends StatelessWidget {
   }
 
   void reserveSalon(context, DeviceInfo deviceInfo) {
-    final List<String> _availableTimes = [
-      '07:00 pm',
-      '12:00am',
-      '01:00pm',
-      '07:00 pm',
-      '12:00am',
-      '01:00pm',
-      '07:00 pm',
-      '12:00am',
-      '01:00pm'
-    ];
-    Navigator.pushNamed(context, ReserveScreen.routeName, arguments: {
-      'selectDateWidget': SelectDateSliver(),
-      'availableDatesWidget': AvailableTimes(
-        availableDates: _availableTimes,
-        updateSelectedIndex: (index) {},
-      ),
-      'servicesWidget': SalonServices(
-        deviceInfo: deviceInfo,
-      ),
-      'offersWidget': SalonOffers(deviceInfo)
-    });
+    Navigator.pushNamed(context, ReserveScreen.routeName,
+        arguments: SalonDetailModel(
+            showDateWidget: true,
+            showAvailableTimes: true,
+            showOffersWidget: true,
+            showServiceWidget: false));
   }
 
-  Widget addressWidget(DeviceInfo deviceInfo) {
+  Widget addressWidget(DeviceInfo deviceInfo, String address) {
     return Card(
       elevation: 10,
       child: InkWell(
         onTap: () {},
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(0),
           child: Row(
             children: [
               ImageIcon(
@@ -151,7 +137,11 @@ class SalonDetailScreen extends StatelessWidget {
               ),
               Expanded(
                   child: Text(
-                'Ibrahime saqr, tagoa el 3 beside tawla cafee',
+                address,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textHeightBehavior:
+                    TextHeightBehavior(applyHeightToFirstAscent: true),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: deviceInfo.localWidth *
@@ -184,16 +174,16 @@ class SalonDetailScreen extends StatelessWidget {
                   color: Colors.blue,
                   size: 50,
                 ),
-                Text(
-                  'Get directions',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: deviceInfo.localWidth *
-                          (deviceInfo.type == deviceType.mobile
-                              ? 0.15 * 0.25
-                              : 0.13 * 0.25)),
+                Flexible(
+                  child: Text(
+                    'Get directions',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: deviceInfo.localWidth *
+                            (deviceInfo.type == deviceType.mobile
+                                ? 0.15 * 0.25
+                                : 0.13 * 0.25)),
+                  ),
                 ),
               ],
             ),

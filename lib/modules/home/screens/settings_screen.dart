@@ -20,7 +20,11 @@ class SettingsScreen extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: buildPersonWidget(),
+              child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, PersonDetailScreen.routeName);
+                  },
+                  child: buildPersonWidget()),
             ),
             Divider(),
             BuildItemSetting(

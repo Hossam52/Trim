@@ -18,10 +18,15 @@ class SalonsScreen extends StatefulWidget {
 class _SalonsScreenState extends State<SalonsScreen> {
   String selectedCity = 'all';
   List<Salon> filterSalonsData = [];
-  List<Salon> filterSalons() {
-    filterSalonsData = salonsData
-        .where((element) => element.salonLocation == selectedCity)
-        .toList();
+  List<Salon> filterSalons(bool mostSearch) {
+    if (mostSearch != null) //the screen show only most search salons
+      filterSalonsData = mostSearchSalons
+          .where((element) => element.salonLocation == selectedCity)
+          .toList();
+    else // the screen show all salons
+      filterSalonsData = salonsData
+          .where((element) => element.salonLocation == selectedCity)
+          .toList();
     return filterSalonsData;
   }
 
@@ -44,12 +49,13 @@ class _SalonsScreenState extends State<SalonsScreen> {
   Widget build(BuildContext context) {
     final arguments =
         ModalRoute.of(context).settings.arguments as Map<String, bool>;
-    bool hasBackButton = arguments != null ? arguments['hasBackButton'] : null;
+    bool mostSearch = arguments != null ? arguments['mostSearch'] : null;
     return Scaffold(
-      appBar: hasBackButton != null
+      appBar: mostSearch != null
           ? AppBar(
               backgroundColor: Colors.blue[800],
-              title: Text('All Salons'),
+              title: Text('Most serch salons'),
+              centerTitle: true,
             )
           : null,
       body: SafeArea(
@@ -63,7 +69,7 @@ class _SalonsScreenState extends State<SalonsScreen> {
                     onPressed: () async {
                       await showCities(context);
                       setState(() {
-                        filterSalons();
+                        filterSalons(mostSearch);
                       });
                     },
                     child: Image.asset('assets/icons/settings-icon.png'),
@@ -88,7 +94,10 @@ class _SalonsScreenState extends State<SalonsScreen> {
                       padding: EdgeInsets.symmetric(vertical: 10),
                       itemCount: selectedCity != 'all'
                           ? filterSalonsData.length
-                          : salonsData.length,
+                          : mostSearch !=
+                                  null //this means we want to display most search salons as we not pass argument
+                              ? mostSearchSalons.length
+                              : salonsData.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 0.84,
@@ -97,7 +106,9 @@ class _SalonsScreenState extends State<SalonsScreen> {
                       itemBuilder: (context, index) => BuildItemGrid(
                             salon: selectedCity != 'all'
                                 ? filterSalonsData[index]
-                                : salonsData[index],
+                                : mostSearch != null
+                                    ? mostSearchSalons[index]
+                                    : salonsData[index],
                           )),
                 ),
               ),
@@ -132,7 +143,7 @@ class BuildItemGrid extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'assets/images/${salon.imagePath}.jpg',
+                  salon.imagePath,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -163,10 +174,10 @@ class BuildItemGrid extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 2),
                     ),
                     Text(
-                      salon.salonStatus ? 'Open now' : 'Closed now',
+                      salon.isOpen ? 'Open now' : 'Closed now',
                       style: TextStyle(
                           fontSize: ResponsiveFlutter.of(context).fontSize(1.9),
-                          color: salon.salonStatus ? Colors.green : Colors.red,
+                          color: salon.isOpen ? Colors.green : Colors.red,
                           fontWeight: FontWeight.bold),
                     )
                   ],

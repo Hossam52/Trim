@@ -9,6 +9,7 @@ import 'package:trim/modules/home/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/map_screen.dart';
+import 'package:trim/modules/home/screens/salon_detail_screen.dart';
 import 'package:trim/modules/home/screens/settings_screen.dart';
 import 'package:trim/modules/home/screens/trimStars_Screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
@@ -164,7 +165,7 @@ class BuildHomeWidget extends StatelessWidget {
                 BuildButtonView(
                   function: () {
                     Navigator.pushNamed(context, SalonsScreen.routeName,
-                        arguments: {'hasBackButton': true});
+                        arguments: {'mostSearch': true});
                   },
                   //label: 'الأكثر بحثاً',
                   label: 'Most search',
@@ -290,16 +291,19 @@ class BuildMostSearchedSalons extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.all(2),
           itemBuilder: (context, index) => GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, SalonDetailScreen.routeName,
+                  arguments: mostSearchSalons[index]);
+            },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
               child: Image.asset(
-                "assets/images/${salonsData[index].imagePath}.jpg",
+                mostSearchSalons[index].imagePath,
                 fit: BoxFit.fill,
               ),
             ),
           ),
-          itemCount: 6,
+          itemCount: mostSearchSalons.length < 6 ? mostSearchSalons.length : 6,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 8,
