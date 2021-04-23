@@ -91,3 +91,5 @@ Future<bool> exitConfirmationDialog(BuildContext context) async {
             contentPadding: const EdgeInsets.all(15),
           ));
 }
+//salons dailog
+
