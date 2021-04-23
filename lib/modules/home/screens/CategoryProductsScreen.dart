@@ -96,6 +96,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                   ),
                   TextButton(
                     onPressed: () {
+                      //Probelm
                       Navigator.pushNamed(context, BadgeScrren.routeName);
                     },
                     child: Text('Enter To Products'),
@@ -158,16 +159,12 @@ class _BuildProductItemState extends State<BuildProductItem> {
             child: Text(
               widget.prodcut.productName,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(
               child: Text(widget.prodcut.productPrice.toString(),
-                  style: TextStyle(
-                      fontSize: fontSize,
-                      color: Colors.green))),
+                  style: TextStyle(fontSize: fontSize, color: Colors.green))),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -186,8 +183,7 @@ class _BuildProductItemState extends State<BuildProductItem> {
                 ),
                 Text(
                   '$quantity',
-                  style: TextStyle(
-                      fontSize: fontSize),
+                  style: TextStyle(fontSize: fontSize),
                 ),
                 BuildRawMaterialButton(
                   icon: Icons.remove,

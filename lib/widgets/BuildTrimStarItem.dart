@@ -11,7 +11,7 @@ Widget buildTrimStarItem({bool starItemScreen}) {
         margin: EdgeInsets.symmetric(vertical: 5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Row(
-          textDirection: TextDirection.rtl,
+         // textDirection: TextDirection.rtl,
           children: [
             Expanded(
               child: ClipRRect(
@@ -35,7 +35,7 @@ Widget buildTrimStarItem({bool starItemScreen}) {
                       style: TextStyle(
                           color: Colors.cyan,
                           fontWeight: FontWeight.bold,
-                          fontSize: getFontSize(deviceInfo)),
+                          fontSize: getFontSizeVersion2(deviceInfo)),
                     ),
                     SizedBox(
                       height: 3,
@@ -66,17 +66,18 @@ Widget buildTrimStarItem({bool starItemScreen}) {
                         ? Text(
                             ' 20 رأي',
                             style: TextStyle(
-                              fontSize: getFontSize(deviceInfo),
+                              fontSize: getFontSizeVersion2(deviceInfo),
                             ),
                             textDirection: TextDirection.rtl,
                           )
                         : Expanded(
+                          flex: deviceInfo.orientation==Orientation.portrait?1:2,
                             child: Container(
                               child: SingleChildScrollView(
                                 child: Text(
                                   'واحد من افضل الصالونات من حيث العناية والنظافة',
                                   style: TextStyle(
-                                      fontSize: getFontSize(deviceInfo)),
+                                      fontSize: getFontSizeVersion2(deviceInfo)),
                                   textDirection: TextDirection.rtl,
                                 ),
                               ),
