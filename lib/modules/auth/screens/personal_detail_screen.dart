@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trim/core/auth/register/validate.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/widgets/BuildBackButtonWidget.dart';
 import 'package:trim/widgets/default_button.dart';
 import 'package:trim/widgets/trim_text_field.dart';
@@ -43,48 +46,65 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     phone = '01115425561';
   }
 
+  double getSizeProfileStack(DeviceInfo deviceInfo) {
+    return deviceInfo.orientation == Orientation.portrait
+        ? deviceInfo.localHeight / 2.5
+        : deviceInfo.localHeight / 1.5;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: Column(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    _buildCoverPhoto(),
-                    BuildBackButtonWidget(
-                      localHeight: 530,
-                    ),
-                    _changeCoverButton(),
-                    _buildPersonPhoto(),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              Expanded(
-                flex: 3,
-                child: SingleChildScrollView(
-                  child: Card(
-                    margin: const EdgeInsets.all(15.0),
-                    child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
+        child: InfoWidget(
+          responsiveWidget: (context, deviceInfo) => GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Column(
+              children: [
+                Container(
+                  height: getSizeProfileStack(deviceInfo),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        height: getSizeProfileStack(deviceInfo) - 
+                       (deviceInfo.type==deviceType.mobile? 50:60),
+                        child: Stack(
                           children: [
-                            _personDetailForm(),
-                            _buildButtons(),
+                            _buildCoverPhoto(),
+                            _changeCoverButton(),
                           ],
-                        )),
+                        ),
+                      ),
+                      BuildBackButtonWidget(
+                        localHeight: 530,
+                      ),
+                      _buildPersonPhoto(deviceInfo),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Expanded(
+                  // flex: 3,
+                  child: SingleChildScrollView(
+                    child: Card(
+                      margin: const EdgeInsets.all(15.0),
+                      elevation: 4,
+                      child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              _personDetailForm(),
+                              _buildButtons(),
+                            ],
+                          )),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -100,8 +120,8 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   }
 
   Widget _changeCoverButton() {
-    return Positioned(
-      bottom: 0,
+    return Align(
+      alignment: Alignment.centerLeft,
       child: InkWell(
         onTap: () {
           print('Tapped');
@@ -109,6 +129,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
         child: Container(
             decoration: BoxDecoration(color: Colors.black.withAlpha(100)),
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.camera_alt, color: Colors.white),
                 Text('Change cover photo',
@@ -119,7 +140,8 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     );
   }
 
-  Widget _buildPersonPhoto() {
+  Widget _buildPersonPhoto(DeviceInfo deviceInfo) {
+   // double sizeImage = deviceInfo.localHeight / 4;
     return Align(
       alignment: Alignment.bottomCenter,
       child: InkWell(
@@ -127,16 +149,11 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
           ///TO-DO open gallery to choose picture
           print('image tapped');
         },
-        child: Container(
-          height: 150,
-          width: 150,
-          padding: const EdgeInsets.only(bottom: 30),
-          decoration: BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                  image: AssetImage('assets/images/2.jpg'), fit: BoxFit.fill)),
-        ),
+        child: 
+        CircleAvatar(
+          radius: deviceInfo.type==deviceType.mobile? 50:65,
+          backgroundColor: Colors.red,
+          backgroundImage: AssetImage('assets/images/2.jpg'),),
       ),
     );
   }
