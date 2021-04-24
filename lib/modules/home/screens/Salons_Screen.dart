@@ -82,8 +82,10 @@ class _SalonsScreenState extends State<SalonsScreen> {
                       ),
                     ),
                   ),
-                  BuildSearchWidget(
-                    pressed: () {},
+                  Expanded(
+                    child: BuildSearchWidget(
+                      pressed: () {},
+                    ),
                   ),
                 ],
               ),

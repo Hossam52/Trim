@@ -10,7 +10,7 @@ import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/map_screen.dart';
 import 'package:trim/modules/home/screens/salon_detail_screen.dart';
-import 'package:trim/modules/home/screens/settings_screen.dart';
+import 'package:trim/modules/settings/screens/settings_screen.dart';
 import 'package:trim/modules/home/screens/trimStars_Screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
@@ -30,22 +30,37 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, Widget>> pagesBuilder;
   bool showCategories = true;
   int selectedCategoryIndex = 0;
+  final Color selectedIconColor = Colors.blue[900];
 
   @override
   void initState() {
     super.initState();
     pagesBuilder = [
-      {'icon': Image.asset(settingsIcon), 'page': SettingsScreen()},
       {
-        'icon': Image.asset(marketIcon),
+        'unselectedIcon': Image.asset(settingsIcon),
+        'selectedIcon': Image.asset(settingsIcon, color: selectedIconColor),
+        'page': SettingsScreen()
+      },
+      {
+        'unselectedIcon': Image.asset(marketIcon),
+        'selectedIcon': Image.asset(marketIcon, color: selectedIconColor),
         'page': ShoppingScreen(
           setCategoryIndex: setSelectedCategoryIndex,
         )
       },
-      {'icon': Image.asset(locationIcon), 'page': MapScreen()},
-      {'icon': Image.asset(hairIcon), 'page': SalonsScreen()},
       {
-        'icon': Image.asset(haircutIcon),
+        'unselectedIcon': Image.asset(locationIcon),
+        'selectedIcon': Image.asset(locationIcon, color: selectedIconColor),
+        'page': MapScreen()
+      },
+      {
+        'unselectedIcon': Image.asset(hairIcon),
+        'selectedIcon': Image.asset(hairIcon, color: selectedIconColor),
+        'page': SalonsScreen()
+      },
+      {
+        'unselectedIcon': Image.asset(haircutIcon),
+        'selectedIcon': Image.asset(haircutIcon, color: selectedIconColor),
         'page': BuildHomeWidget(heightNavigationBar: heightNavigationBar)
       },
     ];
@@ -91,7 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 50,
           color: Colors.grey[300],
           backgroundColor: Colors.white,
-          items: pagesBuilder.map((widget) => widget['icon']).toList(),
+          items: List.generate(
+              pagesBuilder.length,
+              (index) => index == initialIndex
+                  ? pagesBuilder[index]['selectedIcon']
+                  : pagesBuilder[index]['unselectedIcon']),
           onTap: (index) {
             if (index == 1) {
               pagesBuilder[index]['page'] = showCategories
@@ -141,7 +160,7 @@ class BuildHomeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
-        double fontSize = constants.getFontSize(deviceInfo);
+        double fontSize = constants.getFontSizeVersion2(deviceInfo);
         return Container(
           height: deviceInfo.localHeight,
           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),

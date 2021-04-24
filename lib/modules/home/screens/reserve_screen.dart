@@ -22,21 +22,6 @@ class ReserveScreen extends StatelessWidget {
     '12:00am',
     '01:00pm'
   ];
-  Widget buildOffers(DeviceInfo deviceInfo) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SalonOffers(deviceInfo),
-    );
-  }
-
-  Widget buildServices() {
-    return InfoWidget(
-      responsiveWidget: (_, deviceInfo) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SalonServices(deviceInfo: deviceInfo),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +71,22 @@ class ReserveScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildOffers(DeviceInfo deviceInfo) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SalonOffers(deviceInfo),
+    );
+  }
+
+  Widget buildServices() {
+    return InfoWidget(
+      responsiveWidget: (_, deviceInfo) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SalonServices(deviceInfo: deviceInfo),
       ),
     );
   }

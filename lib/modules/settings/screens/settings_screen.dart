@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/screens/ReservationsScreen.dart';
+import 'package:trim/modules/settings/widgets/setting_item.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/auth/screens/personal_detail_screen.dart';
 import 'package:trim/modules/home/screens/favourties_screen.dart';
@@ -27,7 +28,7 @@ class SettingsScreen extends StatelessWidget {
                   child: buildPersonWidget()),
             ),
             Divider(),
-            BuildItemSetting(
+            SettingItem(
               imagename: 'calendar',
               //label: 'حجوازتي',
               label: 'My reservations',
@@ -35,7 +36,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.pushNamed(context, ReservationsScreen.routeName);
               },
             ),
-            BuildItemSetting(
+            SettingItem(
               imagename: 'bell',
               // label: 'الأشعارات',
               label: 'Notifications',
@@ -43,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.pushNamed(context, NotificationScreen.routeName);
               },
             ),
-            BuildItemSetting(
+            SettingItem(
               imagename: 'user',
               //label: 'الملف الشخصي',
               label: 'Personal profile',
@@ -51,7 +52,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.pushNamed(context, PersonDetailScreen.routeName);
               },
             ),
-            BuildItemSetting(
+            SettingItem(
               imagename: 'wallet',
               // label: 'محفظتي',
 
@@ -60,7 +61,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.pushNamed(context, WalletScreen.routeName);
               },
             ),
-            BuildItemSetting(
+            SettingItem(
               imagename: 'coupon',
               // label: 'الكوبونات',
               label: 'Copouns',
@@ -68,7 +69,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.pushNamed(context, CouponsScreen.routeName);
               },
             ),
-            BuildItemSetting(
+            SettingItem(
               imagename: 'favourite',
               // label: 'مفضلتي',
               label: 'My favorites',
@@ -76,7 +77,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.pushNamed(context, FavouritesScreen.routeName);
               },
             ),
-            BuildItemSetting(
+            SettingItem(
               imagename: 'support',
               // label: 'خدمة العملاء',
               label: 'Support',
@@ -94,7 +95,7 @@ class SettingsScreen extends StatelessWidget {
                     'Log out',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: getFontSize(deviceInfo)),
+                        fontSize: getFontSizeVersion2(deviceInfo)),
                   ),
                 );
               },
@@ -141,30 +142,6 @@ class SettingsScreen extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-class BuildItemSetting extends StatelessWidget {
-  final String label;
-  final Function function;
-  final String imagename;
-  BuildItemSetting({this.function, this.imagename, this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return InfoWidget(
-      responsiveWidget: (context, deviceInfo) {
-        return ListTile(
-          onTap: function,
-          leading: Image.asset('assets/icons/$imagename.png'),
-          title: Text(
-            label,
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: getFontSize(deviceInfo)),
-          ),
-        );
-      },
     );
   }
 }

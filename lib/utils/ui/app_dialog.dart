@@ -2,11 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
+import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
+import 'package:trim/widgets/cancel_reasons.dart';
+
+import 'Core/BuilderWidget/InfoWidget.dart';
 
 void personDetailsDialog(BuildContext context, Barber barber) {
   Widget elevatedButton(String text, VoidCallback onPressed,
@@ -109,4 +112,54 @@ Future<bool> exitConfirmationDialog(BuildContext context) async {
                 color: Colors.black),
             contentPadding: const EdgeInsets.all(15),
           ));
+}
+
+Future<void> showReasonCancelled(BuildContext context) async {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return InfoWidget(
+          responsiveWidget: (context, deviceInfo) => Dialog(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                          height: deviceInfo.orientation == Orientation.portrait
+                              ? deviceInfo.type == deviceType.mobile
+                                  ? 45
+                                  : 80
+                              : deviceInfo.type == deviceType.mobile
+                                  ? 80
+                                  : 95),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 15),
+                          child: CancelReasons(deviceInfo),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Align(
+                    heightFactor: 1,
+                    alignment: Alignment.topCenter,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: MediaQuery.of(context).size.width /
+                          (deviceInfo.orientation == Orientation.portrait
+                              ? 5
+                              : 6),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
 }

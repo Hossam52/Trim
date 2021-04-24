@@ -12,7 +12,6 @@ import 'package:trim/modules/home/screens/map_screen.dart';
 import 'package:trim/modules/home/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/screens/ReservationDetailsScreen.dart';
 import 'package:trim/modules/home/screens/ReservationsScreen.dart';
-import 'package:trim/modules/home/screens/TrimStarReservationScreen.dart';
 import 'package:trim/modules/home/screens/salon_detail_screen.dart';
 import 'package:trim/modules/home/screens/trimStars_Screen.dart';
 import 'package:trim/modules/settings/screens/customer_serviceScreen.dart';
@@ -29,7 +28,6 @@ final Map<String, WidgetBuilder> routes = {
   SalonDetailScreen.routeName: (_) => SalonDetailScreen(),
   TrimStarsScreen.routeName: (_) => TrimStarsScreen(),
   MapScreen.routeName: (_) => MapScreen(),
-  TrimStarReservationScreen.routeName: (_) => TrimStarReservationScreen(),
   CategoryProductsScreen.routeName: (_) => CategoryProductsScreen(),
   ReservationsScreen.routeName: (_) => ReservationsScreen(),
   ReservationDetailsScreen.routeName: (_) => ReservationDetailsScreen(),

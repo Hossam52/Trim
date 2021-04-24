@@ -1,23 +1,21 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_checkout_payment/flutter_checkout_payment.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
-import 'package:trim/modules/home/screens/reserve_screen.dart';
-import 'package:trim/modules/home/widgets/available_times.dart';
-import 'package:trim/modules/home/widgets/salon_offers.dart';
-import 'package:trim/modules/home/widgets/salon_services.dart';
-import 'package:trim/modules/home/widgets/select_date_sliver.dart';
-
 import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
 
-main() => runApp(
-      DevicePreview(builder: (_) => MyApp()),
+void main() => runApp(
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => MyApp(), // Wrap your app
+      ),
     );
 
 class MyApp extends StatefulWidget {
@@ -29,6 +27,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/settings/screens/coupons_screen.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/widgets/trim_text_field.dart';
 
 class PriceInformation extends StatelessWidget {
+  final bool showCopounsField;
+
+  const PriceInformation({Key key, this.showCopounsField = true})
+      : super(key: key);
   Widget getCopunTextField(BuildContext context) {
     return TrimTextField(
       controller: TextEditingController(),
@@ -27,11 +33,11 @@ class PriceInformation extends StatelessWidget {
     );
   }
 
-  Widget reservationDetails() {
+  Widget reservationDetails(DeviceInfo deviceInfo) {
     int totalPrice = 400;
     int discount = 20;
     int afterDiscount = totalPrice - (totalPrice * discount / 100).floor();
-    TextStyle style = TextStyle(fontSize: defaultFontSize);
+    TextStyle style = TextStyle(fontSize: getFontSizeVersion2(deviceInfo));
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -47,12 +53,14 @@ class PriceInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        getCopunTextField(context),
-        reservationDetails(),
-      ],
+    return InfoWidget(
+      responsiveWidget: (_, deviceInfo) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (showCopounsField) getCopunTextField(context),
+          reservationDetails(deviceInfo),
+        ],
+      ),
     );
   }
 }

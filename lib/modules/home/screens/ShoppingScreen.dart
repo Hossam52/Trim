@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/Category.dart';
-import 'package:trim/modules/home/screens/CategoryProductsScreen.dart';
+import 'package:trim/modules/home/screens/BadgeScreen.dart';
+import 'package:trim/modules/home/widgets/cart.dart';
+import 'package:trim/modules/home/widgets/category_item.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -18,9 +20,6 @@ class ShoppingScreen extends StatefulWidget {
 }
 
 class _ShoppingScreenState extends State<ShoppingScreen> {
-  bool swapWidget = false;
-  int categoryIndex;
-
   @override
   void dispose() {
     print('Dispose shopping screen');
@@ -29,14 +28,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        //  swapWidget
-        //     ? CategoryProductsScreen(
-        //         //categoryId: categoryId,
-        //         categoryIndex: categoryIndex,
-        //       )
-        //     :
-        Scaffold(
+    return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -48,47 +40,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          BuildSearchWidget(
-                            pressed: () {},
-                          ),
-                        ],
-                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 20),
+                      child: buildHeader(),
                     ),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: GridView.builder(
-                          itemBuilder: (context, index) => GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                swapWidget = true;
-                                categoryIndex = index;
-                                widget.setCategoryIndex(index);
-                                // dispose();
-                              });
-                            },
-                            child: BuildCategoryItem(
-                              category: categories[index],
-                              deviceInfo: deviceInfo,
-                            ),
-                          ),
-                          itemCount: categories.length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 5,
-                                  childAspectRatio:
-                                      deviceInfo.type == deviceType.mobile
-                                          ? 0.78
-                                          : 1.4,
-                                  mainAxisSpacing: 10),
-                        ),
+                        child: buildCategories(deviceInfo),
                       ),
                     )
                   ],
@@ -100,45 +59,30 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       ),
     );
   }
-}
 
-class BuildCategoryItem extends StatelessWidget {
-  final DeviceInfo deviceInfo;
-  final Category category;
+  GridView buildCategories(DeviceInfo deviceInfo) {
+    return GridView.builder(
+      itemBuilder: (context, index) => GestureDetector(
+        onTap: () => widget.setCategoryIndex(index),
+        child:
+            CategoryItem(category: categories[index], deviceInfo: deviceInfo),
+      ),
+      itemCount: categories.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 5,
+          childAspectRatio: deviceInfo.type == deviceType.mobile ? 0.78 : 1.4,
+          mainAxisSpacing: 10),
+    );
+  }
 
-  const BuildCategoryItem({this.deviceInfo, this.category});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.min,
+  Row buildHeader() {
+    return Row(
       children: [
+        Cart(),
         Expanded(
-          child: CircleAvatar(
-            child: Image.asset(
-              'assets/icons/${category.imageName}.png',
-              fit: BoxFit.cover,
-            ),
-            radius: deviceInfo.type == deviceType.mobile
-                ? deviceInfo.orientation == Orientation.portrait
-                    ? 50
-                    : 55
-                : deviceInfo.orientation == Orientation.portrait
-                    ? 55
-                    : 65,
-            backgroundColor: Colors.cyanAccent[100],
-          ),
-        ),
-        Expanded(
-          child: Text(
-            category.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: deviceInfo.type == deviceType.mobile &&
-                        deviceInfo.screenWidth >= 530
-                    ? getFontSize(deviceInfo) + 4
-                    : getFontSize(deviceInfo)),
+          child: BuildSearchWidget(
+            pressed: () {},
           ),
         ),
       ],

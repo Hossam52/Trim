@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/salon_detail_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
+import 'package:trim/modules/home/widgets/favorite_item.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
 import 'package:trim/modules/home/widgets/trim_app_bar.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/widgets/transparent_appbar.dart';
 
 class FavouritesScreen extends StatefulWidget {
@@ -18,9 +21,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   List<Salon> favoriteSalons;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    favoriteSalons = salonsData.where((salon) => salon.isFavorite).toList();
+    getFavoriteSalons();
   }
 
   @override
@@ -38,51 +40,10 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                   itemBuilder: (_, index) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, SalonDetailScreen.routeName,
-                              arguments: favoriteSalons[index]);
-                        },
-                        child: Stack(
-                          children: [
-                            SalonLogo(
-                                showBottomName: false,
-                                // salonName: favoriteSalons[index].salonName,
-                                deviceInfo: deviceInfo,
-                                // isFavorite: true,
-                                height: deviceInfo.orientation ==
-                                        Orientation.portrait
-                                    ? deviceInfo.localHeight * 0.3
-                                    : deviceInfo.localHeight * 0.6,
-                                // imagePath:
-                                //     'assets/images/${favoriteSalons[index].imagePath}.jpg'
-                                salon: favoriteSalons[index]),
-                            Positioned(
-                              bottom: 20,
-                              right: 10,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    favoriteSalons[index].salonName,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: width * 0.05,
-                                        color: Colors.white),
-                                  ),
-                                  Container(
-                                      child: BuildStars(
-                                          width: width / 1.8,
-                                          stars:
-                                              favoriteSalons[index].salonRate)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      child: FavoriteItem(
+                          favoriteSalon: favoriteSalons[index],
+                          deviceInfo: deviceInfo,
+                          width: width),
                     );
                   }),
             ),
@@ -91,5 +52,9 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         ),
       );
     }));
+  }
+
+  void getFavoriteSalons() {
+    favoriteSalons = salonsData.where((salon) => salon.isFavorite).toList();
   }
 }

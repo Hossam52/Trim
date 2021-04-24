@@ -5,14 +5,12 @@ class BuildSearchWidget extends StatelessWidget {
   BuildSearchWidget({this.pressed});
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Form(
-            child: Container(
+    return Form(
+        child: Container(
       padding: EdgeInsets.symmetric(horizontal: 7),
       child: TextFormField(
         decoration: InputDecoration(
             contentPadding: EdgeInsets.only(right: 10),
-            //hintTextDirection: TextDirection.rtl,
             hintText: 'Search for',
             prefixIcon: ElevatedButton(
                 onPressed: pressed,
@@ -31,6 +29,6 @@ class BuildSearchWidget extends StatelessWidget {
               borderSide: BorderSide.none,
             )),
       ),
-    )));
+    ));
   }
 }
