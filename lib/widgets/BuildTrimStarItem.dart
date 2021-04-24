@@ -43,7 +43,7 @@ class TrimStarItem extends StatelessWidget {
                         style: TextStyle(
                             color: Colors.cyan,
                             fontWeight: FontWeight.bold,
-                            fontSize: getFontSize(deviceInfo)),
+                            fontSize: getFontSizeVersion2(deviceInfo)),
                       ),
                       SizedBox(
                         height: 3,

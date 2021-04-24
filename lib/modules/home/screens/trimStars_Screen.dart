@@ -29,7 +29,7 @@ class TrimStarsScreen extends StatelessWidget {
                                 height: deviceInfo.orientation ==
                                         Orientation.portrait
                                     ? deviceInfo.localHeight / 4.5
-                                    : deviceInfo.localHeight / 2.5,
+                                    : deviceInfo.localHeight / 2,
                                 child: TrimStarItem()),
                           ),
                         ),

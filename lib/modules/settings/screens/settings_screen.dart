@@ -128,12 +128,12 @@ class SettingsScreen extends StatelessWidget {
                   FittedBox(
                       child: Text('Hossam Hassan',
                           style: TextStyle(
-                              fontSize: getFontSize(deviceInfo),
+                              fontSize: getFontSizeVersion2(deviceInfo),
                               fontWeight: FontWeight.bold))),
                   FittedBox(
                     child: Text('hossam.fcis@gmail.com',
                         style: TextStyle(
-                            fontSize: getFontSize(deviceInfo),
+                            fontSize: getFontSizeVersion2(deviceInfo),
                             fontWeight: FontWeight.bold)),
                   ),
                 ],

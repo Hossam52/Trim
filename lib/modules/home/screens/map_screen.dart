@@ -5,13 +5,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/screens/Salons_Screen.dart'
-    show BuildItemGrid;
 import 'package:intl/intl.dart';
 
 import 'package:location/location.dart' as LocationManager;
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/widgets/BuildSalonItemGrid.dart';
 
 class MapScreen extends StatefulWidget {
   static const routeName = '/map-screen';
@@ -149,8 +148,8 @@ class _MapScreenState extends State<MapScreen> {
                                   scrollDirection: Axis.horizontal,
                                   itemBuilder: (_, index) => Container(
                                     width: deviceInfo.localWidth / 2.5,
-                                    child:
-                                        BuildItemGrid(salon: mapSalons[index]),
+                                    child: BuildSalonItemGrid(
+                                        salon: mapSalons[index]),
                                   ),
                                 ),
                               ),
