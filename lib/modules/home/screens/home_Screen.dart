@@ -36,30 +36,35 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     pagesBuilder = [
       {
-        'unselectedIcon': Image.asset(settingsIcon),
-        'selectedIcon': Image.asset(settingsIcon, color: selectedIconColor),
+        'unselectedIcon': Image.asset(settingsIcon,height: 25,width: 25,),
+        'selectedIcon': Image.asset(settingsIcon, color: selectedIconColor,
+        height: 25,width: 25,),
         'page': SettingsScreen()
       },
       {
-        'unselectedIcon': Image.asset(marketIcon),
-        'selectedIcon': Image.asset(marketIcon, color: selectedIconColor),
+        'unselectedIcon': Image.asset(marketIcon,height: 25,width: 25,),
+        'selectedIcon': Image.asset(marketIcon, color: selectedIconColor,
+        height: 25,width: 25,),
         'page': ShoppingScreen(
           setCategoryIndex: setSelectedCategoryIndex,
         )
       },
       {
-        'unselectedIcon': Image.asset(locationIcon),
-        'selectedIcon': Image.asset(locationIcon, color: selectedIconColor),
+        'unselectedIcon': Image.asset(locationIcon,height: 25,width: 25,),
+        'selectedIcon': Image.asset(locationIcon, color: selectedIconColor,
+        height: 25,width: 25,),
         'page': MapScreen()
       },
       {
-        'unselectedIcon': Image.asset(hairIcon),
-        'selectedIcon': Image.asset(hairIcon, color: selectedIconColor),
+        'unselectedIcon': Image.asset(hairIcon,height: 25,width: 25,),
+        'selectedIcon': Image.asset(hairIcon, color: selectedIconColor,
+        height: 25,width: 25,),
         'page': SalonsScreen()
       },
       {
-        'unselectedIcon': Image.asset(haircutIcon),
-        'selectedIcon': Image.asset(haircutIcon, color: selectedIconColor),
+        'unselectedIcon': Image.asset(haircutIcon,height: 25,width: 25,),
+        'selectedIcon': Image.asset(haircutIcon, color: selectedIconColor,
+        height: 25,width: 25,),
         'page': BuildHomeWidget(heightNavigationBar: heightNavigationBar)
       },
     ];

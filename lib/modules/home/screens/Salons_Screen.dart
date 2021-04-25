@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/widgets/BuildAlertDialog.dart';
 import 'package:trim/widgets/BuildCitiesChoices.dart';
@@ -13,6 +14,9 @@ class SalonsScreen extends StatefulWidget {
 
 class _SalonsScreenState extends State<SalonsScreen> {
   String selectedCity = 'all';
+  bool choiceSalons = true;
+  bool choicePersons = false;
+
   List<Salon> filterSalonsData = [];
   List<Salon> filterSalons(bool mostSearch) {
     if (mostSearch != null) //the screen show only most search salons
@@ -68,7 +72,8 @@ class _SalonsScreenState extends State<SalonsScreen> {
                         filterSalons(mostSearch);
                       });
                     },
-                    child: Image.asset('assets/icons/settings-icon.png'),
+                    child: Image.asset('assets/icons/settings-icon.png',
+                    height: 25,width: 25,),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.white),
                       shape: MaterialStateProperty.all(
@@ -85,34 +90,128 @@ class _SalonsScreenState extends State<SalonsScreen> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BuildButtonChoiceCategory(
+                    directionRoundedRight: true,
+                    icon: hairIcon,
+                    name: 'All Salons',
+                    isPressed: choiceSalons,
+                    pressed: () {
+                      setState(() {
+                        selectedCity = 'nasr';
+                        choiceSalons = true;
+                        choicePersons = false;
+                        filterSalons(mostSearch);
+                      });
+                    },
+                  ),
+                  BuildButtonChoiceCategory(
+                    directionRoundedRight: false,
+                    icon: marketIcon,
+                    name: 'All People',
+                    isPressed: choicePersons,
+                    pressed: () {
+                      setState(() {
+                        selectedCity = 'cairo';
+                        choicePersons = true;
+                        choiceSalons = false;
+                        filterSalons(mostSearch);
+                      });
+                    },
+                  ),
+                ],
+              ),
               Container(
                 child: Expanded(
-                  child: GridView.builder(
-                      physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      itemCount: selectedCity != 'all'
-                          ? filterSalonsData.length
-                          : mostSearch !=
-                                  null //this means we want to display most search salons as we not pass argument
-                              ? mostSearchSalons.length
-                              : salonsData.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.84,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10),
-                      itemBuilder: (context, index) => BuildSalonItemGrid(
-                            salon: selectedCity != 'all'
-                                ? filterSalonsData[index]
-                                : mostSearch != null
-                                    ? mostSearchSalons[index]
-                                    : salonsData[index],
-                          )),
+                  child: buildGridViewSalons(selectedCity: selectedCity,
+                   filterSalonsData: filterSalonsData,
+                    mostSearch: mostSearch),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class buildGridViewSalons extends StatelessWidget {
+  const buildGridViewSalons({
+    @required this.selectedCity,
+    @required this.filterSalonsData,
+    @required this.mostSearch,
+  }) ;
+
+  final String selectedCity;
+  final List<Salon> filterSalonsData;
+  final bool mostSearch;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        itemCount: selectedCity != 'all'
+            ? filterSalonsData.length
+            : mostSearch !=
+                    null //this means we want to display most search salons as we not pass argument
+                ? mostSearchSalons.length
+                : salonsData.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.84,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10),
+        itemBuilder: (context, index) => BuildSalonItemGrid(
+              salon: selectedCity != 'all'
+                  ? filterSalonsData[index]
+                  : mostSearch != null
+                      ? mostSearchSalons[index]
+                      : salonsData[index],
+            ));
+  }
+}
+
+class BuildButtonChoiceCategory extends StatelessWidget {
+  final Function pressed;
+  final String icon;
+  final String name;
+  final bool directionRoundedRight;
+  bool isPressed = false;
+  BuildButtonChoiceCategory(
+      {this.directionRoundedRight,
+      this.icon,
+      this.name,
+      this.pressed,
+      this.isPressed});
+  Radius radius = Radius.circular(25);
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: TextButton.icon(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+          foregroundColor: MaterialStateProperty.all(
+              isPressed ? Colors.lightBlueAccent : Colors.black87),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              side: BorderSide(width: 0.25,color: Colors.black),
+              borderRadius: BorderRadius.only(
+                topRight: directionRoundedRight ? radius : Radius.zero,
+                bottomRight: directionRoundedRight ? radius : Radius.zero,
+                topLeft: !directionRoundedRight ? radius : Radius.zero,
+                bottomLeft: !directionRoundedRight ? radius : Radius.zero,
+              ),
+            ),
+          ),
+        ),
+        onPressed: pressed,
+        icon:Image.asset(icon,height: 25,width: 25,),
+        label: Text(name),
       ),
     );
   }

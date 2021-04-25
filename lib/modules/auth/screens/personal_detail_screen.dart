@@ -145,7 +145,8 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: InkWell(
-        onTap: () {
+        onTap: () 
+        {
           ///TO-DO open gallery to choose picture
           print('image tapped');
         },

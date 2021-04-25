@@ -54,7 +54,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     }));
   }
 
-  void getFavoriteSalons() {
+  void getFavoriteSalons() 
+  {
     favoriteSalons = salonsData.where((salon) => salon.isFavorite).toList();
   }
 }

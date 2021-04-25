@@ -16,7 +16,8 @@ class SettingItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: ListTile(
             onTap: function,
-            leading: Image.asset('assets/icons/$imagename.png'),
+            leading: Image.asset('assets/icons/$imagename.png',
+            height: 25,width: 25,),
             title: Text(
               label,
               style: TextStyle(
