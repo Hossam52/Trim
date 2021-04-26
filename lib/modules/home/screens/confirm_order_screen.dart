@@ -16,7 +16,7 @@ class ConfirmOrderScreen extends StatefulWidget {
 
 class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   int stepNumber = 1;
-
+  String paymentmethod = 'online';
   Color secondaryColor = Color(0xffCBCBCD);
   bool showDetails = true;
   @override
@@ -42,6 +42,10 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                   children: [
                     ListTile(
                       leading: IconButton(
+                        iconSize: deviceInfo.localWidth *
+                            (deviceInfo.orientation == Orientation.portrait
+                                ? 0.07
+                                : 0.06),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -76,15 +80,6 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                 : Colors.white,
                             fontSize: fontSize,
                           ),
-                          BuildStepOrder(
-                            label: stepsCompleteOrder[2],
-                            textColor:
-                                stepNumber != 3 ? secondaryColor : Colors.white,
-                            color: stepNumber == 3
-                                ? Colors.lightBlueAccent
-                                : Colors.white,
-                            fontSize: fontSize,
-                          ),
                         ],
                       ),
                     ),
@@ -112,24 +107,29 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                             },
                           )
                         : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('اختيار طريقة الدفع'),
+                              Text(
+                                'اختيار طريقة الدفع',
+                                style: TextStyle(fontSize: fontSize),
+                              ),
                               Card(
                                 child: ListTile(
                                   leading: Radio(
-                                    value: '2',
-                                    groupValue: '2',
-                                    onChanged: (val) {
+                                    value: 'online',
+                                    groupValue: paymentmethod,
+                                    onChanged: (value) {
                                       setState(() {
-                                        if (val == '2')
-                                          showDetails = true;
-                                        else
-                                          showDetails = false;
+                                        paymentmethod = value;
                                       });
                                     },
                                   ),
-                                  title: Text('طريقة الدفع'),
-                                  subtitle: !showDetails
+                                  title: Text(
+                                    'الدفع عن طريق البطاقة الالكترونية',
+                                    style: TextStyle(fontSize: fontSize),
+                                  ),
+                                  subtitle: paymentmethod != 'online'
                                       ? Container()
                                       : Text('واحدة من احسن طرق الدفع حاليا'),
                                 ),
@@ -137,18 +137,26 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                               Card(
                                 child: ListTile(
                                   leading: Radio(
-                                    value: '1',
-                                    groupValue: '2',
-                                    onChanged: (val) {},
+                                    value: 'cash',
+                                    groupValue: paymentmethod,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        paymentmethod = value;
+                                      });
+                                    },
                                   ),
-                                  title: Text('طريقة الدفع'),
+                                  title: Text('الدفع عند الاستلام',
+                                      style: TextStyle(fontSize: fontSize)),
+                                  subtitle: paymentmethod != 'cash'
+                                      ? Container()
+                                      : Text('يتم الدفع عند الاستلام '),
                                 ),
                               ),
                               BuildDetailsOrderPrice(
                                   fontSize: fontSize,
                                   pressed: () {
                                     setState(() {
-                                      if (stepNumber < 3) stepNumber++;
+                                      if (stepNumber < 2) stepNumber++;
                                     });
                                   },
                                   deviceInfo: deviceInfo,
