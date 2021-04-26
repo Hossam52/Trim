@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/models/barber.dart';
+import 'package:trim/modules/home/widgets/barber_item.dart';
+import 'package:trim/modules/home/widgets/build_stars.dart';
+import 'package:trim/modules/home/widgets/choice_button.dart';
+import 'package:trim/modules/home/widgets/persons_grid_view.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/widgets/BuildAlertDialog.dart';
 import 'package:trim/widgets/BuildCitiesChoices.dart';
 import 'package:trim/widgets/BuildSalonItemGrid.dart';
@@ -14,8 +21,7 @@ class SalonsScreen extends StatefulWidget {
 
 class _SalonsScreenState extends State<SalonsScreen> {
   String selectedCity = 'all';
-  bool choiceSalons = true;
-  bool choicePersons = false;
+  bool displaySalons = true;
 
   List<Salon> filterSalonsData = [];
   List<Salon> filterSalons(bool mostSearch) {
@@ -72,8 +78,11 @@ class _SalonsScreenState extends State<SalonsScreen> {
                         filterSalons(mostSearch);
                       });
                     },
-                    child: Image.asset('assets/icons/settings-icon.png',
-                    height: 25,width: 25,),
+                    child: Image.asset(
+                      'assets/icons/settings-icon.png',
+                      height: 25,
+                      width: 25,
+                    ),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.white),
                       shape: MaterialStateProperty.all(
@@ -90,44 +99,47 @@ class _SalonsScreenState extends State<SalonsScreen> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BuildButtonChoiceCategory(
-                    directionRoundedRight: true,
-                    icon: hairIcon,
-                    name: 'All Salons',
-                    isPressed: choiceSalons,
-                    pressed: () {
-                      setState(() {
-                        selectedCity = 'nasr';
-                        choiceSalons = true;
-                        choicePersons = false;
-                        filterSalons(mostSearch);
-                      });
-                    },
-                  ),
-                  BuildButtonChoiceCategory(
-                    directionRoundedRight: false,
-                    icon: marketIcon,
-                    name: 'All People',
-                    isPressed: choicePersons,
-                    pressed: () {
-                      setState(() {
-                        selectedCity = 'cairo';
-                        choicePersons = true;
-                        choiceSalons = false;
-                        filterSalons(mostSearch);
-                      });
-                    },
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ChoiceButton(
+                      directionRoundedRight: false,
+                      icon: hairIcon,
+                      name: 'Salons',
+                      active: displaySalons,
+                      pressed: () {
+                        if (!displaySalons)
+                          setState(() {
+                            displaySalons = true;
+                            filterSalons(mostSearch);
+                          });
+                      },
+                    ),
+                    ChoiceButton(
+                      directionRoundedRight: true,
+                      icon: marketIcon,
+                      name: 'Persons',
+                      active: !displaySalons,
+                      pressed: () {
+                        if (displaySalons)
+                          setState(() {
+                            displaySalons = false;
+                          });
+                      },
+                    ),
+                  ],
+                ),
               ),
               Container(
                 child: Expanded(
-                  child: buildGridViewSalons(selectedCity: selectedCity,
-                   filterSalonsData: filterSalonsData,
-                    mostSearch: mostSearch),
+                  child: displaySalons
+                      ? BuildGridViewSalons(
+                          selectedCity: selectedCity,
+                          filterSalonsData: filterSalonsData,
+                          mostSearch: mostSearch)
+                      : PersonsGridView(),
                 ),
               ),
             ],
@@ -138,17 +150,16 @@ class _SalonsScreenState extends State<SalonsScreen> {
   }
 }
 
-class buildGridViewSalons extends StatelessWidget {
-  const buildGridViewSalons({
+class BuildGridViewSalons extends StatelessWidget {
+  const BuildGridViewSalons({
     @required this.selectedCity,
     @required this.filterSalonsData,
     @required this.mostSearch,
-  }) ;
+  });
 
   final String selectedCity;
   final List<Salon> filterSalonsData;
   final bool mostSearch;
-
 
   @override
   Widget build(BuildContext context) {
@@ -173,46 +184,5 @@ class buildGridViewSalons extends StatelessWidget {
                       ? mostSearchSalons[index]
                       : salonsData[index],
             ));
-  }
-}
-
-class BuildButtonChoiceCategory extends StatelessWidget {
-  final Function pressed;
-  final String icon;
-  final String name;
-  final bool directionRoundedRight;
-  bool isPressed = false;
-  BuildButtonChoiceCategory(
-      {this.directionRoundedRight,
-      this.icon,
-      this.name,
-      this.pressed,
-      this.isPressed});
-  Radius radius = Radius.circular(25);
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: TextButton.icon(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.white),
-          foregroundColor: MaterialStateProperty.all(
-              isPressed ? Colors.lightBlueAccent : Colors.black87),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              side: BorderSide(width: 0.25,color: Colors.black),
-              borderRadius: BorderRadius.only(
-                topRight: directionRoundedRight ? radius : Radius.zero,
-                bottomRight: directionRoundedRight ? radius : Radius.zero,
-                topLeft: !directionRoundedRight ? radius : Radius.zero,
-                bottomLeft: !directionRoundedRight ? radius : Radius.zero,
-              ),
-            ),
-          ),
-        ),
-        onPressed: pressed,
-        icon:Image.asset(icon,height: 25,width: 25,),
-        label: Text(name),
-      ),
-    );
   }
 }

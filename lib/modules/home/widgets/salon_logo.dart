@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/widgets/favorite_container.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class SalonLogo extends StatefulWidget {
@@ -50,14 +51,11 @@ class _SalonLogoState extends State<SalonLogo> {
               fit: BoxFit.fill,
             ),
             Positioned(
-              left: widget.deviceInfo.localWidth * (isPortrait ? 0.08 : 0.06),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(isPortrait ? 30 : 35),
-                      bottomRight: Radius.circular(isPortrait ? 30 : 35)),
-                  child: buildFavoriteContainer(widget.deviceInfo.screenWidth,
-                      widget.deviceInfo.screenHeight)),
-            ),
+                left: widget.deviceInfo.localWidth * (isPortrait ? 0.08 : 0.06),
+                child: FavoriteContainer(
+                  deviceInfo: widget.deviceInfo,
+                  isFavorite: widget.salon.isFavorite,
+                )),
             widget.showBottomName
                 ? Align(
                     alignment: Alignment.bottomCenter,
@@ -65,30 +63,6 @@ class _SalonLogoState extends State<SalonLogo> {
                 : Container(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget buildFavoriteContainer(double screenWidth, double screenHeight) {
-    final favoriteContainerHeight = widget.height / (isPortrait ? 3.3 : 2.7);
-    // final favoriteContainerWidth = screenWidth * 0.13;
-
-    final availableWidth = widget.deviceInfo.localWidth;
-
-    return Container(
-      height: favoriteContainerHeight,
-      width: availableWidth * 0.09,
-      alignment: Alignment.center,
-      color: Color(0xffDDD8E1),
-      child: IconButton(
-        padding: EdgeInsets.zero,
-        iconSize: availableWidth * 0.06,
-        icon: Icon(
-            widget.salon.isFavorite != null && widget.salon.isFavorite
-                ? Icons.favorite
-                : Icons.favorite_border_outlined,
-            color: Color(0xff4678A3)),
-        onPressed: () {},
       ),
     );
   }
