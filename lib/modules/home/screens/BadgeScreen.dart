@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/Product.dart';
+import 'package:trim/modules/home/screens/confirm_order_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -34,7 +35,7 @@ class BadgeScrren extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: buildConfirmButton(deviceInfo),
+                        child: buildConfirmButton(deviceInfo,context),
                       )
                     ],
                   );
@@ -60,14 +61,16 @@ class BadgeScrren extends StatelessWidget {
     );
   }
 
-  Widget buildConfirmButton(DeviceInfo deviceInfo) {
+  Widget buildConfirmButton(DeviceInfo deviceInfo,BuildContext context) {
     return Container(
       margin: deviceInfo.orientation == Orientation.portrait
           ? EdgeInsets.only(top: 15)
           : null,
       width: deviceInfo.localWidth / 1.3,
       child: DefaultButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, ConfirmOrderScreen.routeName);
+        },
         text: 'Confirm order',
       ),
     );
@@ -95,7 +98,8 @@ class _ProductItemState extends State<ProductItem> {
         child: Text(
           'Delete This Item',
           style: TextStyle(
-              fontSize: getFontSizeVersion2(widget.deviceInfo), color: Colors.red),
+              fontSize: getFontSizeVersion2(widget.deviceInfo),
+              color: Colors.red),
         ),
       ),
       direction: DismissDirection.endToStart,
@@ -203,7 +207,8 @@ class _ProductItemState extends State<ProductItem> {
       child: Text(
         'Product name',
         style: TextStyle(
-            fontSize: getFontSizeVersion2(deviceInfo) - 6, color: Colors.lightBlue),
+            fontSize: getFontSizeVersion2(deviceInfo) - 6,
+            color: Colors.lightBlue),
       ),
     );
   }
