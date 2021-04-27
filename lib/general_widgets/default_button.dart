@@ -9,6 +9,7 @@ class DefaultButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final Color color;
+  final Color textColor;
   final double fontSize;
   const DefaultButton({
     Key key,
@@ -17,6 +18,7 @@ class DefaultButton extends StatelessWidget {
     @required this.onPressed,
     this.color = defaultColor,
     this.fontSize = 20,
+    this.textColor = Colors.white,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,11 @@ class DefaultButton extends StatelessWidget {
       child: Container(
         width: double.infinity,
         child: ElevatedButton(
-          child: Text(text),
+          child: Text(text,
+              style: TextStyle(fontSize: fontSize, color: textColor)),
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-              textStyle: TextStyle(fontSize: fontSize),
+              // textStyle: TextStyle(fontSize: fontSize, color: textColor),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(roundedRadius),
               ),

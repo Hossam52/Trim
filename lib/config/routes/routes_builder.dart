@@ -4,7 +4,7 @@ import 'package:trim/modules/auth/screens/personal_detail_screen.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
 import 'package:trim/modules/market/screens/BadgeScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
-import 'package:trim/modules/market/screens/confirm_order_screen.dart';
+import 'package:trim/modules/payment/screens/confirm_order_screen.dart';
 import 'package:trim/modules/settings/screens/favourties_screen.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/settings/screens/coupons_screen.dart';

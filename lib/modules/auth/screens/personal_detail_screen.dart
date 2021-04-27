@@ -3,9 +3,9 @@ import 'package:trim/core/auth/register/validate.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/BuildBackButtonWidget.dart';
-import 'package:trim/widgets/default_button.dart';
-import 'package:trim/widgets/trim_text_field.dart';
+import 'package:trim/general_widgets/BuildBackButtonWidget.dart';
+import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_text_field.dart';
 
 class PersonDetailScreen extends StatefulWidget {
   static const routeName = '/person-detail';
@@ -145,8 +145,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: InkWell(
-        onTap: () 
-        {
+        onTap: () {
           ///TO-DO open gallery to choose picture
           print('image tapped');
         },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/modules/market/models/StepsCompleteOrder.dart';
+import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/market/widgets/build_listTile_confirm.dart';
 
@@ -52,7 +52,10 @@ class BuildDetailsOrderPrice extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ElevatedButton(
               onPressed: pressed,
-              child: Text(stepNumber==2? 'تأكيد':'المواصلة في ${stepsCompleteOrder[stepNumber - 1]}',
+              child: Text(
+                  stepNumber == 2
+                      ? 'تأكيد'
+                      : 'المواصلة في ${stepsCompleteOrder[stepNumber - 1]}',
                   style: TextStyle(fontSize: fontSize)),
             ),
           ),

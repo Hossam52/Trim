@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/widgets/not_correct_input.dart';
 import 'package:trim/utils/services/verification_code_service.dart';
-import 'package:trim/widgets/transparent_appbar.dart';
+import 'package:trim/general_widgets/transparent_appbar.dart';
 
 class VerificationCodeScreen extends StatefulWidget {
   static const routeName = '/verification-code';

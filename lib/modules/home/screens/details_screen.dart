@@ -2,25 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/modules/home/screens/direction_map_screen.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
-import 'package:trim/modules/home/widgets/available_times.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
-import 'package:trim/modules/home/widgets/select_date_sliver.dart';
 import 'package:trim/modules/home/widgets/trim_app_bar.dart';
-import 'package:trim/widgets/default_button.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/transparent_appbar.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
+import 'package:trim/general_widgets/default_button.dart';
 
-import '../../../constants/app_constant.dart';
-import '../../../constants/app_constant.dart';
 import '../../../constants/app_constant.dart';
 
 class DetailsScreen extends StatelessWidget {
@@ -100,22 +94,30 @@ class DetailsScreen extends StatelessWidget {
 
   Widget reserveButton(context, DeviceInfo deviceInfo) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.black),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            padding: MaterialStateProperty.all(
-              EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            ),
-          ),
+        padding: EdgeInsets.symmetric(
+            horizontal: deviceInfo.localWidth / 5, vertical: 8.0),
+        child: DefaultButton(
+          color: Colors.black,
+          textColor: Colors.white,
+          fontSize: getFontSizeVersion2(deviceInfo),
           onPressed: () => reserveSalon(context, deviceInfo),
-          child: const Text('Reserve now')),
-    );
+          text: 'Reserve now',
+        )
+        // ElevatedButton(
+        //     style: ButtonStyle(
+        //       backgroundColor: MaterialStateProperty.all(Colors.black),
+        //       shape: MaterialStateProperty.all(
+        //         RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(20),
+        //         ),
+        //       ),
+        //       padding: MaterialStateProperty.all(
+        //         EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        //       ),
+        //     ),
+        //     onPressed: () => reserveSalon(context, deviceInfo),
+        //     child: const Text('Reserve now')),
+        );
   }
 
   void reserveSalon(context, DeviceInfo deviceInfo) {

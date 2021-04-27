@@ -7,7 +7,7 @@ import 'package:trim/modules/home/models/salon_detail_model.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
-import 'package:trim/widgets/cancel_reasons.dart';
+import 'package:trim/general_widgets/cancel_reasons.dart';
 
 import 'Core/BuilderWidget/InfoWidget.dart';
 

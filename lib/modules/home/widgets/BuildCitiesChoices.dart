@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/models/availableCities.dart';
-import 'package:trim/widgets/default_button.dart';
+import 'package:trim/general_widgets/default_button.dart';
 
 class BuildCitiesRadio extends StatefulWidget {
   @override
@@ -9,8 +9,7 @@ class BuildCitiesRadio extends StatefulWidget {
 
 class _BuildCitiesRadioState extends State<BuildCitiesRadio> {
   String selectedCity = availableCities[0];
-  List<Widget> buildSelectedCity() 
-  {
+  List<Widget> buildSelectedCity() {
     List<Widget> widgets = [];
     for (String city in availableCities) {
       widgets.add(

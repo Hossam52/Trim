@@ -6,13 +6,13 @@ import 'package:trim/modules/auth/screens/verification_code_screen.dart';
 import 'package:trim/utils/services/register_service.dart';
 import 'package:trim/utils/services/verification_code_service.dart';
 
-import '../../../widgets/transparent_appbar.dart';
+import '../../../general_widgets/transparent_appbar.dart';
 import '../../../constants/app_constant.dart';
 import '../widgets/frame_card_auth.dart';
-import '../../../widgets/trim_text_field.dart';
+import '../../../general_widgets/trim_text_field.dart';
 import '../../../core/auth/register/validate.dart';
 import '../widgets/gender_selection.dart';
-import '../../../widgets/default_button.dart';
+import '../../../general_widgets/default_button.dart';
 import '../widgets/not_correct_input.dart';
 
 enum Gender {

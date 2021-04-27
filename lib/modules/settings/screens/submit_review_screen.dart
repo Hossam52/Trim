@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/widgets/default_button.dart';
+import 'package:trim/general_widgets/default_button.dart';
 
 class SubmitReviewScreen extends StatefulWidget {
   @override

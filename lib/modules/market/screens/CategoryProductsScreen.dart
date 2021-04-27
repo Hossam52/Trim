@@ -5,8 +5,8 @@ import 'package:trim/modules/market/models/Product.dart';
 import 'package:trim/modules/market/widgets/cart.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/BuildRawMaterialButton.dart';
-import 'package:trim/widgets/BuildSearchWidget.dart';
+import 'package:trim/general_widgets/BuildRawMaterialButton.dart';
+import 'package:trim/general_widgets/BuildSearchWidget.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
   static final routeName = 'categoryProductScreen';

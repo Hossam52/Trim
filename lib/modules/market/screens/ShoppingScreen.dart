@@ -6,7 +6,7 @@ import 'package:trim/modules/market/widgets/category_item.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/BuildSearchWidget.dart';
+import 'package:trim/general_widgets/BuildSearchWidget.dart';
 
 class ShoppingScreen extends StatefulWidget {
   static final routeName = 'shoppingScreen';

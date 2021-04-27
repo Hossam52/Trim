@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/reservation/models/Reservation.dart';
-import 'package:trim/widgets/price_information.dart';
+import 'package:trim/general_widgets/price_information.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
-import 'package:trim/widgets/BuildAppBar.dart';
+import 'package:trim/general_widgets/BuildAppBar.dart';
 import 'package:trim/modules/reservation/widgets/BuildCardWidget.dart';
 import 'package:trim/modules/reservation/widgets/reservation_item.dart';
-import 'package:trim/widgets/default_button.dart';
+import 'package:trim/general_widgets/default_button.dart';
 
 class ReservationDetailsScreen extends StatelessWidget {
   static final String routeName = 'reservationDetailsScreen';

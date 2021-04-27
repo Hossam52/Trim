@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/models/Product.dart';
-import 'package:trim/modules/market/screens/confirm_order_screen.dart';
+import 'package:trim/modules/payment/screens/confirm_order_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/BuildRawMaterialButton.dart';
-import 'package:trim/widgets/default_button.dart';
+import 'package:trim/general_widgets/BuildRawMaterialButton.dart';
+import 'package:trim/general_widgets/default_button.dart';
 
 class BadgeScrren extends StatelessWidget {
   static String routeName = 'BadgeScreen';

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/widgets/available_times.dart';
-import 'package:trim/widgets/price_information.dart';
+import 'package:trim/general_widgets/price_information.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
 import 'package:trim/modules/home/widgets/select_date_sliver.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/default_button.dart';
+import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
 
 class ReserveScreen extends StatelessWidget {

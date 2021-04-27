@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trim/modules/market/screens/confirm_order_screen.dart';
-import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
+import 'package:trim/modules/payment/widgets/build_details_order_price.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/modules/market/widgets/build_details_order_price.dart';
 
 class DeliveryWidget extends StatefulWidget {
   DeliveryWidget(

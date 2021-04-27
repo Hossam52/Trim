@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/widgets/choice_button.dart';
+import 'package:trim/general_widgets/choice_button.dart';
 import 'package:trim/modules/settings/widgets/favorite_item.dart';
 import 'package:trim/modules/home/widgets/persons_grid_view.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';

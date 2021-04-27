@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/market/models/StepsCompleteOrder.dart';
+import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
-import 'package:trim/modules/market/widgets/build_delivery_widget.dart';
-import 'package:trim/modules/market/widgets/build_details_order_price.dart';
+import 'package:trim/modules/payment/widgets/build_delivery_widget.dart';
+import 'package:trim/modules/payment/widgets/build_details_order_price.dart';
+import 'package:trim/general_widgets/default_button.dart';
 
 class ConfirmOrderScreen extends StatefulWidget {
   static final String routeName = 'confirmOrderScreen';
@@ -29,10 +30,10 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                height: deviceInfo.localHeight *
-                    (deviceInfo.orientation == Orientation.portrait
-                        ? 0.15
-                        : .35),
+                // height: deviceInfo.localHeight *
+                //     (deviceInfo.orientation == Orientation.portrait
+                //         ? 0.15
+                //         : .35),
                 color: Colors.white,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -61,21 +62,31 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           BuildStepOrder(
+                            onPressed: () {
+                              if (stepNumber != 1)
+                                setState(() {
+                                  stepNumber = 1;
+                                });
+                            },
                             label: stepsCompleteOrder[0],
                             textColor:
                                 stepNumber != 1 ? secondaryColor : Colors.white,
                             color: stepNumber == 1
-                                ? Colors.lightBlueAccent
+                                ? Colors.blue[800]
                                 : Colors.white,
+                            isActive: true,
                             fontSize: fontSize,
                           ),
+                          SizedBox(width: 30),
                           BuildStepOrder(
+                            onPressed: () {},
                             label: stepsCompleteOrder[1],
                             textColor:
                                 stepNumber != 2 ? secondaryColor : Colors.white,
                             color: stepNumber == 2
-                                ? Colors.lightBlueAccent
+                                ? Colors.blue[800]
                                 : Colors.white,
+                            isActive: stepNumber == 2,
                             fontSize: fontSize,
                           ),
                         ],
@@ -90,6 +101,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
               Expanded(
                 child: Container(
                   child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
                     child: stepNumber == 1
                         ? DeliveryWidget(
                             fontSize: fontSize,
@@ -177,10 +189,27 @@ class BuildStepOrder extends StatelessWidget {
   final Color textColor;
   final String label;
   final double fontSize;
-  BuildStepOrder({this.label, this.color, this.fontSize, this.textColor});
+  final bool isActive;
+  final VoidCallback onPressed;
+  BuildStepOrder(
+      {this.label,
+      this.color,
+      this.fontSize,
+      this.textColor,
+      this.isActive = false,
+      @required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
+    return Expanded(
+        child: DefaultButton(
+      color: color,
+      fontSize: fontSize - 5,
+      textColor: textColor,
+      onPressed: isActive == false ? null : onPressed,
+      text: label,
+    ));
+
     return Expanded(
       child: Card(
         margin: EdgeInsets.symmetric(horizontal: 5),

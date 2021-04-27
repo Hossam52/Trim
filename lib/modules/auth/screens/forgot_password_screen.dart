@@ -3,9 +3,9 @@ import 'package:trim/core/auth/login/validate.dart';
 import 'package:trim/core/auth/register/validate.dart';
 import 'package:trim/modules/auth/widgets/frame_card_auth.dart';
 import 'package:trim/modules/auth/widgets/not_correct_input.dart';
-import 'package:trim/widgets/default_button.dart';
-import 'package:trim/widgets/transparent_appbar.dart';
-import 'package:trim/widgets/trim_text_field.dart';
+import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/transparent_appbar.dart';
+import 'package:trim/general_widgets/trim_text_field.dart';
 
 class ForgotPassword extends StatefulWidget {
   static const routeName = '/forgot-password';

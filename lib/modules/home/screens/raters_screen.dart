@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:trim/modules/home/widgets/rater_item.dart';
 import 'package:trim/modules/home/widgets/trim_app_bar.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/widgets/BuildTrimStarItem.dart';
 
 class RatersScreen extends StatelessWidget {
   static final String routeName = 'RatersScreen';
@@ -30,7 +30,7 @@ class RatersScreen extends StatelessWidget {
                                         Orientation.portrait
                                     ? deviceInfo.localHeight / 4.5
                                     : deviceInfo.localHeight / 2,
-                                child: TrimStarItem()),
+                                child: RaterItem()),
                           ),
                         ),
                       ),

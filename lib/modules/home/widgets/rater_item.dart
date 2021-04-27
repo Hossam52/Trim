@@ -3,8 +3,8 @@ import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
-class TrimStarItem extends StatelessWidget {
-  const TrimStarItem({
+class RaterItem extends StatelessWidget {
+  const RaterItem({
     Key key,
   }) : super(key: key);
 
