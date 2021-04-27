@@ -52,7 +52,7 @@ class BuildDetailsOrderPrice extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ElevatedButton(
               onPressed: pressed,
-              child: Text('المواصلة في ${stepsCompleteOrder[stepNumber - 1]}',
+              child: Text(stepNumber==2? 'تأكيد':'المواصلة في ${stepsCompleteOrder[stepNumber - 1]}',
                   style: TextStyle(fontSize: fontSize)),
             ),
           ),
