@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/screens/salon_detail_screen.dart';
+import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 
 class BuildSalonItemGrid extends StatelessWidget {
@@ -12,8 +12,7 @@ class BuildSalonItemGrid extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('pressed');
-        Navigator.pushNamed(context, SalonDetailScreen.routeName,
-            arguments: salon);
+        Navigator.pushNamed(context, DetailsScreen.routeName, arguments: salon);
       },
       child: Card(
         shape: RoundedRectangleBorder(

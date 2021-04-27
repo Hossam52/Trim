@@ -6,17 +6,23 @@ import 'package:flutter_checkout_payment/flutter_checkout_payment.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
+import 'package:trim/utils/services/rest_api_service.dart';
 import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
 
-void main() => runApp(
-      DevicePreview(
-        enabled: !kReleaseMode,
-        builder: (context) => MyApp(), // Wrap your app
-      ),
-    );
+void main() {
+  DioHelper.init(
+      accessToken:
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiNTFhMTM4NDJjN2Y0ZDA5NTU0ZjhlNzc2NmNjMWFmYjdkOWFmZDkxYjYwZjQ1YjExZDMzY2E0NzkzZjY3MDgzMzJlZDIwZjBkODEyMGNjYjUiLCJpYXQiOjE2MTk0NzU1MzMsIm5iZiI6MTYxOTQ3NTUzMywiZXhwIjoxNjUxMDExNTMzLCJzdWIiOiI2OCIsInNjb3BlcyI6W119.JS0xpgKHtNTRNdF5fgWq8dj5ILn-GIVTsQZzd_HlDXZkyWmi9j_c216vVT4nqRsBHqrpICI7ctqT9xFIDoeUYubNiKVjEJXZA8BEx7bSqsEVo6z76tfzTorX3iT9f7Naiz6egr7ZOmoseh8mmLS9O3PUHWcgH4CsGZvaYhtNykxwY-4LaRNkfeJbUhZf2KIkGnLfDx7-ne47u_VWc7_s0bO03aADD1LN-6t-5ydk-rVZ18mr4L2Asp49emU8GS5LNSXFo0aSMaMaLNLiGx5qYCp2d97LVSwb-etKaeQslCahPR8KYRMKGIlJn4XhBOBpZBtoEuG1fU4DrJuSbeURDDrzlrDYkgH5k9Tk8NtweXR_0vr-wU5S9--YOcpMJOdavCkQ2veADpgFW9Y6G_DlLSPyHEdILfDHKBzdkTqyBia6vr9JtVXBwrB1LtilM-je8kwzEOBFVp07Fm0oHk6sh6dWjP8AumY09cJzPl7Cx2LfZ5bl8vp0a1wzUiF8MCqzAGfQuj7a-8TDtz56WAphubjLMGpdmZpGHSSeS9P7ecUfHna4OPCqsBuxFWi652nOYPC0qq8z3eU2QqF0l1j7bq01-3ImBl6fPcZjmoh3KjHO5dsuva_Bpy3FrY71bKWBtPD2pv92__cDLMAsinz-ag_0jSm53Re6SuG73XOtIUw');
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(), // Wrap your app
+    ),
+  );
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -43,6 +49,45 @@ class _MyAppState extends State<MyApp> {
         builder: DevicePreview.appBuilder,
         home: HomeScreen(),
         routes: routes);
+  }
+}
+
+class TestApi extends StatefulWidget {
+  @override
+  _TestApiState createState() => _TestApiState();
+}
+
+class _TestApiState extends State<TestApi> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () async {
+            final response = await DioHelper.postData(url: 'allSalons');
+            try {
+              (response.data['data'] as List<dynamic>).forEach((element) {
+                // print(element);
+                print('-------------------------------------------------');
+                element.forEach((key, value) {
+                  print('$key =>  $value');
+                });
+                print('-------------------------------------------------');
+                print('\n');
+              });
+            } catch (e) {
+              print(response.data);
+            }
+          }),
+      body: Center(
+        child: Text('Hello'),
+      ),
+    );
   }
 }
 

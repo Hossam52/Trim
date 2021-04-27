@@ -2,19 +2,19 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/constants/asset_path.dart';
-import 'package:trim/modules/home/screens/CategoryProductsScreen.dart';
+import 'package:trim/modules/market/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/map_screen.dart';
-import 'package:trim/modules/home/screens/salon_detail_screen.dart';
+import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/settings/screens/settings_screen.dart';
-import 'package:trim/modules/home/screens/trimStars_Screen.dart';
+import 'package:trim/modules/home/screens/raters_screen.dart';
 import 'package:trim/modules/home/widgets/BuildButtonViewHome.dart';
 import 'package:trim/modules/home/widgets/BuildListOffers.dart';
 import 'package:trim/modules/home/widgets/BuildMostSearchedSalons.dart';
 import 'package:trim/modules/home/widgets/BuildStarsPersonsList.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
-import 'package:trim/modules/home/screens/ShoppingScreen.dart';
+import 'package:trim/modules/market/screens/ShoppingScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String routeName = 'homeScreen';
@@ -36,35 +36,75 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     pagesBuilder = [
       {
-        'unselectedIcon': Image.asset(settingsIcon,height: 25,width: 25,),
-        'selectedIcon': Image.asset(settingsIcon, color: selectedIconColor,
-        height: 25,width: 25,),
+        'unselectedIcon': Image.asset(
+          settingsIcon,
+          height: 25,
+          width: 25,
+        ),
+        'selectedIcon': Image.asset(
+          settingsIcon,
+          color: selectedIconColor,
+          height: 25,
+          width: 25,
+        ),
         'page': SettingsScreen()
       },
       {
-        'unselectedIcon': Image.asset(marketIcon,height: 25,width: 25,),
-        'selectedIcon': Image.asset(marketIcon, color: selectedIconColor,
-        height: 25,width: 25,),
+        'unselectedIcon': Image.asset(
+          marketIcon,
+          height: 25,
+          width: 25,
+        ),
+        'selectedIcon': Image.asset(
+          marketIcon,
+          color: selectedIconColor,
+          height: 25,
+          width: 25,
+        ),
         'page': ShoppingScreen(
           setCategoryIndex: setSelectedCategoryIndex,
         )
       },
       {
-        'unselectedIcon': Image.asset(locationIcon,height: 25,width: 25,),
-        'selectedIcon': Image.asset(locationIcon, color: selectedIconColor,
-        height: 25,width: 25,),
+        'unselectedIcon': Image.asset(
+          locationIcon,
+          height: 25,
+          width: 25,
+        ),
+        'selectedIcon': Image.asset(
+          locationIcon,
+          color: selectedIconColor,
+          height: 25,
+          width: 25,
+        ),
         'page': MapScreen()
       },
       {
-        'unselectedIcon': Image.asset(hairIcon,height: 25,width: 25,),
-        'selectedIcon': Image.asset(hairIcon, color: selectedIconColor,
-        height: 25,width: 25,),
+        'unselectedIcon': Image.asset(
+          hairIcon,
+          height: 25,
+          width: 25,
+        ),
+        'selectedIcon': Image.asset(
+          hairIcon,
+          color: selectedIconColor,
+          height: 25,
+          width: 25,
+        ),
         'page': SalonsScreen()
       },
       {
-        'unselectedIcon': Image.asset(haircutIcon,height: 25,width: 25,),
-        'selectedIcon': Image.asset(haircutIcon, color: selectedIconColor,
-        height: 25,width: 25,),
+        'unselectedIcon': Image.asset(
+          haircutIcon,
+          height: 25,
+          width: 25,
+        ),
+        'selectedIcon': Image.asset(
+          haircutIcon,
+          color: selectedIconColor,
+          height: 25,
+          width: 25,
+        ),
         'page': BuildHomeWidget(heightNavigationBar: heightNavigationBar)
       },
     ];
@@ -201,7 +241,7 @@ class BuildHomeWidget extends StatelessWidget {
                 ),
                 BuildButtonView(
                   function: () {
-                    Navigator.pushNamed(context, TrimStarsScreen.routeName);
+                    Navigator.pushNamed(context, RatersScreen.routeName);
                   },
                   // label: 'نجوم تريم',
                   label: 'Trim stars',

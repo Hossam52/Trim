@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/widgets/available_times.dart';
-import 'package:trim/modules/home/widgets/price_information.dart';
+import 'package:trim/widgets/price_information.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
 import 'package:trim/modules/home/widgets/select_date_sliver.dart';

@@ -15,3 +15,5 @@ String get activateApi {
 String get getVerificationCodeApi {
   return _url + "getVerificationCode";
 }
+
+final String baseUrl = 'https://trim.style/public/api/client/';

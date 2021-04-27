@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:trim/modules/home/models/Category.dart';
+import 'package:trim/modules/market/models/Category.dart';
 
 class Prodcut {
   final String productName;

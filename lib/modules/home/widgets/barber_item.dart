@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/barber.dart';
-import 'package:trim/modules/home/screens/salon_detail_screen.dart';
+import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/favorite_container.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -18,7 +18,7 @@ class BarberItem extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            // Navigator.pushNamed(context, SalonDetailScreen.routeName);
+            // Navigator.pushNamed(context, DetailsScreen.routeName);
           },
           child: GridTile(
             child: Container(

@@ -5,12 +5,12 @@ import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/widgets/barber_item.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
-import 'package:trim/modules/home/widgets/choice_button.dart';
+import 'package:trim/widgets/choice_button.dart';
 import 'package:trim/modules/home/widgets/persons_grid_view.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/widgets/BuildAlertDialog.dart';
-import 'package:trim/widgets/BuildCitiesChoices.dart';
-import 'package:trim/widgets/BuildSalonItemGrid.dart';
+import 'package:trim/modules/home/widgets/BuildCitiesChoices.dart';
+import 'package:trim/modules/home/widgets/BuildSalonItemGrid.dart';
 import 'package:trim/widgets/BuildSearchWidget.dart';
 
 class SalonsScreen extends StatefulWidget {

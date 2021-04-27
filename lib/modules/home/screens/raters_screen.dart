@@ -4,8 +4,8 @@ import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/widgets/BuildTrimStarItem.dart';
 
-class TrimStarsScreen extends StatelessWidget {
-  static final String routeName = 'TrimStarsScreen';
+class RatersScreen extends StatelessWidget {
+  static final String routeName = 'RatersScreen';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

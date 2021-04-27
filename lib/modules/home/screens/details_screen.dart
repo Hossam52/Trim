@@ -23,7 +23,7 @@ import '../../../constants/app_constant.dart';
 import '../../../constants/app_constant.dart';
 import '../../../constants/app_constant.dart';
 
-class SalonDetailScreen extends StatelessWidget {
+class DetailsScreen extends StatelessWidget {
   static const String routeName = '/salon-detail';
   @override
   Widget build(BuildContext context) {

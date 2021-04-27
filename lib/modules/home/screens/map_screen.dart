@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart' as LocationManager;
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/BuildSalonItemGrid.dart';
+import 'package:trim/modules/home/widgets/BuildSalonItemGrid.dart';
 
 class MapScreen extends StatefulWidget {
   static const routeName = '/map-screen';

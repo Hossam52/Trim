@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/models/Reservation.dart';
+import 'package:trim/modules/reservation/models/Reservation.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/widgets/BuildAppBar.dart';
-import 'package:trim/widgets/BuildCardWidget.dart';
-import 'package:trim/widgets/reservation_item.dart';
+import 'package:trim/modules/reservation/widgets/BuildCardWidget.dart';
+import 'package:trim/modules/reservation/widgets/reservation_item.dart';
 
 import '../../../constants/app_constant.dart';
 

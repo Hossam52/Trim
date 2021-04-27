@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:trim/modules/home/models/StepsCompleteOrder.dart';
+import 'package:trim/modules/market/models/StepsCompleteOrder.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/build_listTile_confirm.dart';
+import 'package:trim/modules/market/widgets/build_listTile_confirm.dart';
+
 class BuildDetailsOrderPrice extends StatelessWidget {
   BuildDetailsOrderPrice(
       {@required this.fontSize,
@@ -10,14 +11,15 @@ class BuildDetailsOrderPrice extends StatelessWidget {
       @required this.stepNumber});
 
   final double fontSize;
-  final DeviceInfo deviceInfo ;
+  final DeviceInfo deviceInfo;
   final Function pressed;
   final int stepNumber;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height:deviceInfo.localHeight *(deviceInfo.orientation==Orientation.portrait?  0.40:0.75),
+      height: deviceInfo.localHeight *
+          (deviceInfo.orientation == Orientation.portrait ? 0.40 : 0.75),
       decoration: BoxDecoration(
         border: Border.all(width: 0.5, color: Colors.white),
         color: Colors.white,

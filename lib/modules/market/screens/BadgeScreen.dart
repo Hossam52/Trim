@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/models/Product.dart';
-import 'package:trim/modules/home/screens/confirm_order_screen.dart';
+import 'package:trim/modules/market/models/Product.dart';
+import 'package:trim/modules/market/screens/confirm_order_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -35,7 +35,7 @@ class BadgeScrren extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: buildConfirmButton(deviceInfo,context),
+                        child: buildConfirmButton(deviceInfo, context),
                       )
                     ],
                   );
@@ -61,7 +61,7 @@ class BadgeScrren extends StatelessWidget {
     );
   }
 
-  Widget buildConfirmButton(DeviceInfo deviceInfo,BuildContext context) {
+  Widget buildConfirmButton(DeviceInfo deviceInfo, BuildContext context) {
     return Container(
       margin: deviceInfo.orientation == Orientation.portrait
           ? EdgeInsets.only(top: 15)

@@ -1,6 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:trim/modules/home/screens/BadgeScreen.dart';
+import 'package:trim/modules/market/screens/BadgeScreen.dart';
 
 class Cart extends StatelessWidget {
   @override

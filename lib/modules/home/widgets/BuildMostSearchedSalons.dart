@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/screens/salon_detail_screen.dart';
+import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class BuildMostSearchedSalons extends StatelessWidget {
@@ -14,7 +14,7 @@ class BuildMostSearchedSalons extends StatelessWidget {
           padding: EdgeInsets.all(2),
           itemBuilder: (context, index) => GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, SalonDetailScreen.routeName,
+              Navigator.pushNamed(context, DetailsScreen.routeName,
                   arguments: mostSearchSalons[index]);
             },
             child: ClipRRect(

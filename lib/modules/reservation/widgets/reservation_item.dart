@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trim/modules/home/models/Reservation.dart';
-import 'package:trim/modules/home/screens/ReservationDetailsScreen.dart';
+import 'package:trim/modules/reservation/models/Reservation.dart';
+import 'package:trim/modules/reservation/screens/ReservationDetailsScreen.dart';
 
 class ReservationItem extends StatelessWidget {
   final Reservation reservation;

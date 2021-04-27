@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/screens/salon_detail_screen.dart';
-import 'package:trim/modules/home/widgets/build_stars.dart';
-import 'package:trim/modules/home/widgets/choice_button.dart';
-import 'package:trim/modules/home/widgets/favorite_item.dart';
+import 'package:trim/widgets/choice_button.dart';
+import 'package:trim/modules/settings/widgets/favorite_item.dart';
 import 'package:trim/modules/home/widgets/persons_grid_view.dart';
-import 'package:trim/modules/home/widgets/salon_logo.dart';
-import 'package:trim/modules/home/widgets/trim_app_bar.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
-import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/widgets/transparent_appbar.dart';
 
 class FavouritesScreen extends StatefulWidget {
   static const routeName = '/favourite-screen';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/screens/ReservationsScreen.dart';
+import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
 import 'package:trim/modules/settings/widgets/setting_item.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/auth/screens/personal_detail_screen.dart';
-import 'package:trim/modules/home/screens/favourties_screen.dart';
+import 'package:trim/modules/settings/screens/favourties_screen.dart';
 import 'package:trim/modules/settings/screens/coupons_screen.dart';
 import 'package:trim/modules/settings/screens/customer_serviceScreen.dart';
 import 'package:trim/modules/settings/screens/notifications_screen.dart';

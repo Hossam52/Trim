@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:trim/modules/home/models/ReservationData.dart';
+import 'package:trim/modules/reservation/models/ReservationData.dart';
 
 class Reservation {
   final String salonName;
