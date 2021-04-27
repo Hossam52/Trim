@@ -1,11 +1,14 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/modules/home/cubit/home_cubit.dart';
+import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/market/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/map_screen.dart';
-import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/settings/screens/settings_screen.dart';
 import 'package:trim/modules/home/screens/raters_screen.dart';
 import 'package:trim/modules/home/widgets/BuildButtonViewHome.dart';
@@ -34,6 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    OffersCubit.getInstance(context).getOffers();
+    MostSearchCubit.getInstance(context).getMostSearcSalons();
+    TrimStarsCubit.getInstance(context).getTrimStars();
+
     pagesBuilder = [
       {
         'unselectedIcon': Image.asset(
@@ -177,21 +184,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  Widget selectedItem(int index) {
-    if (index == 0)
-      return SettingsScreen();
-    else if (index == 1)
-      return ShoppingScreen();
-    else if (index == 2)
-      return MapScreen();
-    else if (index == 3)
-      return BuildHomeWidget(heightNavigationBar: heightNavigationBar);
-    else if (index == 4)
-      return SalonsScreen();
-    else
-      return Container();
-  }
 }
 
 class BuildHomeWidget extends StatelessWidget {
@@ -210,20 +202,26 @@ class BuildHomeWidget extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
-                  height: deviceInfo.orientation == Orientation.portrait
-                      ? deviceInfo.localHeight / 3
-                      : deviceInfo.localHeight / 2,
-                  child: InfoWidget(
-                    responsiveWidget: (context, de) {
+                    height: deviceInfo.orientation == Orientation.portrait
+                        ? deviceInfo.localHeight / 3
+                        : deviceInfo.localHeight / 2,
+                    child: InfoWidget(responsiveWidget: (context, de) {
                       return Container(
-                        child: BuildOffersWidgetItem(),
+                        child: BlocBuilder<OffersCubit, HomeStates>(
+                          builder: (_, state) => Conditional.single(
+                            context: context,
+                            conditionBuilder: (context) =>
+                                !(state is LoadingOffersState),
+                            widgetBuilder: (_) => BuildOffersWidgetItem(),
+                            fallbackBuilder: (_) => Container(
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          ),
+                        ),
                       );
-                    },
-                  ),
-                ),
+                    })),
                 BuildButtonView(
                   function: () {
                     Navigator.pushNamed(context, SalonsScreen.routeName,
@@ -237,7 +235,17 @@ class BuildHomeWidget extends StatelessWidget {
                   height: deviceInfo.orientation == Orientation.portrait
                       ? deviceInfo.localHeight / 3
                       : deviceInfo.localHeight,
-                  child: BuildMostSearchedSalons(),
+                  child: BlocBuilder<MostSearchCubit, HomeStates>(
+                    builder: (_, state) => Conditional.single(
+                      context: context,
+                      conditionBuilder: (context) =>
+                          !(state is LoadingMostSearchState),
+                      widgetBuilder: (_) => BuildMostSearchedSalons(),
+                      fallbackBuilder: (_) => Container(
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                    ),
+                  ),
                 ),
                 BuildButtonView(
                   function: () {
@@ -251,8 +259,18 @@ class BuildHomeWidget extends StatelessWidget {
                   height: deviceInfo.orientation == Orientation.portrait
                       ? deviceInfo.localHeight / 3
                       : deviceInfo.localHeight / 2,
-                  child: BuildStarsPersonsWidget(
-                      heightNavigationBar: heightNavigationBar),
+                  child: BlocBuilder<TrimStarsCubit, HomeStates>(
+                    builder: (_, state) => Conditional.single(
+                      context: context,
+                      conditionBuilder: (context) =>
+                          !(state is LoadingTrimStarsState),
+                      widgetBuilder: (_) => BuildStarsPersonsWidget(
+                          heightNavigationBar: heightNavigationBar),
+                      fallbackBuilder: (_) => Container(
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

@@ -21,6 +21,8 @@ dependencies:
   flutter_polyline_points: ^0.2.6
   dio: ^4.0.0   
   flutter_checkout_payment: ^1.0.0
+  flutter_conditional_rendering: ^2.0.0
+
 
  
 
@@ -38,6 +40,8 @@ dependencies:
   flutter_credit_card: ^2.0.0
   scrollable_positioned_list: ^0.1.10
   badges: ^1.2.0
+  flutter_bloc: ^7.0.0
+  bloc: ^7.0.0
 
 dev_dependencies:
   change_app_package_name: ^0.1.2
