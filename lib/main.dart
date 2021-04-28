@@ -56,9 +56,10 @@ class _MyAppState extends State<MyApp> {
         builder: DevicePreview.appBuilder,
         home: MultiBlocProvider(
           providers: [
-            BlocProvider(create: (_) => OffersCubit()),
-            BlocProvider(create: (_) => MostSearchCubit()),
-            BlocProvider(create: (_) => TrimStarsCubit()),
+            BlocProvider(create: (_) => HomeCubit())
+            // BlocProvider(create: (_) => OffersCubit()),
+            // BlocProvider(create: (_) => MostSearchCubit()),
+            // BlocProvider(create: (_) => TrimStarsCubit()),
           ],
           child: HomeScreen(),
         ),
@@ -75,9 +76,6 @@ class _TestApiState extends State<TestApi> {
   @override
   void initState() {
     super.initState();
-    OffersCubit.getInstance(context).getOffers();
-    MostSearchCubit.getInstance(context).getMostSearcSalons();
-    TrimStarsCubit.getInstance(context).getTrimStars();
   }
 
   @override
@@ -104,32 +102,32 @@ class _TestApiState extends State<TestApi> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BlocBuilder<OffersCubit, HomeStates>(
-            builder: (_, state) => Conditional.single(
-              context: context,
-              conditionBuilder: (_) {
-                return state is LoadingOffersState;
-              },
-              widgetBuilder: (_) => CircularProgressIndicator(),
-              fallbackBuilder: (_) => Container(child: Text('Offers')),
-            ),
-          ),
-          BlocBuilder<MostSearchCubit, HomeStates>(
-            builder: (_, state) => Conditional.single(
-              context: context,
-              conditionBuilder: (_) => state is LoadingMostSearchState,
-              widgetBuilder: (_) => CircularProgressIndicator(),
-              fallbackBuilder: (_) => Container(child: Text('MostSearch')),
-            ),
-          ),
-          BlocBuilder<TrimStarsCubit, HomeStates>(
-            builder: (_, state) => Conditional.single(
-              context: context,
-              conditionBuilder: (_) => state is LoadingTrimStarsState,
-              widgetBuilder: (_) => CircularProgressIndicator(),
-              fallbackBuilder: (_) => Container(child: Text('Stars')),
-            ),
-          )
+          // BlocBuilder<OffersCubit, HomeStates>(
+          //   builder: (_, state) => Conditional.single(
+          //     context: context,
+          //     conditionBuilder: (_) {
+          //       return state is LoadingOffersState;
+          //     },
+          //     widgetBuilder: (_) => CircularProgressIndicator(),
+          //     fallbackBuilder: (_) => Container(child: Text('Offers')),
+          //   ),
+          // ),
+          // BlocBuilder<MostSearchCubit, HomeStates>(
+          //   builder: (_, state) => Conditional.single(
+          //     context: context,
+          //     conditionBuilder: (_) => state is LoadingMostSearchState,
+          //     widgetBuilder: (_) => CircularProgressIndicator(),
+          //     fallbackBuilder: (_) => Container(child: Text('MostSearch')),
+          //   ),
+          // ),
+          // BlocBuilder<TrimStarsCubit, HomeStates>(
+          //   builder: (_, state) => Conditional.single(
+          //     context: context,
+          //     conditionBuilder: (_) => state is LoadingTrimStarsState,
+          //     widgetBuilder: (_) => CircularProgressIndicator(),
+          //     fallbackBuilder: (_) => Container(child: Text('Stars')),
+          //   ),
+          // )
         ],
       ),
     );

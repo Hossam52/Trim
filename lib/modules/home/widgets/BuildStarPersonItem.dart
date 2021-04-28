@@ -50,7 +50,7 @@ class BuildStarPersonItem extends StatelessWidget {
                   height: ResponsiveFlutter.of(context).scale(17),
                   child: BuildStars(
                       width: MediaQuery.of(context).size.width / 2,
-                      stars: barber.stars),
+                      stars: barber.rate),
                 ),
               ],
             ),

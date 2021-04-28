@@ -41,7 +41,7 @@ class BarberItem extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   BuildStars(
-                      stars: barber.stars, width: deviceInfo.localWidth / 1.8)
+                      stars: barber.rate, width: deviceInfo.localWidth / 1.8)
                 ],
               ),
             ),

@@ -3,25 +3,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class HomeStates {}
 
-//For offers
-class LoadingOffersState extends HomeStates {}
+class LoadingHomeState extends HomeStates {}
 
-class SuccessOffersState extends HomeStates {}
+class SuccessHomeState extends HomeStates {}
 
-class FailureOffersState extends HomeStates {}
+// class FailureHomeState extends HomeStates {}
 
-//For most search salonssalons
+// //For offers
+// class LoadingOffersState extends HomeStates {}
 
-class LoadingMostSearchState extends HomeStates {}
+// class SuccessOffersState extends HomeStates {}
 
-class SuccessMostSearchState extends HomeStates {}
+// class FailureOffersState extends HomeStates {}
 
-class FailureMostSearchState extends HomeStates {}
+// //For most search salonssalons
 
-//For trim stars salons
+// class LoadingMostSearchState extends HomeStates {}
 
-class LoadingTrimStarsState extends HomeStates {}
+// class SuccessMostSearchState extends HomeStates {}
 
-class SuccessTrimStarsState extends HomeStates {}
+// class FailureMostSearchState extends HomeStates {}
 
-class FailureTrimStarsState extends HomeStates {}
+// //For trim stars salons
+
+// class LoadingTrimStarsState extends HomeStates {}
+
+// class SuccessTrimStarsState extends HomeStates {}
+
+// class FailureTrimStarsState extends HomeStates {}

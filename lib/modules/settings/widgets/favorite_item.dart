@@ -47,13 +47,13 @@ class FavoriteItem extends StatelessWidget {
 
   Container buildSalonStars() {
     return Container(
-      child: BuildStars(width: width / 1.8, stars: favoriteSalon.salonRate),
+      child: BuildStars(width: width / 1.8, stars: favoriteSalon.rate),
     );
   }
 
   Text buildSalonName() {
     return Text(
-      favoriteSalon.salonName,
+      favoriteSalon.name,
       style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: getFontSizeVersion2(deviceInfo),

@@ -20,7 +20,7 @@ class BuildMostSearchedSalons extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
               child: Image.asset(
-                mostSearchSalons[index].imagePath,
+                mostSearchSalons[index].image,
                 fit: BoxFit.fill,
               ),
             ),

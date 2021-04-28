@@ -8,27 +8,27 @@ class SalonOffers extends StatelessWidget {
   SalonOffers(this.deviceInfo);
   final List<SalonOffer> offers = [
     SalonOffer(
-        imagePath: 'assets/images/1.jpg',
-        offerDiscription:
+        image: 'assets/images/1.jpg',
+        descriptionEn:
             'Bride offer and to their friends and so beautiful girl that i want'),
     SalonOffer(
-        imagePath: 'assets/images/1.jpg',
-        offerDiscription: 'Bride offer and to their friends'),
+        image: 'assets/images/1.jpg',
+        descriptionEn: 'Bride offer and to their friends'),
     SalonOffer(
-        imagePath: 'assets/images/1.jpg',
-        offerDiscription: 'Bride offer and to their friends'),
+        image: 'assets/images/1.jpg',
+        descriptionEn: 'Bride offer and to their friends'),
     SalonOffer(
-        imagePath: 'assets/images/1.jpg',
-        offerDiscription: 'Bride offer and to their friends'),
+        image: 'assets/images/1.jpg',
+        descriptionEn: 'Bride offer and to their friends'),
     SalonOffer(
-        imagePath: 'assets/images/1.jpg',
-        offerDiscription: 'Bride offer and to their friends'),
+        image: 'assets/images/1.jpg',
+        descriptionEn: 'Bride offer and to their friends'),
     SalonOffer(
-        imagePath: 'assets/images/1.jpg',
-        offerDiscription: 'Bride offer and to their friends'),
+        image: 'assets/images/1.jpg',
+        descriptionEn: 'Bride offer and to their friends'),
     SalonOffer(
-        imagePath: 'assets/images/1.jpg',
-        offerDiscription: 'Bride offer and to their friends'),
+        image: 'assets/images/1.jpg',
+        descriptionEn: 'Bride offer and to their friends'),
   ];
   @override
   Widget build(BuildContext context) {
@@ -111,14 +111,14 @@ class SalonOfferItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Image.asset(
-                offer.imagePath,
+                offer.image,
                 fit: BoxFit.fill,
                 height: deviceInfo.localHeight / (isPortrait ? 4.3 : 2.9),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  offer.offerDiscription,
+                  offer.descriptionEn,
                   maxLines: 2,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,

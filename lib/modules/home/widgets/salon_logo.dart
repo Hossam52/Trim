@@ -46,7 +46,7 @@ class _SalonLogoState extends State<SalonLogo> {
         child: Stack(
           children: [
             Image.asset(
-              widget.salon.imagePath,
+              widget.salon.image,
               width: double.infinity,
               fit: BoxFit.fill,
             ),
@@ -73,7 +73,7 @@ class _SalonLogoState extends State<SalonLogo> {
       color: Colors.grey.withAlpha(150),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(widget.salon.salonName,
+        child: Text(widget.salon.name,
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontWeight: FontWeight.bold,

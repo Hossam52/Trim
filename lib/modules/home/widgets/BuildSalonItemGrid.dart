@@ -26,7 +26,7 @@ class BuildSalonItemGrid extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  salon.imagePath,
+                  salon.image,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -41,7 +41,7 @@ class BuildSalonItemGrid extends StatelessWidget {
                     FittedBox(
                       child: Container(
                         child: Text(
-                          salon.salonName,
+                          salon.name,
                           style: TextStyle(
                               color: Colors.cyan,
                               fontSize:
@@ -53,14 +53,14 @@ class BuildSalonItemGrid extends StatelessWidget {
                     Container(
                       height: ResponsiveFlutter.of(context).scale(14),
                       child: BuildStars(
-                          stars: salon.salonRate,
+                          stars: salon.rate,
                           width: MediaQuery.of(context).size.width / 2),
                     ),
                     Text(
-                      salon.isOpen ? 'Open now' : 'Closed now',
+                      salon.status ? 'Open now' : 'Closed now',
                       style: TextStyle(
                           fontSize: ResponsiveFlutter.of(context).fontSize(1.9),
-                          color: salon.isOpen ? Colors.green : Colors.red,
+                          color: salon.status ? Colors.green : Colors.red,
                           fontWeight: FontWeight.bold),
                     )
                   ],

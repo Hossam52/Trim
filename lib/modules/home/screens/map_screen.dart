@@ -213,7 +213,7 @@ class _MapScreenState extends State<MapScreen> {
           markerId: MarkerId(Random().nextInt(1000).toString()),
           icon: customIcon1,
           position: mapSalons[i].latLng,
-          infoWindow: InfoWindow(title: mapSalons[i].salonName),
+          infoWindow: InfoWindow(title: mapSalons[i].name),
           onTap: () {
             if (showSalonsWidget)
               itemScrollController.scrollTo(

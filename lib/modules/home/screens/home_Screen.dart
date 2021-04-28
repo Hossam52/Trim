@@ -37,9 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    OffersCubit.getInstance(context).getOffers();
-    MostSearchCubit.getInstance(context).getMostSearcSalons();
-    TrimStarsCubit.getInstance(context).getTrimStars();
+    HomeCubit.getInstance(context).getData();
 
     pagesBuilder = [
       {
@@ -200,79 +198,63 @@ class BuildHomeWidget extends StatelessWidget {
         return Container(
           height: deviceInfo.localHeight,
           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                    height: deviceInfo.orientation == Orientation.portrait
-                        ? deviceInfo.localHeight / 3
-                        : deviceInfo.localHeight / 2,
-                    child: InfoWidget(responsiveWidget: (context, de) {
-                      return Container(
-                        child: BlocBuilder<OffersCubit, HomeStates>(
-                          builder: (_, state) => Conditional.single(
-                            context: context,
-                            conditionBuilder: (context) =>
-                                !(state is LoadingOffersState),
-                            widgetBuilder: (_) => BuildOffersWidgetItem(),
-                            fallbackBuilder: (_) => Container(
-                              child: Center(child: CircularProgressIndicator()),
+          child: Center(
+            child: SingleChildScrollView(
+              child: BlocBuilder<HomeCubit, HomeStates>(
+                builder: (_, state) => (state is LoadingHomeState)
+                    ? CircularProgressIndicator()
+                    : Column(
+                        children: [
+                          Container(
+                            height:
+                                deviceInfo.orientation == Orientation.portrait
+                                    ? deviceInfo.localHeight / 3
+                                    : deviceInfo.localHeight / 2,
+                            child: InfoWidget(
+                              responsiveWidget: (context, de) {
+                                return Container(
+                                  child: BuildOffersWidgetItem(),
+                                );
+                              },
                             ),
                           ),
-                        ),
-                      );
-                    })),
-                BuildButtonView(
-                  function: () {
-                    Navigator.pushNamed(context, SalonsScreen.routeName,
-                        arguments: {'mostSearch': true});
-                  },
-                  //label: 'الأكثر بحثاً',
-                  label: 'Most search',
-                  textSize: fontSize,
-                ),
-                Container(
-                  height: deviceInfo.orientation == Orientation.portrait
-                      ? deviceInfo.localHeight / 3
-                      : deviceInfo.localHeight,
-                  child: BlocBuilder<MostSearchCubit, HomeStates>(
-                    builder: (_, state) => Conditional.single(
-                      context: context,
-                      conditionBuilder: (context) =>
-                          !(state is LoadingMostSearchState),
-                      widgetBuilder: (_) => BuildMostSearchedSalons(),
-                      fallbackBuilder: (_) => Container(
-                        child: Center(child: CircularProgressIndicator()),
+                          BuildButtonView(
+                            function: () {
+                              Navigator.pushNamed(
+                                  context, SalonsScreen.routeName,
+                                  arguments: {'mostSearch': true});
+                            },
+                            //label: 'الأكثر بحثاً',
+                            label: 'Most search',
+                            textSize: fontSize,
+                          ),
+                          Container(
+                            height:
+                                deviceInfo.orientation == Orientation.portrait
+                                    ? deviceInfo.localHeight / 3
+                                    : deviceInfo.localHeight,
+                            child: BuildMostSearchedSalons(),
+                          ),
+                          BuildButtonView(
+                            function: () {
+                              Navigator.pushNamed(
+                                  context, RatersScreen.routeName);
+                            },
+                            // label: 'نجوم تريم',
+                            label: 'Trim stars',
+                            textSize: fontSize,
+                          ),
+                          Container(
+                            height:
+                                deviceInfo.orientation == Orientation.portrait
+                                    ? deviceInfo.localHeight / 3
+                                    : deviceInfo.localHeight / 2,
+                            child: BuildStarsPersonsWidget(
+                                heightNavigationBar: heightNavigationBar),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                ),
-                BuildButtonView(
-                  function: () {
-                    Navigator.pushNamed(context, RatersScreen.routeName);
-                  },
-                  // label: 'نجوم تريم',
-                  label: 'Trim stars',
-                  textSize: fontSize,
-                ),
-                Container(
-                  height: deviceInfo.orientation == Orientation.portrait
-                      ? deviceInfo.localHeight / 3
-                      : deviceInfo.localHeight / 2,
-                  child: BlocBuilder<TrimStarsCubit, HomeStates>(
-                    builder: (_, state) => Conditional.single(
-                      context: context,
-                      conditionBuilder: (context) =>
-                          !(state is LoadingTrimStarsState),
-                      widgetBuilder: (_) => BuildStarsPersonsWidget(
-                          heightNavigationBar: heightNavigationBar),
-                      fallbackBuilder: (_) => Container(
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         );

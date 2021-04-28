@@ -27,11 +27,11 @@ class _SalonsScreenState extends State<SalonsScreen> {
   List<Salon> filterSalons(bool mostSearch) {
     if (mostSearch != null) //the screen show only most search salons
       filterSalonsData = mostSearchSalons
-          .where((element) => element.salonLocation == selectedCity)
+          .where((element) => element.cityEn == selectedCity)
           .toList();
     else // the screen show all salons
       filterSalonsData = salonsData
-          .where((element) => element.salonLocation == selectedCity)
+          .where((element) => element.cityEn == selectedCity)
           .toList();
     return filterSalonsData;
   }

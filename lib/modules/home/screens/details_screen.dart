@@ -283,7 +283,7 @@ class Openions extends StatelessWidget {
           children: [
             Expanded(
               child: BuildStars(
-                stars: salonData.salonRate,
+                stars: salonData.rate,
                 width: MediaQuery.of(context).size.width / 2,
               ),
             ),

@@ -17,3 +17,4 @@ String get getVerificationCodeApi {
 }
 
 final String baseUrl = 'https://trim.style/public/api/client/';
+final String homeUrl = 'mainLists';

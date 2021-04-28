@@ -53,7 +53,7 @@ void personDetailsDialog(BuildContext context, Barber barber) {
                           children: [
                             Text(barber.name),
                             BuildStars(
-                                stars: barber.stars,
+                                stars: barber.rate,
                                 width: MediaQuery.of(context).size.width / 2),
                             Text('${barber.noOfRaters} Openion')
                           ],
