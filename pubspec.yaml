@@ -42,6 +42,7 @@ dependencies:
   badges: ^1.2.0
   flutter_bloc: ^7.0.0
   bloc: ^7.0.0
+  cached_network_image: ^3.0.0
 
 dev_dependencies:
   change_app_package_name: ^0.1.2

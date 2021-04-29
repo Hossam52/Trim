@@ -57,10 +57,13 @@ class BuildSalonItemGrid extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 2),
                     ),
                     Text(
-                      salon.status ? 'Open now' : 'Closed now',
+                      // salon.status ? 'Open now' : 'Closed now',
+                      salon.status,
                       style: TextStyle(
                           fontSize: ResponsiveFlutter.of(context).fontSize(1.9),
-                          color: salon.status ? Colors.green : Colors.red,
+                          color: salon.status.toLowerCase() != 'closed'
+                              ? Colors.green
+                              : Colors.red,
                           fontWeight: FontWeight.bold),
                     )
                   ],
