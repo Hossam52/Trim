@@ -3,6 +3,7 @@ import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
+import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
 class BuildSalonItemGrid extends StatelessWidget {
   final Salon salon;
@@ -24,12 +25,8 @@ class BuildSalonItemGrid extends StatelessWidget {
             Expanded(
               flex: 2,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  salon.image,
-                  fit: BoxFit.fill,
-                ),
-              ),
+                  borderRadius: BorderRadius.circular(20),
+                  child: TrimCachedImage(src: salon.image)),
             ),
             Expanded(
               child: Container(

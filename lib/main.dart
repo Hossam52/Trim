@@ -39,31 +39,27 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en', ''), // English, no country code
-          const Locale('ar', ''),
-        ],
-        theme: ThemeData(
-            textTheme: TextTheme(button: TextStyle(fontSize: defaultFontSize))),
-        // home: SplashScreen(alpha: 100, color: Color(0xff2B73A8)),
-        builder: DevicePreview.appBuilder,
-        home: MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (_) => HomeCubit())
-            // BlocProvider(create: (_) => OffersCubit()),
-            // BlocProvider(create: (_) => MostSearchCubit()),
-            // BlocProvider(create: (_) => TrimStarsCubit()),
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => HomeCubit())],
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
           ],
-          child: HomeScreen(),
-        ),
-        routes: routes);
+          supportedLocales: [
+            const Locale('en', ''), // English, no country code
+            const Locale('ar', ''),
+          ],
+          theme: ThemeData(
+              textTheme:
+                  TextTheme(button: TextStyle(fontSize: defaultFontSize))),
+          // home: SplashScreen(alpha: 100, color: Color(0xff2B73A8)),
+          builder: DevicePreview.appBuilder,
+          home: HomeScreen(),
+          routes: routes),
+    );
   }
 }
 

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/barber.dart';
+import 'package:trim/modules/home/models/trim_star_model.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/favorite_container.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
 class BarberItem extends StatelessWidget {
-  final Barber barber;
+  // final Barber barber;
+  final TrimStarModel barber;
+
   final DeviceInfo deviceInfo;
 
   const BarberItem({Key key, @required this.deviceInfo, @required this.barber})
@@ -23,9 +27,11 @@ class BarberItem extends StatelessWidget {
           child: GridTile(
             child: Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  image: DecorationImage(
-                      image: AssetImage(barber.image), fit: BoxFit.fill)),
+                borderRadius: BorderRadius.circular(25),
+                // image: DecorationImage(
+                //     image: AssetImage(barber.image), fit: BoxFit.fill),
+              ),
+              child: TrimCachedImage(src: barber.image),
             ),
             footer: Container(
               color: Colors.grey[200].withAlpha(155),
@@ -51,7 +57,8 @@ class BarberItem extends StatelessWidget {
           left: deviceInfo.localWidth *
               (deviceInfo.orientation == Orientation.portrait ? 0.08 : 0.06),
           child: FavoriteContainer(
-            isFavorite: barber.isFavorite,
+            // isFavorite: barber.isFavorite,
+            isFavorite: false,
             deviceInfo: deviceInfo,
           ),
         )

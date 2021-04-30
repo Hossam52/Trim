@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BuildButtonView extends StatelessWidget {
-  final Function function;
+  final void Function(BuildContext context) function;
   final String label;
   final textSize;
   BuildButtonView({this.function, this.label, this.textSize});
@@ -11,7 +11,7 @@ class BuildButtonView extends StatelessWidget {
     return Align(
         alignment: Alignment.topRight,
         child: TextButton(
-            onPressed: function,
+            onPressed: () => function(context),
             child: Text(
               label,
               style: TextStyle(fontSize: textSize),

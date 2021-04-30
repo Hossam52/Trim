@@ -16,6 +16,7 @@ import 'package:trim/modules/home/widgets/BuildListOffers.dart';
 import 'package:trim/modules/home/widgets/BuildMostSearchedSalons.dart';
 import 'package:trim/modules/home/widgets/BuildStarsPersonsList.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 import 'package:trim/modules/market/screens/ShoppingScreen.dart';
 
@@ -29,89 +30,28 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int initialIndex = 4;
   final heightNavigationBar = 50;
-  List<Map<String, Widget>> pagesBuilder;
+  // List<Map<String, Widget>> pagesBuilder;
   bool showCategories = true;
   int selectedCategoryIndex = 0;
   final Color selectedIconColor = Colors.blue[900];
-
+  List<PageWidget> pagesBuilder;
   @override
   void initState() {
     super.initState();
     HomeCubit.getInstance(context).getData();
 
     pagesBuilder = [
-      {
-        'unselectedIcon': Image.asset(
-          settingsIcon,
-          height: 25,
-          width: 25,
-        ),
-        'selectedIcon': Image.asset(
-          settingsIcon,
-          color: selectedIconColor,
-          height: 25,
-          width: 25,
-        ),
-        'page': SettingsScreen()
-      },
-      {
-        'unselectedIcon': Image.asset(
-          marketIcon,
-          height: 25,
-          width: 25,
-        ),
-        'selectedIcon': Image.asset(
-          marketIcon,
-          color: selectedIconColor,
-          height: 25,
-          width: 25,
-        ),
-        'page': ShoppingScreen(
-          setCategoryIndex: setSelectedCategoryIndex,
-        )
-      },
-      {
-        'unselectedIcon': Image.asset(
-          locationIcon,
-          height: 25,
-          width: 25,
-        ),
-        'selectedIcon': Image.asset(
-          locationIcon,
-          color: selectedIconColor,
-          height: 25,
-          width: 25,
-        ),
-        'page': MapScreen()
-      },
-      {
-        'unselectedIcon': Image.asset(
-          hairIcon,
-          height: 25,
-          width: 25,
-        ),
-        'selectedIcon': Image.asset(
-          hairIcon,
-          color: selectedIconColor,
-          height: 25,
-          width: 25,
-        ),
-        'page': SalonsScreen()
-      },
-      {
-        'unselectedIcon': Image.asset(
-          haircutIcon,
-          height: 25,
-          width: 25,
-        ),
-        'selectedIcon': Image.asset(
-          haircutIcon,
-          color: selectedIconColor,
-          height: 25,
-          width: 25,
-        ),
-        'page': BuildHomeWidget(heightNavigationBar: heightNavigationBar)
-      },
+      PageWidget(imageIcon: settingsIcon, page: SettingsScreen()),
+      PageWidget(
+          imageIcon: marketIcon,
+          page: ShoppingScreen(setCategoryIndex: setSelectedCategoryIndex)),
+      PageWidget(imageIcon: locationIcon, page: MapScreen()),
+      PageWidget(imageIcon: hairIcon, page: SalonsScreen()),
+      PageWidget(
+          imageIcon: haircutIcon,
+          page: BuildHomeWidget(
+            heightNavigationBar: heightNavigationBar,
+          )),
     ];
   }
 
@@ -119,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       print(categoryIndex);
       selectedCategoryIndex = categoryIndex;
-      pagesBuilder[1]['page'] = CategoryProductsScreen(
+      pagesBuilder[1].page = CategoryProductsScreen(
         categoryIndex: categoryIndex,
         backToCategories: backToCategoires,
       );
@@ -130,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void backToCategoires() {
     setState(() {
       showCategories = true;
-      pagesBuilder[1]['page'] = ShoppingScreen(
+      pagesBuilder[1].page = ShoppingScreen(
         setCategoryIndex: setSelectedCategoryIndex,
       );
     });
@@ -139,48 +79,54 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (initialIndex != 4) {
-          setState(() {
-            initialIndex = 4;
-          });
-          return false;
-        } else {
-          return await exitConfirmationDialog(context);
-        }
-      },
-      child: Scaffold(
-        bottomNavigationBar: CurvedNavigationBar(
-          index: initialIndex,
-          height: 50,
-          color: Colors.grey[300],
-          backgroundColor: Colors.white,
-          items: List.generate(
-              pagesBuilder.length,
-              (index) => index == initialIndex
-                  ? pagesBuilder[index]['selectedIcon']
-                  : pagesBuilder[index]['unselectedIcon']),
-          onTap: (index) {
-            if (index == 1) {
-              pagesBuilder[index]['page'] = showCategories
-                  ? ShoppingScreen(
-                      setCategoryIndex: setSelectedCategoryIndex,
-                    )
-                  : CategoryProductsScreen(
-                      categoryIndex: selectedCategoryIndex,
-                      backToCategories: backToCategoires,
-                    );
-            }
+        onWillPop: () async {
+          if (initialIndex != 4) {
             setState(() {
-              initialIndex = index;
+              initialIndex = 4;
             });
-          },
-        ),
-        body: SafeArea(
-          child: pagesBuilder[initialIndex]['page'],
-        ),
-      ),
-    );
+            return false;
+          } else {
+            return await exitConfirmationDialog(context);
+          }
+        },
+        child: BlocBuilder<HomeCubit, HomeStates>(
+          builder: (_, state) => (state is LoadingHomeState)
+              ? Center(child: CircularProgressIndicator())
+              : Scaffold(
+                  bottomNavigationBar: CurvedNavigationBar(
+                    index: initialIndex,
+                    height: 50,
+                    color: Colors.grey[300],
+                    backgroundColor: Colors.white,
+                    items: List.generate(
+                        pagesBuilder.length,
+                        (index) => index == initialIndex
+                            ? pagesBuilder[index].selectedIcon
+                            : pagesBuilder[index].unselectedIcon),
+                    onTap: (index) {
+                      if (index == 1) {
+                        pagesBuilder[index].page = showCategories
+                            ? ShoppingScreen(
+                                setCategoryIndex: setSelectedCategoryIndex,
+                              )
+                            : CategoryProductsScreen(
+                                categoryIndex: selectedCategoryIndex,
+                                backToCategories: backToCategoires,
+                              );
+                      }
+                      if (index == 3) //All Salons set type
+                        HomeCubit.getInstance(context)
+                            .setDisplayType(DisplayType.AllSalons);
+                      setState(() {
+                        initialIndex = index;
+                      });
+                    },
+                  ),
+                  body: SafeArea(
+                    child: pagesBuilder[initialIndex].page,
+                  ),
+                ),
+        ));
   }
 }
 
@@ -200,60 +146,36 @@ class BuildHomeWidget extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Center(
             child: SingleChildScrollView(
-              child: BlocBuilder<HomeCubit, HomeStates>(
-                builder: (_, state) => (state is LoadingHomeState)
-                    ? CircularProgressIndicator()
-                    : Column(
-                        children: [
-                          Container(
-                            height:
-                                deviceInfo.orientation == Orientation.portrait
-                                    ? deviceInfo.localHeight / 3
-                                    : deviceInfo.localHeight / 2,
-                            child: InfoWidget(
-                              responsiveWidget: (context, de) {
-                                return Container(
-                                  child: BuildOffersWidgetItem(),
-                                );
-                              },
-                            ),
-                          ),
-                          BuildButtonView(
-                            function: () {
-                              Navigator.pushNamed(
-                                  context, SalonsScreen.routeName,
-                                  arguments: {'mostSearch': true});
-                            },
-                            //label: 'الأكثر بحثاً',
-                            label: 'Most search',
-                            textSize: fontSize,
-                          ),
-                          Container(
-                            height:
-                                deviceInfo.orientation == Orientation.portrait
-                                    ? deviceInfo.localHeight / 3
-                                    : deviceInfo.localHeight,
-                            child: BuildMostSearchedSalons(),
-                          ),
-                          BuildButtonView(
-                            function: () {
-                              Navigator.pushNamed(
-                                  context, RatersScreen.routeName);
-                            },
-                            // label: 'نجوم تريم',
-                            label: 'Trim stars',
-                            textSize: fontSize,
-                          ),
-                          Container(
-                            height:
-                                deviceInfo.orientation == Orientation.portrait
-                                    ? deviceInfo.localHeight / 3
-                                    : deviceInfo.localHeight / 2,
-                            child: BuildStarsPersonsWidget(
-                                heightNavigationBar: heightNavigationBar),
-                          ),
-                        ],
-                      ),
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  buildMainListOffers(deviceInfo),
+                  BuildButtonView(
+                    function:
+                        HomeCubit.getInstance(context).navigateToMostSearch,
+                    label: 'Most search',
+                    textSize: fontSize,
+                  ),
+                  Container(
+                    height: deviceInfo.orientation == Orientation.portrait
+                        ? deviceInfo.localHeight / 3
+                        : deviceInfo.localHeight,
+                    child: BuildMostSearchedSalons(),
+                  ),
+                  BuildButtonView(
+                    function:
+                        HomeCubit.getInstance(context).navigateToTrimStars,
+                    label: 'Trim stars',
+                    textSize: fontSize,
+                  ),
+                  Container(
+                    height: deviceInfo.orientation == Orientation.portrait
+                        ? deviceInfo.localHeight / 3
+                        : deviceInfo.localHeight / 2,
+                    child: BuildStarsPersonsWidget(
+                        heightNavigationBar: heightNavigationBar),
+                  ),
+                ],
               ),
             ),
           ),
@@ -261,4 +183,34 @@ class BuildHomeWidget extends StatelessWidget {
       },
     );
   }
+
+  Container buildMainListOffers(DeviceInfo deviceInfo) {
+    return Container(
+      height: deviceInfo.orientation == Orientation.portrait
+          ? deviceInfo.localHeight / 3
+          : deviceInfo.localHeight / 2,
+      child: InfoWidget(
+        responsiveWidget: (context, de) {
+          return Container(
+            child: BuildOffersWidgetItem(),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class PageWidget {
+  Widget page;
+  final String imageIcon;
+  PageWidget({@required this.page, @required this.imageIcon})
+      : selectedIcon =
+            ImageIcon(AssetImage(imageIcon), size: 30, color: Colors.blue[900]),
+        unselectedIcon = ImageIcon(
+          AssetImage(imageIcon),
+          size: 30,
+        );
+
+  final ImageIcon selectedIcon;
+  final ImageIcon unselectedIcon;
 }

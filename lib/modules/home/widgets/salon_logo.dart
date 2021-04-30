@@ -5,6 +5,7 @@ import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/widgets/favorite_container.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
 class SalonLogo extends StatefulWidget {
   final double height;
@@ -34,8 +35,6 @@ class _SalonLogoState extends State<SalonLogo> {
   @override
   Widget build(BuildContext context) {
     print(widget.deviceInfo.localWidth);
-    // final screenWidth = MediaQuery.of(context).size.width;
-    //final screenHeight = MediaQuery.of(context).size.height;
     isPortrait =
         widget.deviceInfo.orientation == Orientation.portrait ? true : false;
     return ClipRRect(
@@ -45,11 +44,7 @@ class _SalonLogoState extends State<SalonLogo> {
         alignment: Alignment.center,
         child: Stack(
           children: [
-            Image.asset(
-              widget.salon.image,
-              width: double.infinity,
-              fit: BoxFit.fill,
-            ),
+            TrimCachedImage(src: widget.salon.image),
             Positioned(
                 left: widget.deviceInfo.localWidth * (isPortrait ? 0.08 : 0.06),
                 child: FavoriteContainer(

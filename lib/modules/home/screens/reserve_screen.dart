@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/widgets/available_times.dart';
 import 'package:trim/general_widgets/price_information.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
@@ -11,6 +12,8 @@ import 'package:trim/modules/home/models/salon_detail_model.dart';
 
 class ReserveScreen extends StatelessWidget {
   static const routeName = '/reserve-screen';
+  final List<SalonOffer> salonOffers;
+  ReserveScreen({Key key, this.salonOffers}) : super(key: key);
   final List<String> _availableTimes = [
     '07:00 pm',
     '12:00am',
@@ -78,7 +81,7 @@ class ReserveScreen extends StatelessWidget {
   Widget buildOffers(DeviceInfo deviceInfo) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SalonOffers(deviceInfo),
+      child: SalonOffers(deviceInfo, salonOffers),
     );
   }
 
@@ -86,7 +89,10 @@ class ReserveScreen extends StatelessWidget {
     return InfoWidget(
       responsiveWidget: (_, deviceInfo) => Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SalonServices(deviceInfo: deviceInfo),
+        child: SalonServices(
+          deviceInfo: deviceInfo,
+          services: [],
+        ),
       ),
     );
   }

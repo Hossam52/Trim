@@ -3,7 +3,7 @@ class TrimStarModel {
   String name;
   String image;
   String cover;
-  int rate;
+  double rate;
   TrimStarModel({
     this.id,
     this.name,
@@ -18,7 +18,7 @@ class TrimStarModel {
       name: json['name'],
       image: json['image'],
       cover: json['cover'],
-      rate: json['rate'],
+      rate: (json['rate'] as int).toDouble(),
     );
   }
 }

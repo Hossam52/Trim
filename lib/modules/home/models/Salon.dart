@@ -1,4 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:trim/modules/home/models/salon_offer.dart';
+import 'package:trim/modules/home/models/salon_service.dart';
 
 class Salon {
   List<DateTime> availableDatas = [];
@@ -15,13 +17,15 @@ class Salon {
   double rate;
   int commentsCount;
   String address;
-  String latitude;
-  String longitude;
+  String lat;
+  String lang;
   LatLng latLng;
   String status;
   String openFrom;
   String openTo;
   bool isFavorite;
+  List<SalonService> salonServices;
+  List<SalonOffer> salonOffers;
   Salon(
       {this.id,
       this.email,
@@ -32,8 +36,8 @@ class Salon {
       this.cityAr,
       this.gender,
       this.commentsCount,
-      this.latitude,
-      this.longitude,
+      this.lat,
+      this.lang,
       this.latLng,
       this.isFavorite,
       this.address,
@@ -43,236 +47,281 @@ class Salon {
       this.status,
       this.openTo,
       this.availableDatas,
-      this.openFrom});
+      this.openFrom,
+      this.salonServices,
+      this.salonOffers});
 
-  factory Salon.fromJson({Map<String, dynamic> json}) {
-    return Salon(
-      id: json['id'],
-      email: json['email'],
-      phone: json['phone'],
-      governorateEn: json['governorate_en'],
-      governorateAr: json['governorate_ar'],
-      cityEn: json['city_en'],
-      cityAr: json['city_ar'],
-      commentsCount: json['commentsCount'],
-      latitude: json['lat'],
-      longitude: json['lang'],
-      isFavorite: json['is_fav'],
-      address: json['address'],
-      image: json['image'],
-      name: json['name'],
-      rate: (json['rate'] as int).toDouble(),
-      status: json['status'],
-      openTo: json['to'],
-      openFrom: json['from'],
-    );
+  Salon.fromJson({Map<String, dynamic> json}) {
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+    phone = json['phone'];
+    image = json['image'];
+    governorateEn = json['governorate_en'];
+    governorateAr = json['governorate_ar'];
+    cityEn = json['city_en'];
+    cityAr = json['city_ar'];
+    gender = json['gender'];
+    rate = (json['rate'] as int).toDouble();
+    commentsCount = json['commentsCount'];
+    lat = json['lat'];
+    lang = json['lang'];
+    address = json['address'];
+    status = json['status'];
+    isFavorite = json['is_fav'];
+    openFrom = json['from'];
+    openTo = json['to'];
+    if (json['services'] != null) {
+      salonServices = <SalonService>[];
+      json['services'].forEach((service) {
+        salonServices.add(SalonService.fromJson(service));
+      });
+    }
+
+    // if (json['rates'] != null) {
+    //   rates = new List<Null>();
+    //   json['rates'].forEach((v) {
+    //     rates.add(new Null.fromJson(v));
+    //   });
+    // }
+    if (json['offers'] != null) {
+      salonOffers = <SalonOffer>[];
+      json['offers'].forEach((offer) {
+        salonOffers.add(SalonOffer.fromJson(json: offer));
+      });
+    }
   }
 }
 
+//   factory Salon.fromJson({Map<String, dynamic> json}) {
+//     (json['services'] as List).forEach((service) {});
+//     return Salon(
+//       id: json['id'],
+//       email: json['email'],
+//       phone: json['phone'],
+//       governorateEn: json['governorate_en'],
+//       governorateAr: json['governorate_ar'],
+//       cityEn: json['city_en'],
+//       cityAr: json['city_ar'],
+//       commentsCount: json['commentsCount'],
+//       lat: json['lat'],
+//       longitude: json['lang'],
+//       isFavorite: json['is_fav'],
+//       address: json['address'],
+//       image: json['image'],
+//       name: json['name'],
+//       rate: (json['rate'] as int).toDouble(),
+//       status: json['status'],
+//       openTo: json['to'],
+//       openFrom: json['from'],
+//     );
+//   }
+// }
+
 List<Salon> salonsData = [
   // Salon(
-  //     isFavorite: true,
+  //     isFavorite: "Open",
   //     image: 'assets/images/1.jpg',
   //     address: 'Ibrahime saqr, tagoa el 3 beside tawla cafee',
   //     name: 'الكسندرا صالون',
-  //     status: true,
+  //     status: "Open",
   //     rate:  3.5 ,
   //     cityEn: 'nasr'),
   // Salon(
-  //     isFavorite: false,
+  //     isFavorite: "Closed",
   //     image: 'assets/images/2.jpg',
   //     address: 'Shoubra alkhima egypt',
   //     name: 'Bianca beauty (hair salon)',
-  //     status: true,
+  //     status: "Open",
   //     rate: 5,
   //     cityEn: 'cairo'),
   // Salon(
-  //   isFavorite: false,
+  //   isFavorite: "Closed",
   //   image: 'assets/images/3.jpg',
   //   address: 'Al mhala el kobra city infront of suez canal',
   //   name: 'الكسندرا صالون',
-  //   status: false,
+  //   status: "Closed",
   //   rate: 4.5,
   //   cityEn: 'cairo',
   // ),
   // Salon(
-  //     isFavorite: true,
+  //     isFavorite: "Open",
   //     image: 'assets/images/4.jpg',
   //     address: 'Wadi qoraish in abbasia',
   //     name: 'الكسندرا صالون',
-  //     status: false,
+  //     status: "Closed",
   //     rate: 4.5,
   //     cityEn: 'nasr'),
   // Salon(
-  //     isFavorite: true,
+  //     isFavorite: "Open",
   //     image: 'assets/images/5.jpg',
   //     address: 'Alfayoom aldakhlia shoubra matrooh south sinai alex',
   //     name: 'الكسندرا صالون',
-  //     status: false,
+  //     status: "Closed",
   //     rate: 4.5),
   // Salon(
-  //     isFavorite: false,
+  //     isFavorite: "Closed",
   //     image: 'assets/images/6.jpg',
   //     address: 'You are foolish gedn',
   //     name: 'الكسندرا صالون',
-  //     status: true,
+  //     status: "Open",
   //     rate: 4.5),
   // Salon(
-  //   isFavorite: true,
+  //   isFavorite: "Open",
   //   image: 'assets/images/3.jpg',
   //   address: 'Al mhala el kobra city infront of suez canal',
   //   name: 'سعيد صالون',
-  //   status: false,
+  //   status: "Closed",
   //   rate: 4.5,
   //   cityEn: 'cairo',
   // ),
   // Salon(
-  //     isFavorite: false,
+  //     isFavorite: "Closed",
   //     image: 'assets/images/4.jpg',
   //     address: 'المعادي الجديدة بعد تفريعة قناة السويس',
   //     name: 'سعيد حمادة',
-  //     status: false,
+  //     status: "Closed",
   //     rate: 4,
   //     cityEn: 'nasr'),
   // Salon(
-  //     isFavorite: true,
+  //     isFavorite: "Open",
   //     image: 'assets/images/5.jpg',
   //     address: 'Alfayoom aldakhlia shoubra matrooh south sinai alex',
   //     name: 'Salon 1',
-  //     status: false,
+  //     status: "Closed",
   //     rate: 2),
   // Salon(
-  //     isFavorite: true,
+  //     isFavorite: "Open",
   //     image: 'assets/images/6.jpg',
   //     address: 'بهتيم شبرا الخيمة كشري الخدييوي ',
   //     name: 'صالون رزق',
-  //     status: true,
+  //     status: "Open",
   //     rate: 4.5),
   // Salon(
-  //     isFavorite: false,
+  //     isFavorite: "Closed",
   //     image: 'assets/images/2.jpg',
   //     address: 'Al sharqia at nasr street infront of alabd street',
   //     name: 'What you need ',
-  //     status: true,
+  //     status: "Open",
   //     rate: 3.5,
   //     cityEn: 'nasr'),
   // Salon(
-  //     isFavorite: false,
+  //     isFavorite: "Closed",
   //     image: 'assets/images/3.jpg',
   //     address: 'مدينة نصر للتعدين والاسكان امام فندم الماظة',
   //     name: 'Bianca beauty (hair salon)',
-  //     status: true,
+  //     status: "Open",
   //     rate: 5,
   //     cityEn: 'cairo'),
   // Salon(
-  //   isFavorite: true,
+  //   isFavorite: "Open",
   //   image: 'assets/images/1.jpg',
   //   address: 'Al mhala el kobra city infront of suez canal',
   //   name: 'سعيد صالون',
-  //   status: false,
+  //   status: "Closed",
   //   rate: 4.5,
   //   cityEn: 'cairo',
   // ),
   // Salon(
-  //     isFavorite: true,
+  //     isFavorite: "Open",
   //     image: 'assets/images/5.jpg',
   //     address: 'المعادي الجديدة بعد تفريعة قناة السويس',
   //     name: 'Donia',
-  //     status: false,
+  //     status: "Closed",
   //     rate: 4.5,
   //     cityEn: 'nasr'),
   // Salon(
-  //     isFavorite: false,
+  //     isFavorite: "Closed",
   //     image: 'assets/images/5.jpg',
   //     address: 'Alfayoom aldakhlia shoubra matrooh south sinai alex',
   //     name: 'Salon 1',
-  //     status: false,
+  //     status: "Closed",
   //     rate: 4.5),
 ];
 
 List<Salon> mostSearchSalons = [
-  // Salon(
-  //     image: 'assets/images/1.jpg',
-  //     address: 'Al sharqia at nasr street infront of alabd street',
-  //     name: 'Beauty salon',
-  //     status: true,
-  //     rate: 3.5,
-  //     cityEn: 'nasr'),
-  // Salon(
-  //     image: 'assets/images/2.jpg',
-  //     address: 'مدينة نصر للتعدين والاسكان امام فندم الماظة',
-  //     name: 'Bianca beauty (hair salon)',
-  //     status: true,
-  //     rate: 5,
-  //     cityEn: 'cairo'),
-  // Salon(
-  //   image: 'assets/images/3.jpg',
-  //   address: 'Al mhala el kobra city infront of suez canal',
-  //   name: 'سعيد صالون',
-  //   status: false,
-  //   rate: 4.5,
-  //   cityEn: 'cairo',
-  // ),
-  // Salon(
-  //     image: 'assets/images/4.jpg',
-  //     address: 'المعادي الجديدة بعد تفريعة قناة السويس',
-  //     name: 'سعيد حمادة',
-  //     status: false,
-  //     rate: 4.5,
-  //     cityEn: 'nasr'),
-  // Salon(
-  //     image: 'assets/images/5.jpg',
-  //     address: 'Alfayoom aldakhlia shoubra matrooh south sinai alex',
-  //     name: 'Salon 1',
-  //     status: false,
-  //     rate: 4.5),
-  // Salon(
-  //     image: 'assets/images/6.jpg',
-  //     address: 'بهتيم شبرا الخيمة كشري الخدييوي ',
-  //     name: 'صالون رزق',
-  //     status: true,
-  //     rate: 4.5),
-  // Salon(
-  //     image: 'assets/images/2.jpg',
-  //     address: 'Al sharqia at nasr street infront of alabd street',
-  //     name: 'What you need ',
-  //     status: true,
-  //     rate: 3.5,
-  //     cityEn: 'nasr'),
-  // Salon(
-  //     image: 'assets/images/3.jpg',
-  //     address: 'مدينة نصر للتعدين والاسكان امام فندم الماظة',
-  //     name: 'Bianca beauty (hair salon)',
-  //     status: true,
-  //     rate: 5,
-  //     cityEn: 'cairo'),
-  // Salon(
-  //   image: 'assets/images/1.jpg',
-  //   address: 'Al mhala el kobra city infront of suez canal',
-  //   name: 'سعيد صالون',
-  //   status: false,
-  //   rate: 4.5,
-  //   cityEn: 'cairo',
-  // ),
-  // Salon(
-  //     image: 'assets/images/5.jpg',
-  //     address: 'المعادي الجديدة بعد تفريعة قناة السويس',
-  //     name: 'Donia',
-  //     status: false,
-  //     rate: 4.5,
-  //     cityEn: 'nasr'),
-  // Salon(
-  //     image: 'assets/images/5.jpg',
-  //     address: 'Alfayoom aldakhlia shoubra matrooh south sinai alex',
-  //     name: 'Salon 1',
-  //     status: false,
-  //     rate: 4.5),
-  // Salon(
-  //     image: 'assets/images/2.jpg',
-  //     address: 'بهتيم شبرا الخيمة كشري الخدييوي ',
-  //     name: 'صالون رزق',
-  //     status: true,
-  //     rate: 4.5),
+  Salon(
+      image: 'assets/images/1.jpg',
+      address: 'Al sharqia at nasr street infront of alabd street',
+      name: 'Beauty salon',
+      status: "Open",
+      rate: 3.5,
+      cityEn: 'nasr'),
+  Salon(
+      image: 'assets/images/2.jpg',
+      address: 'مدينة نصر للتعدين والاسكان امام فندم الماظة',
+      name: 'Bianca beauty (hair salon)',
+      status: "Open",
+      rate: 5,
+      cityEn: 'cairo'),
+  Salon(
+    image: 'assets/images/3.jpg',
+    address: 'Al mhala el kobra city infront of suez canal',
+    name: 'سعيد صالون',
+    status: "Closed",
+    rate: 4.5,
+    cityEn: 'cairo',
+  ),
+  Salon(
+      image: 'assets/images/4.jpg',
+      address: 'المعادي الجديدة بعد تفريعة قناة السويس',
+      name: 'سعيد حمادة',
+      status: "Closed",
+      rate: 4.5,
+      cityEn: 'nasr'),
+  Salon(
+      image: 'assets/images/5.jpg',
+      address: 'Alfayoom aldakhlia shoubra matrooh south sinai alex',
+      name: 'Salon 1',
+      status: "Closed",
+      rate: 4.5),
+  Salon(
+      image: 'assets/images/6.jpg',
+      address: 'بهتيم شبرا الخيمة كشري الخدييوي ',
+      name: 'صالون رزق',
+      status: "Open",
+      rate: 4.5),
+  Salon(
+      image: 'assets/images/2.jpg',
+      address: 'Al sharqia at nasr street infront of alabd street',
+      name: 'What you need ',
+      status: "Open",
+      rate: 3.5,
+      cityEn: 'nasr'),
+  Salon(
+      image: 'assets/images/3.jpg',
+      address: 'مدينة نصر للتعدين والاسكان امام فندم الماظة',
+      name: 'Bianca beauty (hair salon)',
+      status: "Open",
+      rate: 5,
+      cityEn: 'cairo'),
+  Salon(
+    image: 'assets/images/1.jpg',
+    address: 'Al mhala el kobra city infront of suez canal',
+    name: 'سعيد صالون',
+    status: "Closed",
+    rate: 4.5,
+    cityEn: 'cairo',
+  ),
+  Salon(
+      image: 'assets/images/5.jpg',
+      address: 'المعادي الجديدة بعد تفريعة قناة السويس',
+      name: 'Donia',
+      status: "Closed",
+      rate: 4.5,
+      cityEn: 'nasr'),
+  Salon(
+      image: 'assets/images/5.jpg',
+      address: 'Alfayoom aldakhlia shoubra matrooh south sinai alex',
+      name: 'Salon 1',
+      status: "Closed",
+      rate: 4.5),
+  Salon(
+      image: 'assets/images/2.jpg',
+      address: 'بهتيم شبرا الخيمة كشري الخدييوي ',
+      name: 'صالون رزق',
+      status: "Open",
+      rate: 4.5),
 ];
 
 //       LatLng(30.133912262634386, 31.273745745420456),
@@ -291,7 +340,7 @@ List<Salon> mapSalons = [
   //     image: 'assets/images/1.jpg',
   //     address: 'Ibrahime saqr, tagoa el 3 beside tawla cafee',
   //     name: 'الكسندرا صالون',
-  //     status: true,
+  //     status: "Open",
   //     rate: 3.5,
   //     cityEn: 'nasr'),
   // Salon(
@@ -299,7 +348,7 @@ List<Salon> mapSalons = [
   //     image: 'assets/images/2.jpg',
   //     address: 'Shoubra alkhima egypt',
   //     name: 'Bianca beauty (hair salon)',
-  //     status: true,
+  //     status: "Open",
   //     rate: 5,
   //     cityEn: 'cairo'),
   // Salon(
@@ -307,7 +356,7 @@ List<Salon> mapSalons = [
   //   image: 'assets/images/3.jpg',
   //   address: 'Al mhala el kobra city infront of suez canal',
   //   name: 'فتحي الحلاق',
-  //   status: false,
+  //   status: "Closed",
   //   rate: 4.5,
   //   cityEn: 'cairo',
   // ),
@@ -316,7 +365,7 @@ List<Salon> mapSalons = [
   //     image: 'assets/images/4.jpg',
   //     address: 'Wadi qoraish in abbasia',
   //     name: 'سمير الغالي',
-  //     status: false,
+  //     status: "Closed",
   //     rate: 4.5,
   //     cityEn: 'nasr'),
   // Salon(
@@ -324,13 +373,13 @@ List<Salon> mapSalons = [
   //     image: 'assets/images/5.jpg',
   //     address: 'Alfayoom aldakhlia shoubra matrooh south sinai alex',
   //     name: 'Good salon',
-  //     status: false,
+  //     status: "Closed",
   //     rate: 4.5),
   // Salon(
   //     latLng: LatLng(30.138406328553632, 31.278630048036575),
   //     image: 'assets/images/6.jpg',
   //     address: 'You are foolish gedn',
   //     name: 'Fady adalat',
-  //     status: true,
+  //     status: "Open",
   //     rate: 4.5),
 ];

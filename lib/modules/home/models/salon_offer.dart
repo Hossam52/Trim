@@ -25,7 +25,7 @@ class SalonOffer {
       this.salon,
       this.qty});
 
-  factory SalonOffer.fromJson(Map<String, dynamic> json) {
+  factory SalonOffer.fromJson({Map<String, dynamic> json}) {
     return SalonOffer(
       id: json['id'],
       nameEn: json['name_en'],

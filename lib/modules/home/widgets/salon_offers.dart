@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
 class SalonOffers extends StatelessWidget {
   final DeviceInfo deviceInfo;
-  SalonOffers(this.deviceInfo);
+  List<SalonOffer> salonOffers;
+  SalonOffers(this.deviceInfo, this.salonOffers);
   final List<SalonOffer> offers = [
     SalonOffer(
         image: 'assets/images/1.jpg',
@@ -30,20 +32,38 @@ class SalonOffers extends StatelessWidget {
         image: 'assets/images/1.jpg',
         descriptionEn: 'Bride offer and to their friends'),
   ];
+
+  final temp = {
+    "id": 1,
+    "name_en": "friends offers",
+    "name_ar": "عرض الصحاب",
+    "description_ar": "وصف عرض الصحاب",
+    "description_en": "friends offers desc",
+    "price": "30.00",
+    "image": "https://trim.style/public/files/709116193286826084feaa023c2.png",
+    "salon": "Salon Mohamed",
+    "is_sponsored": "0",
+    "category_ar": "خصم 25%",
+    "category_en": "25 % discount",
+    "qty": ""
+  };
+
   @override
   Widget build(BuildContext context) {
+    salonOffers = [SalonOffer.fromJson(json: temp)];
     return Container(
       height: deviceInfo.localHeight /
           (deviceInfo.orientation == Orientation.portrait ? 2.5 : 1.5),
       child: ListView.builder(
+        physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         itemBuilder: (_, index) {
           return SalonOfferItem(
-            offer: offers[index],
+            offer: salonOffers[index],
             deviceInfo: deviceInfo,
           );
         },
-        itemCount: offers.length,
+        itemCount: salonOffers.length,
       ),
     );
   }
@@ -66,9 +86,20 @@ class SalonOfferItem extends StatelessWidget {
             Expanded(
               child: TextButton(
                 onPressed: () {
-                  DateTime now = DateTime.now().subtract(Duration(days: 60));
-                  DateTime last = DateTime(now.year, now.month + 1, 0);
-                  print(last);
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                        content: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        offer.descriptionEn,
+                        style: TextStyle(
+                          fontSize: getFontSizeVersion2(deviceInfo),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )),
+                  );
                 },
                 child: FittedBox(
                   child: Text(
@@ -110,11 +141,15 @@ class SalonOfferItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.asset(
-                offer.image,
-                fit: BoxFit.fill,
+              TrimCachedImage(
+                src: offer.image,
                 height: deviceInfo.localHeight / (isPortrait ? 4.3 : 2.9),
               ),
+              // Image.asset(
+              //   offer.image,
+              //   fit: BoxFit.fill,
+              //   height: deviceInfo.localHeight / (isPortrait ? 4.3 : 2.9),
+              // ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(

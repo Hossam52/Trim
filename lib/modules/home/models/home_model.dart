@@ -18,11 +18,15 @@ class HomeModel {
       );
     });
 
-    print(data['mostSearchedSalons'] as List);
-
-    (data['trimStars'] as List).map(
+    (data['trimStars'] as List).forEach(
       (trimStar) => trimStars.add(
-        TrimStarModel.fromJson(data['trimStars']),
+        TrimStarModel.fromJson(trimStar),
+      ),
+    );
+
+    (data['lastOffers'] as List).forEach(
+      (offer) => lastOffers.add(
+        SalonOffer.fromJson(json: offer),
       ),
     );
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/modules/home/cubit/home_cubit.dart';
+import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/widgets/barber_item.dart';
@@ -20,6 +23,7 @@ class SalonsScreen extends StatefulWidget {
 }
 
 class _SalonsScreenState extends State<SalonsScreen> {
+  bool mostSearch;
   String selectedCity = 'all';
   bool displaySalons = true;
 
@@ -52,53 +56,28 @@ class _SalonsScreenState extends State<SalonsScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    DisplayType displayType = HomeCubit.getInstance(context).getDisplayType;
+
+    if (displayType == DisplayType.AllSalons ||
+        displayType == DisplayType.MostSearch) {
+      displaySalons = true;
+    } else
+      displaySalons = false;
+    mostSearch = displayType == DisplayType.MostSearch;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final arguments =
-        ModalRoute.of(context).settings.arguments as Map<String, bool>;
-    bool mostSearch = arguments != null ? arguments['mostSearch'] : null;
     return Scaffold(
-      appBar: mostSearch != null
-          ? AppBar(
-              backgroundColor: Colors.blue[800],
-              title: Text('Most serch salons'),
-              centerTitle: true,
-            )
-          : null,
+      appBar: appBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await showCities(context);
-                      setState(() {
-                        filterSalons(mostSearch);
-                      });
-                    },
-                    child: Image.asset(
-                      'assets/icons/settings-icon.png',
-                      height: 25,
-                      width: 25,
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            side: BorderSide(color: Colors.cyan, width: 1)),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: BuildSearchWidget(
-                      pressed: () {},
-                    ),
-                  ),
-                ],
-              ),
+              buildSearchAndSettings(context),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(
@@ -148,6 +127,49 @@ class _SalonsScreenState extends State<SalonsScreen> {
       ),
     );
   }
+
+  Row buildSearchAndSettings(BuildContext context) {
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: () async {
+            await showCities(context);
+            setState(() {
+              filterSalons(mostSearch);
+            });
+          },
+          child: Image.asset(
+            'assets/icons/settings-icon.png',
+            height: 25,
+            width: 25,
+          ),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.white),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  side: BorderSide(color: Colors.cyan, width: 1)),
+            ),
+          ),
+        ),
+        Expanded(
+          child: BuildSearchWidget(
+            pressed: () {},
+          ),
+        ),
+      ],
+    );
+  }
+
+  AppBar appBar() {
+    return mostSearch
+        ? AppBar(
+            backgroundColor: Colors.blue[800],
+            title: Text('Most serch salons'),
+            centerTitle: true,
+          )
+        : null;
+  }
 }
 
 class BuildGridViewSalons extends StatelessWidget {
@@ -163,26 +185,18 @@ class BuildGridViewSalons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final list = HomeCubit.getInstance(context).mostSearchList;
     return GridView.builder(
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(vertical: 10),
-        itemCount: selectedCity != 'all'
-            ? filterSalonsData.length
-            : mostSearch !=
-                    null //this means we want to display most search salons as we not pass argument
-                ? mostSearchSalons.length
-                : salonsData.length,
+        itemCount: list.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.84,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10),
         itemBuilder: (context, index) => BuildSalonItemGrid(
-              salon: selectedCity != 'all'
-                  ? filterSalonsData[index]
-                  : mostSearch != null
-                      ? mostSearchSalons[index]
-                      : salonsData[index],
+              salon: list[index],
             ));
   }
 }
