@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/market/widgets/build_listTile_confirm.dart';
@@ -14,9 +16,10 @@ class BuildDetailsOrderPrice extends StatelessWidget {
   final DeviceInfo deviceInfo;
   final Function pressed;
   final int stepNumber;
-
+  CartBloc cartBloc;
   @override
   Widget build(BuildContext context) {
+    cartBloc = BlocProvider.of(context);
     return Container(
       height: deviceInfo.localHeight *
           (deviceInfo.orientation == Orientation.portrait ? 0.40 : 0.75),
@@ -30,12 +33,12 @@ class BuildDetailsOrderPrice extends StatelessWidget {
         children: [
           BuildListTileCofirm(
             leading: 'الاجمالي',
-            trailing: '447 جنيه',
+            trailing: '${cartBloc.getTotalPrice().toStringAsFixed(2)} جنيه',
             fontSize: fontSize,
           ),
           BuildListTileCofirm(
             leading: 'الشحن',
-            trailing: '447 جنيه',
+            trailing: '20 جنيه',
             fontSize: fontSize,
           ),
           Divider(
@@ -45,7 +48,7 @@ class BuildDetailsOrderPrice extends StatelessWidget {
           ),
           BuildListTileCofirm(
             leading: 'السعر الكلي',
-            trailing: '447 جنيه',
+            trailing: '${(cartBloc.getTotalPrice()+20).toStringAsFixed(2)} جنيه',
             fontSize: fontSize,
           ),
           Padding(

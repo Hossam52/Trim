@@ -1,4 +1,4 @@
-class Category {
+class Categoryz {
   String categoryId;
   String categoryNameEn;
   String categoryNameAr;

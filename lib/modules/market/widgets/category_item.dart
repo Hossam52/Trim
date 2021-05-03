@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/models/Category.dart';
@@ -32,7 +33,7 @@ class CategoryItem extends StatelessWidget {
 
   Text buildCategoryName() {
     return Text(
-      category.name,
+      category.nameAr,
       textAlign: TextAlign.center,
       style: TextStyle(
           fontSize: deviceInfo.type == deviceType.mobile &&
@@ -66,10 +67,14 @@ class CategoryItem extends StatelessWidget {
     }
 
     return CircleAvatar(
-      child: Image.asset(
-        'assets/icons/${category.imageName}.png',
-        fit: BoxFit.cover,
+      child: Image.network(
+        category.imageName,
+        fit: BoxFit.scaleDown,
       ),
+      // backgroundImage: NetworkImage(category.imageName,
+
+      // ),
+      //  child:
       radius: calculateRadius(),
       backgroundColor: Colors.cyanAccent[100],
     );

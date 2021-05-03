@@ -9,6 +9,9 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
+import 'package:trim/modules/market/cubit/cart_cubit.dart';
+import 'package:trim/modules/market/cubit/categories_cubit.dart';
+import 'package:trim/modules/market/cubit/products_category_cubit.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
@@ -40,7 +43,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => HomeCubit())],
+      providers: [BlocProvider(create: (_) => HomeCubit()),
+      BlocProvider(create: (_)=>AllcategoriesCubit()),
+      BlocProvider(create: (_)=>ProductsCategoryCubit(),),
+      BlocProvider(create: (_)=>ProductsCategoryBloc()),
+      BlocProvider(create: (context)=>CartBloc()),
+      ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           localizationsDelegates: [

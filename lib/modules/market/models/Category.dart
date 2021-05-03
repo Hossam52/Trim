@@ -1,40 +1,46 @@
 class Category {
-  final String id;
-  final String name;
+  final int id;
+  final String nameAr;
+  final String nameEn;
   final String imageName;
 
-  Category({this.id, this.name, this.imageName});
+  Category({this.id, this.nameAr, this.imageName, this.nameEn});
+  factory Category.fromjson(Map<String,dynamic>data) {
+    return Category(id: data['id'],
+    imageName: data['image'],
+    nameAr: data['name_ar']);
+  }
 }
 
 List<Category> categories = [
   Category(
-      id: DateTime.now().toIso8601String(),
+      id: 1,
       // name: 'عناية بالشعر',
-      name: 'Hair care',
+      nameAr: 'Hair care',
       imageName: 'hairstyle'),
   Category(
-      id: DateTime.now().toIso8601String(),
+      id: 2,
       // name: 'مجفف شعر',
-      name: 'Hair dryer',
+      nameAr: 'Hair dryer',
       imageName: 'hair-dryer'),
   Category(
-      id: DateTime.now().toIso8601String(),
+      id:3,
       // name: 'اكسسوار شعر',
-      name: 'Hair Accessories',
+      nameAr: 'Hair Accessories',
       imageName: 'headband'),
   Category(
-      id: DateTime.now().toIso8601String(),
+      id: 4,
       // name: 'عناية بالبشرة',
-      name: 'Skin care',
+      nameAr: 'Skin care',
       imageName: 'shower-gel'),
   Category(
-      id: DateTime.now().toIso8601String(),
+      id: 5,
       // name: 'منتجات الكيرلي',
-      name: 'Curely products',
+      nameAr: 'Curely products',
       imageName: 'person'),
   Category(
-      id: DateTime.now().toIso8601String(),
+      id: 6,
       // name: 'مكواه',
-      name: 'hair iron',
+      nameAr: 'hair iron',
       imageName: 'beauty-salon'),
 ];

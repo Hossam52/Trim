@@ -72,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
       showCategories = true;
       pagesBuilder[1].page = ShoppingScreen(
         setCategoryIndex: setSelectedCategoryIndex,
+        
       );
     });
   }
