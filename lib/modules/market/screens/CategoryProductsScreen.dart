@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/modules/market/cubit/cart_cubit.dart';
+import 'package:trim/modules/market/cubit/cart_events.dart';
+import 'package:trim/modules/market/cubit/cart_states.dart';
+import 'package:trim/modules/market/cubit/categories_cubit.dart';
+import 'package:trim/modules/market/cubit/procucts_category_states.dart';
+import 'package:trim/modules/market/cubit/products_category_cubit.dart';
+import 'package:trim/modules/market/cubit/products_category_events.dart';
 import 'package:trim/modules/market/models/Category.dart';
 import 'package:trim/modules/market/models/Product.dart';
+import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/market/widgets/cart.dart';
+import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/BuildRawMaterialButton.dart';
@@ -19,8 +30,8 @@ class CategoryProductsScreen extends StatefulWidget {
 }
 
 class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
-  List<Prodcut> filteredProducts = [];
-
+  ProductsCategoryBloc productsBloc;
+  CartBloc cartCubit;
   @override
   void dispose() {
     super.dispose();
@@ -29,8 +40,16 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
 
   @override
   void initState() {
+    productsBloc = BlocProvider.of<ProductsCategoryBloc>(context);
+    cartCubit = BlocProvider.of<CartBloc>(context);
     super.initState();
-    filterProducts();
+  }
+
+  @override
+  void didChangeDependencies() {
+    int categoryId = ModalRoute.of(context).settings.arguments as int;
+    productsBloc.add(FetchDataFromApi(categoryId: categoryId));
+    super.didChangeDependencies();
   }
 
   @override
@@ -50,42 +69,48 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
             )
           ],
           centerTitle: true,
-          title: Text('${categories[widget.categoryIndex].name}')),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: InfoWidget(
-            responsiveWidget: (context, deviceInfo) {
-              return Column(
-                children: [
-                  BuildSearchWidget(
-                    pressed: () {},
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: buildProducts(deviceInfo),
+          title: Text('ae')),
+      body: BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
+          builder: (_, state) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: InfoWidget(
+              responsiveWidget: (context, deviceInfo) {
+                return Column(
+                  children: [
+                    BuildSearchWidget(
+                      pressed: () {},
                     ),
-                  ),
-                ],
-              );
-            },
+                    BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
+                        builder: (_, state) {
+                      if (state is InitialState || state is LoadingState)
+                        return Center(child: CircularProgressIndicator());
+                      else if (state is LoadedState)
+                        return Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: buildProducts(deviceInfo),
+                          ),
+                        );
+                      else
+                        Center(
+                          child: Text('Error'),
+                        );
+                    })
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
-  }
-
-  void filterProducts() {
-    filteredProducts = products
-        .where((product) =>
-            product.categoryId == categories[widget.categoryIndex].id)
-        .toList();
   }
 
   Widget buildProducts(DeviceInfo deviceInfo) {
     return GridView.builder(
-        itemCount: filteredProducts.length,
+        itemCount: productsBloc.products.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           crossAxisSpacing: 7,
@@ -95,7 +120,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
         itemBuilder: (context, index) {
           return BuildProductItem(
             deviceInfo: deviceInfo,
-            prodcut: filteredProducts[index],
+            prodcut: productsBloc.products[index],
           );
         });
   }
@@ -103,7 +128,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
 
 class BuildProductItem extends StatefulWidget {
   final DeviceInfo deviceInfo;
-  final Prodcut prodcut;
+  final Product prodcut;
   BuildProductItem({this.deviceInfo, this.prodcut});
 
   @override
@@ -111,11 +136,21 @@ class BuildProductItem extends StatefulWidget {
 }
 
 class _BuildProductItemState extends State<BuildProductItem> {
-  int quantity = 0;
+  int quantity;
   double fontSize = 0;
+  CartBloc cartCubit;
+  @override
+  void initState() {
+    quantity = 0;
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     fontSize = getFontSizeVersion2(widget.deviceInfo);
+    cartCubit = BlocProvider.of<CartBloc>(context);
+    print(cartCubit.items.length);
     return Container(
       padding: const EdgeInsets.only(bottom: 5),
       decoration: BoxDecoration(
@@ -144,57 +179,62 @@ class _BuildProductItemState extends State<BuildProductItem> {
     );
   }
 
-  Row buildProductActions() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        BuildRawMaterialButton(
-          icon: Icons.add,
-          pressed: quantity == 10
-              ? null
-              : () {
-                  if (quantity != 10)
-                    setState(() {
-                      quantity++;
-                    });
-                },
-          deviceInfo: widget.deviceInfo,
-        ),
-        Text(
-          '$quantity',
-          style: TextStyle(fontSize: fontSize),
-        ),
-        BuildRawMaterialButton(
-          icon: Icons.remove,
-          pressed: quantity == 0
-              ? null
-              : () {
-                  if (quantity != 0)
-                    setState(() {
-                      quantity--;
-                    });
-                },
-          deviceInfo: widget.deviceInfo,
-        ),
-      ],
-    );
+  Widget buildProductActions() {
+    return BlocBuilder<CartBloc, CartStates>(builder: (context, state) {
+     
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          BuildRawMaterialButton(
+            icon: Icons.add,
+            pressed: () async {
+              cartCubit.add(
+                AddingItemEvent(
+                  cartItem: CartItem(
+                    id: widget.prodcut.productId,
+                    imageName: widget.prodcut.productImage,
+                    nameAr: widget.prodcut.productName,
+                    price: widget.prodcut.productPrice,
+                    nameEn: widget.prodcut.nameEn,
+                    
+                  ),
+                ),
+              );
+            },
+            deviceInfo: widget.deviceInfo,
+          ),
+          Text(
+            '${cartCubit.items.containsKey(widget.prodcut.productId) ? cartCubit.items[widget.prodcut.productId].quantity : 0}',
+            style: TextStyle(fontSize: fontSize),
+          ),
+          BuildRawMaterialButton(
+            icon: Icons.remove,
+            pressed: () {
+              cartCubit.add(DecreaseEvent(id: widget.prodcut.productId));
+            },
+            deviceInfo: widget.deviceInfo,
+          ),
+        ],
+      );
+    });
   }
 
-  Text buildProductPrice() {
-    return Text(widget.prodcut.productPrice.toString(),
-        style: TextStyle(fontSize: fontSize, color: Colors.green));
+  Widget buildProductPrice() {
+    return BlocBuilder<CartBloc, CartStates>(
+        builder: (_, state) => Text(
+            '${cartCubit.items.containsKey(widget.prodcut.productId) ? (double.parse(cartCubit.items[widget.prodcut.productId].price) * double.parse(cartCubit.items[widget.prodcut.productId].quantity)).toStringAsFixed(2) : double.parse(widget.prodcut.productPrice).toStringAsFixed(2)}',
+            style: TextStyle(fontSize: fontSize, color: Colors.green)));
   }
 
   Widget buildProductImage() {
+    print(widget.prodcut.productImage);
     return ClipRRect(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(25),
         topRight: Radius.circular(25),
       ),
-      child: Image.asset(
-        'assets/images/${widget.prodcut.productImage}',
-        fit: BoxFit.cover,
-        width: double.infinity,
+      child: TrimCachedImage(
+        src: widget.prodcut.productImage,
       ),
     );
   }

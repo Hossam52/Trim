@@ -13,6 +13,9 @@ import 'package:trim/modules/home/cubit/reserve_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
+import 'package:trim/modules/market/cubit/cart_cubit.dart';
+import 'package:trim/modules/market/cubit/categories_cubit.dart';
+import 'package:trim/modules/market/cubit/products_category_cubit.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
@@ -48,6 +51,10 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => HomeCubit()),
         BlocProvider(create: (_) => SalonsCubit()),
         BlocProvider(create: (_) => PersonsCubit()),
+        BlocProvider(create: (_) => AllcategoriesCubit()),
+        BlocProvider(create: (_) => ProductsCategoryCubit()),
+        BlocProvider(create: (_) => ProductsCategoryBloc()),
+        BlocProvider(create: (context) => CartBloc()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
