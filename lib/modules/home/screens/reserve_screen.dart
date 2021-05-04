@@ -50,11 +50,7 @@ class ReserveScreen extends StatelessWidget {
                     if (selectDateWidget == false)
                       Align(
                           alignment: Alignment.centerLeft, child: BackButton()),
-                    if (availableDatesWidget != false)
-                      AvailableTimes(
-                        availableDates: _availableTimes,
-                        updateSelectedIndex: (index) {},
-                      ),
+                    if (availableDatesWidget != false) AvailableTimes(),
                     if (selectDateWidget != false ||
                         availableDatesWidget != false)
                       Divider(),

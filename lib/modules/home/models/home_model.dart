@@ -6,7 +6,7 @@ class HomeModel {
   bool success;
   Map<String, dynamic> data;
   List<Salon> mostSearchedSalons = [];
-  List<TrimStarModel> trimStars = [];
+  List<Salon> trimStars = [];
   List<SalonOffer> lastOffers = [];
 
   HomeModel.fromJson({Map<String, dynamic> json}) {
@@ -20,7 +20,7 @@ class HomeModel {
 
     (data['trimStars'] as List).forEach(
       (trimStar) => trimStars.add(
-        TrimStarModel.fromJson(trimStar),
+        Salon.fromTrimStarJson(json: trimStar),
       ),
     );
 

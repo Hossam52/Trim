@@ -25,10 +25,14 @@ class DioHelper {
     return await dio.get(methodUrl, queryParameters: queries);
   }
 
-  static Future<Response> postData(
-      {@required String url, Map<String, dynamic> body = const {}}) async {
+  static Future<Response> postData({
+    @required String url,
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> queries = const {},
+  }) async {
     return await dio.post(
       url,
+      queryParameters: queries,
       data: body,
       options: Options(
           followRedirects: false,

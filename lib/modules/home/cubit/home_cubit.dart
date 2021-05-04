@@ -2,39 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
+import 'package:trim/modules/home/cubit/persons_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/models/trim_star_model.dart';
+import 'package:trim/modules/home/repositories/home_repo.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/modules/home/models/home_model.dart';
 
-enum DisplayType { AllSalons, Persons, MostSearch }
-
 class HomeCubit extends Cubit<HomeStates> {
   HomeCubit() : super(LoadingHomeState());
   static HomeCubit getInstance(BuildContext context) =>
-      BlocProvider.of(context);
+      BlocProvider.of<HomeCubit>(context);
 
   //Fields
-
   HomeModel homeModel;
-  DisplayType _displayType = DisplayType.AllSalons;
+
+  Salon selectedMostSearchItem;
 
   //Methods
-  List<Salon> get mostSearchList {
+  List<Salon> get mostSearchedSalons {
     return homeModel.mostSearchedSalons;
   }
 
-  void setDisplayType(DisplayType type) {
-    _displayType = type;
-  }
-
-  DisplayType get getDisplayType {
-    return _displayType;
-  }
-
-  List<TrimStarModel> get trimStarList {
+  List<Salon> get trimStarList {
     return homeModel.trimStars;
   }
 
@@ -51,7 +45,7 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
   void navigateToTrimStars(BuildContext context) {
-    setDisplayType(DisplayType.Persons);
+    emit(TrimStarState());
     Navigator.pushNamed(
       context,
       SalonsScreen.routeName,
@@ -59,17 +53,27 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
   void navigateToMostSearch(BuildContext context) {
-    HomeCubit.getInstance(context).setDisplayType(DisplayType.MostSearch);
+    emit(MostSearchState());
 
     Navigator.pushNamed(context, SalonsScreen.routeName);
   }
 
-  void getData() async {
+//-------------------------API Calls Start-----------------
+  void loadHomeLayout(BuildContext context) async {
     emit(LoadingHomeState());
+    final response = await loadHomeFromServer(1);
+    if (response.error) {
+      print(response.errorMessage);
+      emit(ErrorHomeState(error: response.errorMessage));
+    } else {
+      homeModel = response.data;
 
-    final response = await DioHelper.getData(methodUrl: homeUrl, queries: {});
-    homeModel = HomeModel.fromJson(json: response.data);
-
-    emit(SuccessHomeState());
+      emit(SuccessHomeState());
+    }
   }
+
+  Future<void> getTrimStarProfile(int id) {}
+
+//-------------------------API Calls End-------------------
+
 }

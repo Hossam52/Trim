@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
@@ -12,7 +15,10 @@ class BuildSalonItemGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('pressed');
+        SalonsCubit.getInstance(context)
+            .navigateToSalonDetailScreen(context, salon.id);
+        return;
+        SalonsCubit.getInstance(context).getSalonDetails(id: salon.id);
         Navigator.pushNamed(context, DetailsScreen.routeName, arguments: salon);
       },
       child: Card(

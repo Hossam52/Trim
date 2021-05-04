@@ -7,8 +7,19 @@ class LoadingHomeState extends HomeStates {}
 
 class SuccessHomeState extends HomeStates {}
 
-// class FailureHomeState extends HomeStates {}
+class ErrorHomeState extends HomeStates {
+  final String error;
 
+  ErrorHomeState({this.error = ''});
+}
+
+class TrimStarState extends HomeStates {}
+
+class MostSearchState extends HomeStates {}
+
+class AllSalonsState extends HomeStates {}
+
+class FavoriteSalonsState extends HomeStates {}
 // //For offers
 // class LoadingOffersState extends HomeStates {}
 

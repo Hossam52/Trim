@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
-import 'package:trim/modules/auth/repositries/api_reponse.dart';
+import 'package:trim/api_reponse.dart';
 import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/registration_screen.dart';

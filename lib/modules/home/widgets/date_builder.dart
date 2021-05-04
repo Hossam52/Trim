@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
 
 class DateBuilder extends StatefulWidget {
   @override
@@ -38,6 +39,8 @@ class _DateBuilderState extends State<DateBuilder> {
         setState(() {
           selectedDayIndex = index;
         });
+        SalonsCubit.getInstance(context)
+            .getAvilableDates(days[selectedDayIndex]);
       },
       child: Container(
         padding: const EdgeInsets.all(10),

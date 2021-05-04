@@ -1,17 +1,22 @@
 //for Custom app dialogs
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
+import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/general_widgets/cancel_reasons.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 import 'Core/BuilderWidget/InfoWidget.dart';
 
-void personDetailsDialog(BuildContext context, Barber barber) {
+void personDetailsDialog(
+    DeviceInfo deviceInfo, BuildContext context, Salon salon) async {
   Widget elevatedButton(String text, VoidCallback onPressed,
       [Color color = Colors.blue]) {
     return Container(
@@ -28,7 +33,7 @@ void personDetailsDialog(BuildContext context, Barber barber) {
             child: FittedBox(child: Text(text))));
   }
 
-  showDialog(
+  await showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
@@ -41,8 +46,12 @@ void personDetailsDialog(BuildContext context, Barber barber) {
                     Expanded(
                       flex: 1,
                       child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          child: Image.asset(barber.image)),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        child: TrimCachedImage(
+                          src: salon.image,
+                          width: 0,
+                        ),
+                      ),
                     ),
                     Expanded(
                       flex: 1,
@@ -51,11 +60,16 @@ void personDetailsDialog(BuildContext context, Barber barber) {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(barber.name),
+                            Text(
+                              salon.name,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: getFontSizeVersion2(deviceInfo)),
+                            ),
                             BuildStars(
-                                stars: barber.rate,
+                                stars: salon.rate,
                                 width: MediaQuery.of(context).size.width / 2),
-                            Text('${barber.noOfRaters} Openion')
+                            Text('${salon.commentsCount} Openion')
                           ],
                         ),
                       ),

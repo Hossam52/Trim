@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/general_widgets/loading_more_items.dart';
+import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/widgets/barber_item.dart';
@@ -23,7 +27,6 @@ class SalonsScreen extends StatefulWidget {
 }
 
 class _SalonsScreenState extends State<SalonsScreen> {
-  bool mostSearch;
   String selectedCity = 'all';
   bool displaySalons = true;
 
@@ -58,26 +61,26 @@ class _SalonsScreenState extends State<SalonsScreen> {
   @override
   void initState() {
     super.initState();
-    DisplayType displayType = HomeCubit.getInstance(context).getDisplayType;
+    final state = HomeCubit.getInstance(context).state;
 
-    if (displayType == DisplayType.AllSalons ||
-        displayType == DisplayType.MostSearch) {
-      displaySalons = true;
-    } else
+    if (state is TrimStarState) {
       displaySalons = false;
-    mostSearch = displayType == DisplayType.MostSearch;
+    } else
+      displaySalons = true;
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = HomeCubit.getInstance(context).state;
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              buildSearchAndSettings(context),
+              // if (temp != Temp.Home)
+              if (state is AllSalonsState) buildSearchAndSettings(context),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(
@@ -89,10 +92,13 @@ class _SalonsScreenState extends State<SalonsScreen> {
                       name: 'Salons',
                       active: displaySalons,
                       pressed: () {
+                        if (!(HomeCubit.getInstance(context).state
+                            is AllSalonsState))
+                          HomeCubit.getInstance(context)
+                              .emit(MostSearchState());
                         if (!displaySalons)
                           setState(() {
                             displaySalons = true;
-                            filterSalons(mostSearch);
                           });
                       },
                     ),
@@ -102,6 +108,10 @@ class _SalonsScreenState extends State<SalonsScreen> {
                       name: 'Persons',
                       active: !displaySalons,
                       pressed: () {
+                        if (!(HomeCubit.getInstance(context).state
+                            is AllSalonsState))
+                          HomeCubit.getInstance(context).emit(TrimStarState());
+                        // SalonsCubit.getInstance(context).emit(TrimStarState());
                         if (displaySalons)
                           setState(() {
                             displaySalons = false;
@@ -116,8 +126,7 @@ class _SalonsScreenState extends State<SalonsScreen> {
                   child: displaySalons
                       ? BuildGridViewSalons(
                           selectedCity: selectedCity,
-                          filterSalonsData: filterSalonsData,
-                          mostSearch: mostSearch)
+                        )
                       : PersonsGridView(),
                 ),
               ),
@@ -134,9 +143,6 @@ class _SalonsScreenState extends State<SalonsScreen> {
         ElevatedButton(
           onPressed: () async {
             await showCities(context);
-            setState(() {
-              filterSalons(mostSearch);
-            });
           },
           child: Image.asset(
             'assets/icons/settings-icon.png',
@@ -155,48 +161,124 @@ class _SalonsScreenState extends State<SalonsScreen> {
         Expanded(
           child: BuildSearchWidget(
             pressed: () {},
+            onChanged: (String val) {
+              SalonsCubit.getInstance(context).searchSalonsByName(val);
+            },
           ),
         ),
       ],
     );
   }
 
-  AppBar appBar() {
-    return mostSearch
+  AppBar appBar(BuildContext context) {
+    // bool displayAppBar = temp == Temp.Home ? true : false;
+    bool displayAppBar = HomeCubit.getInstance(context).state is AllSalonsState;
+    return !displayAppBar
         ? AppBar(
             backgroundColor: Colors.blue[800],
-            title: Text('Most serch salons'),
+            title: BlocBuilder<HomeCubit, HomeStates>(
+                builder: (_, state) => state is TrimStarState
+                    ? Text('Trim Stars')
+                    : Text('Most serch salons')),
             centerTitle: true,
           )
         : null;
   }
 }
 
-class BuildGridViewSalons extends StatelessWidget {
+class BuildGridViewSalons extends StatefulWidget {
   const BuildGridViewSalons({
     @required this.selectedCity,
-    @required this.filterSalonsData,
-    @required this.mostSearch,
   });
 
   final String selectedCity;
-  final List<Salon> filterSalonsData;
-  final bool mostSearch;
+
+  @override
+  _BuildGridViewSalonsState createState() => _BuildGridViewSalonsState();
+}
+
+class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
+  final gridViewController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    gridViewController.addListener(() {
+      if (gridViewController.position.pixels ==
+          gridViewController.position.maxScrollExtent) {
+        SalonsCubit.getInstance(context).loadMoreSalons(context);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    gridViewController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final list = HomeCubit.getInstance(context).mostSearchList;
-    return GridView.builder(
-        physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(vertical: 10),
-        itemCount: list.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.84,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10),
-        itemBuilder: (context, index) => BuildSalonItemGrid(
-              salon: list[index],
-            ));
+    return InfoWidget(
+      responsiveWidget: (_, deviceInfo) => RefreshIndicator(
+        onRefresh: () async {
+          await SalonsCubit.getInstance(context)
+              .loadSalons(refreshPage: true, context: context);
+        },
+        child: BlocConsumer<SalonsCubit, SalonStates>(
+          buildWhen: (oldState, newState) {
+            if (newState is LoadingSalonState ||
+                newState is LoadedSalonState ||
+                newState is ErrorSalonState ||
+                newState is LoadingMoreSalonState ||
+                newState is InitialSalonState ||
+                newState is NoMoreSalonState ||
+                newState is LoadingMoreSalonState ||
+                newState is LoadedMoreSalonState)
+              return true;
+            else
+              return false;
+          },
+          listener: (_, state) {
+            if (state is ErrorSalonState)
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(state.error)));
+          },
+          builder: (_, state) {
+            print('Build salon screen');
+            if (state is LoadingSalonState)
+              return Center(child: CircularProgressIndicator());
+            if (state is ErrorSalonState)
+              return Center(child: Text(state.error));
+            final list =
+                SalonsCubit.getInstance(context).getSalonsToDisplay(context);
+            return Column(
+              children: [
+                Expanded(
+                  child: GridView.builder(
+                      controller: gridViewController,
+                      physics: BouncingScrollPhysics(),
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      itemCount: list.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.84,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10),
+                      itemBuilder: (context, index) => BuildSalonItemGrid(
+                            salon: list[index],
+                          )),
+                ),
+                if (state is LoadingMoreSalonState) LoadingMoreItemsIndicator(),
+                if (state is NoMoreSalonState)
+                  NoMoreItems(
+                    deviceInfo: deviceInfo,
+                    label: 'No More Salons',
+                  )
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }

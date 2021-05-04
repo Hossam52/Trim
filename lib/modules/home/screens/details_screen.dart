@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/modules/home/cubit/reserve_cubit.dart';
+import 'package:trim/modules/home/cubit/reserve_states.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/direction_map_screen.dart';
+import 'package:trim/modules/home/screens/raters_screen.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
@@ -21,68 +27,82 @@ class DetailsScreen extends StatelessWidget {
   static const String routeName = '/salon-detail';
   @override
   Widget build(BuildContext context) {
-    Salon salonData = ModalRoute.of(context).settings.arguments as Salon;
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
-            InfoWidget(
-              responsiveWidget: (context, deviceInfo) {
-                return SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Container(
-                    margin: const EdgeInsets.all(25),
-                    child: Column(
-                      children: [
-                        SalonLogo(
-                          showBottomName: true,
-                          salon: salonData,
-                          deviceInfo: deviceInfo,
-                          height: deviceInfo.orientation == Orientation.portrait
-                              ? deviceInfo.localHeight * 0.3
-                              : deviceInfo.localHeight * 0.6,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 18.0),
-                          child: IntrinsicHeight(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                    child: Openions(
-                                      deviceInfo: deviceInfo,
-                                      salonData: salonData,
-                                    ),
-                                    flex: 2),
-                                Expanded(
-                                    child: availabilityTime(
-                                        deviceInfo, salonData)),
-                              ],
+            BlocConsumer<SalonsCubit, SalonStates>(
+              listener: (_, state) {},
+              builder: (_, state) {
+                if (state is LoadingSalonDetailState)
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                if (state is ErrorSalonState)
+                  return Center(child: Text('Error happened ${state.error}'));
+                Salon salon = SalonsCubit.getInstance(context).salonDetail;
+                return InfoWidget(
+                  responsiveWidget: (context, deviceInfo) {
+                    return SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Container(
+                        margin: const EdgeInsets.all(25),
+                        child: Column(
+                          children: [
+                            SalonLogo(
+                              showBottomName: true,
+                              salon: salon,
+                              deviceInfo: deviceInfo,
+                              height:
+                                  deviceInfo.orientation == Orientation.portrait
+                                      ? deviceInfo.localHeight * 0.3
+                                      : deviceInfo.localHeight * 0.6,
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 18.0),
+                              child: IntrinsicHeight(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Expanded(
+                                        child: Openions(
+                                          deviceInfo: deviceInfo,
+                                          salon: salon,
+                                        ),
+                                        flex: 2),
+                                    Expanded(
+                                        child: availabilityTime(
+                                            deviceInfo, salon)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                      child: addressWidget(
+                                          deviceInfo, salon.address),
+                                      flex: 3),
+                                  Expanded(
+                                      child:
+                                          directionWidget(context, deviceInfo))
+                                ],
+                              ),
+                            ),
+                            SalonServices(
+                                services: salon.salonServices,
+                                child: reserveButton(context, deviceInfo),
+                                deviceInfo: deviceInfo),
+                            SalonOffers(deviceInfo, salon.salonOffers),
+                          ],
                         ),
-                        IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                  child: addressWidget(
-                                      deviceInfo, salonData.address),
-                                  flex: 3),
-                              Expanded(
-                                  child: directionWidget(context, deviceInfo))
-                            ],
-                          ),
-                        ),
-                        SalonServices(
-                            services: salonData.salonServices,
-                            child: reserveButton(context, deviceInfo),
-                            deviceInfo: deviceInfo),
-                        SalonOffers(deviceInfo, salonData.salonOffers),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -103,22 +123,7 @@ class DetailsScreen extends StatelessWidget {
           fontSize: getFontSizeVersion2(deviceInfo),
           onPressed: () => reserveSalon(context, deviceInfo),
           text: 'Reserve now',
-        )
-        // ElevatedButton(
-        //     style: ButtonStyle(
-        //       backgroundColor: MaterialStateProperty.all(Colors.black),
-        //       shape: MaterialStateProperty.all(
-        //         RoundedRectangleBorder(
-        //           borderRadius: BorderRadius.circular(20),
-        //         ),
-        //       ),
-        //       padding: MaterialStateProperty.all(
-        //         EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        //       ),
-        //     ),
-        //     onPressed: () => reserveSalon(context, deviceInfo),
-        //     child: const Text('Reserve now')),
-        );
+        ));
   }
 
   void reserveSalon(context, DeviceInfo deviceInfo) {
@@ -199,7 +204,7 @@ class DetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget availabilityTime(DeviceInfo deviceInfo, Salon salonData) {
+  Widget availabilityTime(DeviceInfo deviceInfo, Salon salon) {
     final fontSize = deviceInfo.localWidth *
         (deviceInfo.type == deviceType.mobile ? 0.14 * 0.25 : 0.11 * 0.25);
     return Card(
@@ -217,7 +222,7 @@ class DetailsScreen extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              salonData.openFrom == "" ? "N/A" : salonData.openFrom,
+              salon.openFrom == "" ? "N/A" : salon.openFrom,
               style: TextStyle(
                 color: Colors.green,
                 fontSize: fontSize,
@@ -236,7 +241,7 @@ class DetailsScreen extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              salonData.openTo == "" ? "N/A" : salonData.openTo,
+              salon.openTo == "" ? "N/A" : salon.openTo,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.green,
@@ -251,39 +256,44 @@ class DetailsScreen extends StatelessWidget {
 }
 
 class Openions extends StatelessWidget {
-  final Salon salonData;
+  final Salon salon;
 
   final DeviceInfo deviceInfo;
-  const Openions({Key key, this.deviceInfo, @required this.salonData})
+  const Openions({Key key, this.deviceInfo, @required this.salon})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 10.0,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 10, left: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: BuildStars(
-                stars: salonData.rate,
-                width: MediaQuery.of(context).size.width / 2,
-              ),
-            ),
-            Flexible(
-              child: Text(
-                '${salonData.commentsCount} openions',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: getFontSizeVersion2(deviceInfo),
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, RatersScreen.routeName);
+      },
+      child: Card(
+        elevation: 10.0,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10, left: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: BuildStars(
+                  stars: salon.rate,
+                  width: MediaQuery.of(context).size.width / 2,
                 ),
-                softWrap: true,
               ),
-            ),
-          ],
+              Flexible(
+                child: Text(
+                  '${salon.commentsCount} openions',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: getFontSizeVersion2(deviceInfo),
+                  ),
+                  softWrap: true,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

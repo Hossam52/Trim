@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 class BuildSearchWidget extends StatelessWidget {
   final Function pressed;
-  BuildSearchWidget({this.pressed});
+  final void Function(String) onChanged;
+  BuildSearchWidget({this.pressed, this.onChanged});
   @override
   Widget build(BuildContext context) {
     return Form(
         child: Container(
       padding: EdgeInsets.symmetric(horizontal: 7),
       child: TextFormField(
+        onChanged: onChanged,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.only(right: 10),
             hintText: 'Search for',

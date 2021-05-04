@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:trim/constants/api_path.dart';
-import 'package:trim/modules/auth/repositries/api_reponse.dart';
+import 'package:trim/api_reponse.dart';
 import 'package:trim/modules/auth/repositries/register_repositry.dart';
 
 class RegisterService {

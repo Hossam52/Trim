@@ -8,6 +8,10 @@ import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
+import 'package:trim/modules/home/cubit/persons_cubit.dart';
+import 'package:trim/modules/home/cubit/reserve_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import './constants/app_constant.dart';
@@ -40,7 +44,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => HomeCubit())],
+      providers: [
+        BlocProvider(create: (_) => HomeCubit()),
+        BlocProvider(create: (_) => SalonsCubit()),
+        BlocProvider(create: (_) => PersonsCubit()),
+      ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           localizationsDelegates: [
