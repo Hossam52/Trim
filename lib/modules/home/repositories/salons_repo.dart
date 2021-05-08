@@ -11,6 +11,7 @@ import '../models/all_persons_model.dart';
 import '../models/salon_model.dart';
 import 'package:trim/utils/services/call_api.dart';
 import '../models/available_dates_model.dart';
+import '../models/favorites_model.dart';
 
 Future<APIResponse<AllSalonsModel>> loadAllSalonsFromServer(int pageCount,
     {Map<String, dynamic> body = const {}}) async {
@@ -58,4 +59,28 @@ Future<APIResponse<AvilableDatesModel>> getAvailableDatesFromServer(
         error: true, errorMessage: response.errorMessage);
   return APIResponse<AvilableDatesModel>(
       data: AvilableDatesModel.fromJson(json: response.data));
+}
+
+Future<APIResponse<FavoritesModel>> loadFavoriteSalonsFromServer(
+    int pageCount) async {
+  final recievedData = await callAPI(favoriteSalonsUrl,
+      quiries: {'page': pageCount}, callType: CallType.Get);
+  if (recievedData.error)
+    return APIResponse<FavoritesModel>(
+        error: true, errorMessage: recievedData.errorMessage);
+  else
+    return APIResponse<FavoritesModel>(
+        data: FavoritesModel.fromJson(json: recievedData.data));
+}
+
+Future<APIResponse<FavoritesModel>> loadFavoritePersonsFromServer(
+    int pageCount) async {
+  final recievedData = await callAPI(favoritePersonsUrl,
+      quiries: {'page': pageCount}, callType: CallType.Get);
+  if (recievedData.error)
+    return APIResponse<FavoritesModel>(
+        error: true, errorMessage: recievedData.errorMessage);
+  else
+    return APIResponse<FavoritesModel>(
+        data: FavoritesModel.fromJson(json: recievedData.data));
 }

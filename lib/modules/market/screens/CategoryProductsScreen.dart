@@ -181,7 +181,6 @@ class _BuildProductItemState extends State<BuildProductItem> {
 
   Widget buildProductActions() {
     return BlocBuilder<CartBloc, CartStates>(builder: (context, state) {
-     
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -196,7 +195,6 @@ class _BuildProductItemState extends State<BuildProductItem> {
                     nameAr: widget.prodcut.productName,
                     price: widget.prodcut.productPrice,
                     nameEn: widget.prodcut.nameEn,
-                    
                   ),
                 ),
               );

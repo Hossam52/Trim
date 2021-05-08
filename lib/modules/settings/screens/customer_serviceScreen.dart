@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class CustomerServiceScreen extends StatelessWidget {
   static const routeName = '/customer-service';
-  final email = 'hossam.fcis@gmail.com';
-  final phones = ['01115425561', '0248581898', '12345676', '1111111111'];
+  // final email = 'hossam.fcis@gmail.com';
+  // final phones = ['01115425561', '0248581898', '12345676', '1111111111'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,14 +28,16 @@ class CustomerServiceScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.0),
                     border: Border.all(color: Colors.grey)),
-                child: _buildContactInformation())
+                child: _buildContactInformation(context))
           ],
         ),
       ),
     );
   }
 
-  Widget _buildContactInformation() {
+  Widget _buildContactInformation(BuildContext context) {
+    final phones = SettingCubit.getInstance(context).phones;
+    final emails = SettingCubit.getInstance(context).emails;
     return InfoWidget(responsiveWidget: (_, deviceInfo) {
       return Column(
         children: [
@@ -49,7 +52,7 @@ class CustomerServiceScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: phones.map((text) => Text(text)).toList(),
+                children: phones.map((phone) => Text(phone.phone)).toList(),
               )
             ],
           ),
@@ -63,7 +66,7 @@ class CustomerServiceScreen extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold))),
               Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [Text(email)],
+                children: emails.map((e) => Text(e.email)).toList(),
               )
             ],
           ),

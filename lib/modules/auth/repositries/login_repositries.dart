@@ -1,35 +1,19 @@
-import 'package:flutter/foundation.dart';
+import 'package:trim/api_reponse.dart';
+import 'package:trim/utils/services/call_api.dart';
 
-class LoginRepositry {
-  String token;
-  String id;
-  String name;
-  String phone;
-  String email;
-  String image;
-  String cover;
-  String gender;
+import '../models/login_model.dart';
+import 'package:trim/constants/api_path.dart';
 
-  LoginRepositry({
-    @required this.token,
-    this.id,
-    this.name,
-    this.phone,
-    this.email,
-    this.image,
-    this.cover,
-    this.gender,
-  });
-
-  factory LoginRepositry.fromJson(Map<String, dynamic> data) {
-    return LoginRepositry(
-        token: data['token'],
-        id: data['user']['id'].toString(),
-        name: data['user']['name'],
-        phone: data['user']['phone'],
-        email: data['user']['email'],
-        image: data['user']['image'],
-        gender: data['user']['gender'],
-        cover: data['user']['cover']);
+Future<APIResponse<LoginModel>> loginUser(
+    String userName, String password) async {
+  final response = await callAPI(loginUrl,
+      body: {'text': userName, 'password': password}, callType: CallType.Post);
+  if (response.error) {
+    print(response.data);
+    return APIResponse<LoginModel>(
+        error: true, errorMessage: response.data['message']);
+  } else {
+    return APIResponse<LoginModel>(
+        data: LoginModel.fromJson(json: response.data['data']));
   }
 }

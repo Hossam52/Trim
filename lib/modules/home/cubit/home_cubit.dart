@@ -10,6 +10,7 @@ import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/models/trim_star_model.dart';
 import 'package:trim/modules/home/repositories/home_repo.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
+import 'package:trim/modules/settings/screens/favourties_screen.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/modules/home/models/home_model.dart';
 
@@ -56,6 +57,12 @@ class HomeCubit extends Cubit<HomeStates> {
     emit(MostSearchState());
 
     Navigator.pushNamed(context, SalonsScreen.routeName);
+  }
+
+  void navigateToFavoriets(BuildContext context) async {
+    emit(FavoriteState());
+
+    Navigator.pushNamed(context, FavouritesScreen.routeName);
   }
 
 //-------------------------API Calls Start-----------------

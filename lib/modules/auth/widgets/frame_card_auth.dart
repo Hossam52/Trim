@@ -26,6 +26,7 @@ class CardLayout extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.all(15),
                   child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -6,6 +6,7 @@ import 'package:trim/modules/auth/widgets/not_correct_input.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/transparent_appbar.dart';
 import 'package:trim/general_widgets/trim_text_field.dart';
+import '../cubits/auth_cubit.dart';
 
 class ForgotPassword extends StatefulWidget {
   static const routeName = '/forgot-password';
@@ -34,7 +35,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               if (!correctData) ErrorWarning(text: errorMessage),
               TrimTextField(
                   controller: _emailController,
-                  validator: validateLogin,
+                  validator: AuthCubit.getInstance(context).validateLogin ,
                   placeHolder: 'الايميل الالكتروني'),
               DefaultButton(
                 text: 'البحث',

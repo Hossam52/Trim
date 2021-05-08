@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import '../screens/registration_screen.dart';
 
 class GenderSelectionWidget extends StatelessWidget {
