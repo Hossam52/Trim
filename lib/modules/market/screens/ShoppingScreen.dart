@@ -113,7 +113,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         Cart(),
         Expanded(
           child: BuildSearchWidget(
-            pressed: () {},
             onChanged: (value) async {
               print("search\n");
             },

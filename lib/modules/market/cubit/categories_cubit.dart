@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/api_path.dart';
@@ -15,25 +13,25 @@ class AllcategoriesCubit extends Cubit<CategoriesStates> {
   }
   static AllcategoriesCubit getInstance(BuildContext context) =>
       BlocProvider.of(context);
-  void getData() async {
+  Future<void> getData() async {
     try {
       emit(LoadingState());
       final response =
           await DioHelper.postData(url: allCategoriesUrl, body: {});
-      print('error here');
+      print('Error in Categories');
       print(response.statusCode);
-      //     if(response.statusCode<400)
       var body = response.data['data'];
       print(body);
       print('lenght\n');
       print(body.length);
-      List<Category> categories=[];
+      List<Category> categories = [];
       for (var category in body) {
         print(category);
         categories.add(Category.fromjson(category));
       }
       emit(LoadedState(categories));
     } catch (e) {
+      //   DioErrorType.connectTimeout;
       print(e.toString());
       emit(ErrorStateCategories());
     }

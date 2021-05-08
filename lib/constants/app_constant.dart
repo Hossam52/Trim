@@ -31,15 +31,13 @@ double getFontSize(DeviceInfo deviceInfo) {
 
 double getFontSizeVersion2(DeviceInfo deviceInfo) {
   if (deviceInfo.type == deviceType.mobile) {
-    
-    return deviceInfo.screenWidth *  
-    (deviceInfo.orientation==Orientation.portrait?0.0535:0.045);
-  } else 
-  {
-    
-    return deviceInfo.screenWidth *  
-    (deviceInfo.orientation==Orientation.portrait?0.0435:0.035);
+    return deviceInfo.screenWidth *
+        (deviceInfo.orientation == Orientation.portrait ? 0.0535 : 0.045);
+  } else {
+    return deviceInfo.screenWidth *
+        (deviceInfo.orientation == Orientation.portrait ? 0.0435 : 0.035);
   }
 }
 
 final kPadding = const EdgeInsets.only(bottom: 8, left: 8, right: 8);
+bool isCategoryScreen = true;

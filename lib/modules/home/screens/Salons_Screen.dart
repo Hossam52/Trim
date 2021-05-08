@@ -160,7 +160,6 @@ class _SalonsScreenState extends State<SalonsScreen> {
         ),
         Expanded(
           child: BuildSearchWidget(
-            pressed: () {},
             onChanged: (String val) {
               SalonsCubit.getInstance(context).searchSalonsByName(val);
             },

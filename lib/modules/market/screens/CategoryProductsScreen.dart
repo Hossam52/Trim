@@ -10,6 +10,7 @@ import 'package:trim/modules/market/cubit/products_category_cubit.dart';
 import 'package:trim/modules/market/cubit/products_category_events.dart';
 import 'package:trim/modules/market/cubit/search_bloc.dart';
 import 'package:trim/modules/market/cubit/search_events.dart';
+import 'package:trim/modules/market/cubit/search_states.dart';
 import 'package:trim/modules/market/models/Product.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/market/widgets/cart.dart';
@@ -42,22 +43,27 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   @override
   void initState() {
     productsBloc = BlocProvider.of<ProductsCategoryBloc>(context);
-    searchBloc = BlocProvider.of<SearchBloc>(context);
     cartCubit = BlocProvider.of<CartBloc>(context);
     super.initState();
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() 
+  {
+    searchBloc = BlocProvider.of<SearchBloc>(context);
     int categoryId = ModalRoute.of(context).settings.arguments as int;
     productsBloc.add(FetchDataFromApi(categoryId: categoryId));
     super.didChangeDependencies();
   }
 
   GlobalKey globalKey = GlobalKey<ScaffoldState>();
+  TextEditingController textEditingController=TextEditingController();
   String searchedString;
+  bool isCategory;
   @override
   Widget build(BuildContext context) {
+    print('from here rebuild\n');
+    isCategory = true;
     return Scaffold(
         key: globalKey,
         appBar: AppBar(
@@ -82,47 +88,69 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
             padding: const EdgeInsets.all(15.0),
             child: InfoWidget(
               responsiveWidget: (context, deviceInfo) {
-                return Column(
-                  children: [
-                    BuildSearchWidget(
-                      pressed: () {
-                        searchBloc.add(SearchEvent(
-                            searchWord: searchedString,
-                            products: productsBloc.products));
-                        print('Search bar products button search');
-                        print(searchedString);
-                      },
-                      onChanged: (value) async {
-                        searchBloc.add(SearchEvent(
-                            searchWord: value,
-                            products: productsBloc.products));
-                        print('Search bar products');
-                        searchedString = value;
-                        // if (value.isNotEmpty) {
-                        //   if(searchBloc.searchedProducts.length!=0)
-                        //   productsBloc.products = searchBloc.searchedProducts;
-                        // }
-                      },
-                    ),
-                    BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
-                        builder: (_, state) {
-                      print('rebuild');
-                      if (state is InitialState || state is LoadingState)
-                        return Center(child: CircularProgressIndicator());
-                      else if (state is LoadedState)
-                        return Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: buildProducts(deviceInfo),
-                          ),
-                        );
-                      else
-                        return Center(
-                          child: Text(
-                              '\nPlease Check from your internet connecation !!'),
-                        );
-                    })
-                  ],
+                return BlocConsumer<SearchBloc,SearchStates>(
+                  listener: (_,state){},
+                    builder:(_,state)=> Column(
+                    children: [
+                      BuildSearchWidget(
+                        textEditingController: textEditingController,
+                        prefixButton: ElevatedButton(
+                            onPressed: () 
+                            {
+                              searchBloc.add(SearchEvent(
+                                  searchWord: textEditingController.text,
+                                  products: productsBloc.products));
+                              print('Search bar products button search');
+                              print(textEditingController.text);
+                            },
+                            child: Icon(
+                              Icons.search,
+                              color: Colors.white,
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.cyan),
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(25))))),
+                        onChanged: (value) async 
+                        {
+                          
+                          searchBloc.add(SearchEvent(
+                              searchWord: value,
+                              products: productsBloc.products));
+                          print('Search bar products');
+                        },
+                        validator: (value) 
+                        {
+                          if (value.isEmpty)
+                            return 'Please Enter word to search';
+                          else
+                            return null;
+                        },
+                      ),
+                      BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
+                          builder: (_, state) {
+                        print('rebuild');
+                        if (state is InitialState ||
+                            state is LoadingStateProductsCategory)
+                          return Center(child: CircularProgressIndicator());
+                        else if (state is LoadedStateProductsCategory)
+                          return Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: buildProducts(deviceInfo),
+                            ),
+                          );
+                        else if (state is ErrorStateProductsCategory)
+                          return Center(
+                            child: Text(
+                                'Please Check from your internet connecation !!'),
+                          );
+                      })
+                    ],
+                  ),
                 );
               },
             ),
@@ -132,39 +160,39 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
 
   Widget buildProducts(DeviceInfo deviceInfo) {
     bool isSearch = searchBloc.searchedProducts.isEmpty;
-    bool isCategory=true;
     return BlocConsumer<CartBloc, CartStates>(
         listener: (_, state) {
           print('Inside Category products');
+          isCategoryScreen = true;
           if (state is ErrorStateCart) {
-            if (isCategory) {
+            if (isCategoryScreen) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Error in your internet connecation !!'),
                 ),
               );
-              isCategory = false;
             }
           }
         },
         builder: (_, state) => GridView.builder(
-            itemCount: isSearch
-                ? productsBloc.products.length
-                : searchBloc.searchedProducts.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 7,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.47,
-            ),
-            itemBuilder: (context, index) {
-              return BuildProductItem(
-                deviceInfo: deviceInfo,
-                prodcut: isSearch
-                    ? productsBloc.products[index]
-                    : searchBloc.searchedProducts[index],
-              );
-            }));
+              itemCount: isSearch
+                  ? productsBloc.products.length
+                  : searchBloc.searchedProducts.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 7,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.47,
+              ),
+              itemBuilder: (context, index) {
+                return BuildProductItem(
+                  deviceInfo: deviceInfo,
+                  prodcut: isSearch
+                      ? productsBloc.products[index]
+                      : searchBloc.searchedProducts[index],
+                );
+              }),
+        );
   }
 }
 
@@ -244,14 +272,14 @@ class _BuildProductItemState extends State<BuildProductItem> {
           pressed: () async {
             cartCubit.add(
               AddingItemEvent(
-                cartItem: CartItem(
-                  id: widget.prodcut.productId,
-                  imageName: widget.prodcut.productImage,
-                  nameAr: widget.prodcut.nameAr,
-                  price: widget.prodcut.productPrice,
-                  nameEn: widget.prodcut.nameEn,
-                ),
-              ),
+                  cartItem: CartItem(
+                    id: widget.prodcut.productId,
+                    imageName: widget.prodcut.productImage,
+                    nameAr: widget.prodcut.nameAr,
+                    price: widget.prodcut.productPrice,
+                    nameEn: widget.prodcut.nameEn,
+                  ),
+                  screenId: '1'),
             );
           },
           deviceInfo: widget.deviceInfo,
@@ -263,7 +291,8 @@ class _BuildProductItemState extends State<BuildProductItem> {
         BuildRawMaterialButton(
           icon: Icons.remove,
           pressed: () {
-            cartCubit.add(DecreaseEvent(id: widget.prodcut.productId));
+            cartCubit.add(
+                DecreaseEvent(id: widget.prodcut.productId, screenId: '1'));
           },
           deviceInfo: widget.deviceInfo,
         ),

@@ -63,7 +63,8 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => AllcategoriesCubit()),
         BlocProvider(create: (_) => ProductsCategoryCubit()),
         BlocProvider(create: (_) => ProductsCategoryBloc()),
-        BlocProvider(create: (context) => CartBloc()),
+        BlocProvider(create: (context) => CartBloc(),),
+        BlocProvider(create: (context)=>SearchBloc()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
