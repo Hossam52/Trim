@@ -45,6 +45,7 @@ dependencies:
   cached_network_image: ^3.0.0
   loadmore: ^2.0.1
   flutter_easyrefresh: ^2.2.1
+  fluttertoast: ^8.0.6
   custom_refresh_indicator: ^0.9.0
   flutter_cache_manager: ^3.0.1
 
@@ -59,5 +60,5 @@ flutter:
 
   assets:
     - assets/images/
-
     - assets/icons/
+    - assets/languages/

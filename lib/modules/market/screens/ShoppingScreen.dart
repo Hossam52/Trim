@@ -53,9 +53,10 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                 child: Column(
                   children: [
                     Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
-                        child: buildHeader()),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 20),
+                      child: buildHeader(),
+                    ),
                     BlocBuilder<AllcategoriesCubit, CategoriesStates>(
                         builder: (_, state) {
                       if (state is LoadingState || state is InitialState)
@@ -69,7 +70,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           ),
                         );
                       } else
-                        return Center(child: Text('Please Make sure from internet connection'));
+                        return Center(
+                            child: Text(
+                                'Please Make sure from internet connection'));
                     })
                   ],
                 ),
@@ -85,7 +88,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     return GridView.builder(
       itemBuilder: (context, index) => GestureDetector(
         onTap: () {
-          widget.setCategoryIndex(index);
+        //  widget.setCategoryIndex(index);
           Navigator.pushNamed(
             context,
             CategoryProductsScreen.routeName,
@@ -108,10 +111,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     return Row(
       children: [
         Cart(),
-        
         Expanded(
           child: BuildSearchWidget(
             pressed: () {},
+            onChanged: (value) async {
+              print("search\n");
+            },
           ),
         ),
       ],

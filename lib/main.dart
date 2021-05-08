@@ -8,6 +8,7 @@ import 'package:flutter_checkout_payment/flutter_checkout_payment.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
+import 'package:trim/appLocale/appLocale.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
@@ -19,6 +20,7 @@ import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
 import 'package:trim/modules/market/cubit/products_category_cubit.dart';
 import 'package:trim/modules/settings/cubits/settings_cubit.dart';
+import 'package:trim/modules/market/cubit/search_bloc.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
@@ -55,6 +57,13 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => HomeCubit()),
+        BlocProvider(create: (_) => AllcategoriesCubit()),
+        BlocProvider(
+          create: (_) => ProductsCategoryCubit(),
+        ),
+        BlocProvider(create: (_) => ProductsCategoryBloc()),
+        BlocProvider(create: (context) => CartBloc()),
+        BlocProvider(create: (context) => SearchBloc()),
         BlocProvider(create: (_) => SalonsCubit()),
         BlocProvider(create: (_) => PersonsCubit()),
         BlocProvider(create: (_) => AllcategoriesCubit()),
@@ -67,6 +76,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           localizationsDelegates: [
+            AppLocale.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
@@ -75,6 +85,14 @@ class _MyAppState extends State<MyApp> {
             const Locale('en', ''), // English, no country code
             const Locale('ar', ''),
           ],
+          localeResolutionCallback: (currentLocale, supportedLocales) {
+            if (currentLocale != null) print(currentLocale.languageCode);
+            for (Locale locale in supportedLocales) {
+              if (currentLocale.languageCode == locale.languageCode)
+                return currentLocale;
+            }
+            return supportedLocales.first;
+          },
           theme: ThemeData(
               textTheme:
                   TextTheme(button: TextStyle(fontSize: defaultFontSize))),

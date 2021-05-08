@@ -12,4 +12,4 @@ class LoadedState extends CategoriesStates {
 
 class LoadingState extends CategoriesStates {}
 
-class ErrorState extends CategoriesStates {}
+class ErrorStateCategories extends CategoriesStates {}

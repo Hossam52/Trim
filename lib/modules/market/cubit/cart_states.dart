@@ -7,4 +7,5 @@ class LoadedStateGetCartItems extends CartStates{}
 class AddItem extends CartStates{}
 class UpdatedItem extends CartStates{}
 class DeleteItem extends CartStates{}
-class ErrorState extends CartStates{}
+class ErrorStateCart extends CartStates{}
+class ErrorStateCartInBadge extends CartStates{}

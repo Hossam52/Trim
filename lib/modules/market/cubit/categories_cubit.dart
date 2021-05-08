@@ -35,7 +35,7 @@ class AllcategoriesCubit extends Cubit<CategoriesStates> {
       emit(LoadedState(categories));
     } catch (e) {
       print(e.toString());
-      emit(ErrorState());
+      emit(ErrorStateCategories());
     }
   }
 }

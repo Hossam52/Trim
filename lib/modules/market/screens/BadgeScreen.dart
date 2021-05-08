@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/constants/api_path.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/cart_states.dart';
-import 'package:trim/modules/market/cubit/products_category_cubit.dart';
-import 'package:trim/modules/market/models/Product.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
-import 'package:trim/modules/payment/screens/confirm_order_screen.dart';
-import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -19,9 +15,11 @@ import 'package:trim/general_widgets/default_button.dart';
 
 class BadgeScrren extends StatelessWidget {
   static String routeName = 'BadgeScreen';
+  GlobalKey globalKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       body: SafeArea(
         child: Stack(
           children: [
@@ -29,7 +27,17 @@ class BadgeScrren extends StatelessWidget {
               padding: kPadding,
               child: InfoWidget(
                 responsiveWidget: (context, deviceInfo) {
-                  return BlocBuilder<CartBloc, CartStates>(builder: (_, state) {
+                  return BlocConsumer<CartBloc, CartStates>(
+
+                      listener: (ctx, state) 
+                    {
+                    if (state is ErrorStateCart) 
+                    {
+                      print('Appear Here');
+                      Fluttertoast.showToast(
+                          msg: 'Please check your internet connecation2');
+                    }
+                  }, builder: (_, state) {
                     List<CartItem> cartItems =
                         BlocProvider.of<CartBloc>(context).getCartList();
                     return Column(
@@ -65,7 +73,8 @@ class BadgeScrren extends StatelessWidget {
     );
   }
 
-  Widget buildBackButton() {
+  Widget buildBackButton() 
+  {
     return Container(
       width: double.infinity,
       color: Colors.grey.withAlpha(150),
@@ -85,23 +94,12 @@ class BadgeScrren extends StatelessWidget {
       width: deviceInfo.localWidth / 1.3,
       child: DefaultButton(
         onPressed: () async {
-          List<CartItem> cartItems =
-              BlocProvider.of<CartBloc>(context).getCartList();
-          for (var cart in cartItems) {
-            try {
-              print(cart.id);
-              await DioHelper.postData(url: addToCartUrl, body: {
-                'item_id': cart.id,
-                'quantity': cart.quantity,
-                'type': 'product',
-                // 'note': '15 item',
-              });
-              print('confirm\n');
-              Navigator.pushNamed(context, ConfirmOrderScreen.routeName);
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('please make sure from internet conntection')));
-            }
+          try {
+            List<CartItem> cartItems =
+                BlocProvider.of<CartBloc>(context).getCartList();
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('please make sure from internet conntection')));
           }
         },
         text: 'Confirm order',
@@ -123,52 +121,29 @@ class _ProductItemState extends State<ProductItem> {
   CartBloc cartBloc;
   @override
   void initState() {
-    cartBloc = BlocProvider.of(context);
+    cartBloc = BlocProvider.of<CartBloc>(context);
     // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: ValueKey(widget.cartItem.id.toString()),
-      background: Center(
-        child: Text(
-          'Delete This Item',
-          style: TextStyle(
-              fontSize: getFontSizeVersion2(widget.deviceInfo),
-              color: Colors.red),
-        ),
-      ),
-      direction: DismissDirection.endToStart,
-      onDismissed: (direction) {
-        cartBloc.add(DeleteItemEvent(
-            id: widget.cartItem.id, rowId: widget.cartItem.rowId));
-      },
-      confirmDismiss: (dissmiss) async {
-        return showDialog(
-            context: context,
-            builder: (context) {
-              return ConfirmDeleteItem();
-            });
-      },
-      child: Container(
-        height: widget.deviceInfo.orientation == Orientation.portrait
-            ? widget.deviceInfo.localHeight / 4
-            : widget.deviceInfo.localHeight / 2,
-        child: Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-          child: Row(
-            children: [
-              Expanded(flex: 2, child: buildProductImage(widget.deviceInfo)),
-              Expanded(flex: 3, child: buildProductDetails(widget.deviceInfo)),
-              Expanded(
-                child: buildTrashIcon(widget.deviceInfo),
-              ),
-            ],
-          ),
+    return Container(
+      height: widget.deviceInfo.orientation == Orientation.portrait
+          ? widget.deviceInfo.localHeight / 4
+          : widget.deviceInfo.localHeight / 2,
+      child: Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        child: Row(
+          children: [
+            Expanded(flex: 2, child: buildProductImage(widget.deviceInfo)),
+            Expanded(flex: 3, child: buildProductDetails(widget.deviceInfo)),
+            Expanded(
+              child: buildTrashIcon(widget.deviceInfo),
+            ),
+          ],
         ),
       ),
     );
