@@ -16,7 +16,7 @@ class ProductsCategoryCubit extends Cubit<ProductsCategoryStates> {
       emit(LoadedState());
       print(response.data);
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorStateProductsCategory());
       print(e.toString());
     }
   }
@@ -25,30 +25,43 @@ class ProductsCategoryCubit extends Cubit<ProductsCategoryStates> {
 class ProductsCategoryBloc
     extends Bloc<ProductsCategoryEvents, ProductsCategoryStates> {
   ProductsCategoryBloc() : super(InitialState());
-  List<Product> products = [];
-  
+  List<Product> products;
+  List<Product> searchedProducts;
   @override
   Stream<ProductsCategoryStates> mapEventToState(
       ProductsCategoryEvents event) async* {
-    try {
-      yield LoadingState();
-      final response = await DioHelper.postData(
-          url: '$productsCategoryUrl?category_id=${event.categoryId}',
-          body: {});
-      yield LoadedState();
-      print(response.data);
-      
-      var body = response.data['data'];
-      for (var product in body) products.add(Product.fromjson(product));
-    } catch (e) 
-    {
-      yield ErrorState();
-      print('\n');
-      print(e.toString());
+    if (event is FetchDataFromApi) {
+      try {
+        products = [];
+        yield LoadingState();
+        final response = await DioHelper.postData(
+            url: '$productsCategoryUrl?category_id=${event.categoryId}',
+            body: {});
+        yield LoadedState();
+        print(response.data);
+        var body = response.data['data'];
+        for (var product in body) products.add(Product.fromjson(product));
+      } catch (e) {
+        yield ErrorStateProductsCategory();
+        print('\n');
+        print(e.toString());
+      }
+    } else if (event is Searchedproducts) {
+      if (event.searchedWord != "") {
+        yield InitialState();
+        try {
+          yield LoadingState();
+
+          searchedProducts = products.where(
+              (element) => element.nameAr.startsWith(event.searchedWord));
+
+          yield LoadedState();
+        } catch (e) {}
+      }
     }
   }
-  void updateProduct(int productId)
-  {
-   // products.wh
+
+  void updateProduct(int productId) {
+    // products.wh
   }
 }

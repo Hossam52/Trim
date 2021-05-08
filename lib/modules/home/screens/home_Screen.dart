@@ -6,6 +6,7 @@ import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
+import 'package:trim/modules/home/models/home_model.dart';
 import 'package:trim/modules/market/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/map_screen.dart';
@@ -72,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
       showCategories = true;
       pagesBuilder[1].page = ShoppingScreen(
         setCategoryIndex: setSelectedCategoryIndex,
-        
       );
     });
   }
@@ -138,7 +138,7 @@ class BuildHomeWidget extends StatelessWidget {
   final int heightNavigationBar;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {   
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
         double fontSize = constants.getFontSizeVersion2(deviceInfo);

@@ -5,15 +5,14 @@ import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/cart_states.dart';
-import 'package:trim/modules/market/cubit/categories_cubit.dart';
 import 'package:trim/modules/market/cubit/procucts_category_states.dart';
 import 'package:trim/modules/market/cubit/products_category_cubit.dart';
 import 'package:trim/modules/market/cubit/products_category_events.dart';
-import 'package:trim/modules/market/models/Category.dart';
+import 'package:trim/modules/market/cubit/search_bloc.dart';
+import 'package:trim/modules/market/cubit/search_events.dart';
 import 'package:trim/modules/market/models/Product.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/market/widgets/cart.dart';
-import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/BuildRawMaterialButton.dart';
@@ -32,6 +31,8 @@ class CategoryProductsScreen extends StatefulWidget {
 class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   ProductsCategoryBloc productsBloc;
   CartBloc cartCubit;
+  SearchBloc searchBloc;
+
   @override
   void dispose() {
     super.dispose();
@@ -41,6 +42,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   @override
   void initState() {
     productsBloc = BlocProvider.of<ProductsCategoryBloc>(context);
+    searchBloc = BlocProvider.of<SearchBloc>(context);
     cartCubit = BlocProvider.of<CartBloc>(context);
     super.initState();
   }
@@ -52,16 +54,20 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     super.didChangeDependencies();
   }
 
+  GlobalKey globalKey = GlobalKey<ScaffoldState>();
+  String searchedString;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        key: globalKey,
+        appBar: AppBar(
           backgroundColor: Colors.blue[800],
-          leading: BackButton(
-            onPressed: () {
-              widget.backToCategories();
-            },
-          ),
+
+          // leading: BackButton(
+          //   onPressed: () {
+          //     widget.backToCategories();
+          //   },
+          // ),
           actions: [
             Padding(
               padding: const EdgeInsets.all(12.0),
@@ -69,10 +75,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
             )
           ],
           centerTitle: true,
-          title: Text('ae')),
-      body: BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
-          builder: (_, state) {
-        return SafeArea(
+          title: Text('Category Products'),
+        ),
+        body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: InfoWidget(
@@ -80,10 +85,28 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                 return Column(
                   children: [
                     BuildSearchWidget(
-                      pressed: () {},
+                      pressed: () {
+                        searchBloc.add(SearchEvent(
+                            searchWord: searchedString,
+                            products: productsBloc.products));
+                        print('Search bar products button search');
+                        print(searchedString);
+                      },
+                      onChanged: (value) async {
+                        searchBloc.add(SearchEvent(
+                            searchWord: value,
+                            products: productsBloc.products));
+                        print('Search bar products');
+                        searchedString = value;
+                        // if (value.isNotEmpty) {
+                        //   if(searchBloc.searchedProducts.length!=0)
+                        //   productsBloc.products = searchBloc.searchedProducts;
+                        // }
+                      },
                     ),
                     BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
                         builder: (_, state) {
+                      print('rebuild');
                       if (state is InitialState || state is LoadingState)
                         return Center(child: CircularProgressIndicator());
                       else if (state is LoadedState)
@@ -94,8 +117,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                           ),
                         );
                       else
-                        Center(
-                          child: Text('Error'),
+                        return Center(
+                          child: Text(
+                              '\nPlease Check from your internet connecation !!'),
                         );
                     })
                   ],
@@ -103,26 +127,44 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
               },
             ),
           ),
-        );
-      }),
-    );
+        ));
   }
 
   Widget buildProducts(DeviceInfo deviceInfo) {
-    return GridView.builder(
-        itemCount: productsBloc.products.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 7,
-          mainAxisSpacing: 10,
-          childAspectRatio: 0.47,
-        ),
-        itemBuilder: (context, index) {
-          return BuildProductItem(
-            deviceInfo: deviceInfo,
-            prodcut: productsBloc.products[index],
-          );
-        });
+    bool isSearch = searchBloc.searchedProducts.isEmpty;
+    bool isCategory=true;
+    return BlocConsumer<CartBloc, CartStates>(
+        listener: (_, state) {
+          print('Inside Category products');
+          if (state is ErrorStateCart) {
+            if (isCategory) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Error in your internet connecation !!'),
+                ),
+              );
+              isCategory = false;
+            }
+          }
+        },
+        builder: (_, state) => GridView.builder(
+            itemCount: isSearch
+                ? productsBloc.products.length
+                : searchBloc.searchedProducts.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 7,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.47,
+            ),
+            itemBuilder: (context, index) {
+              return BuildProductItem(
+                deviceInfo: deviceInfo,
+                prodcut: isSearch
+                    ? productsBloc.products[index]
+                    : searchBloc.searchedProducts[index],
+              );
+            }));
   }
 }
 
@@ -136,14 +178,27 @@ class BuildProductItem extends StatefulWidget {
 }
 
 class _BuildProductItemState extends State<BuildProductItem> {
-  int quantity;
   double fontSize = 0;
   CartBloc cartCubit;
+  bool inCategory;
   @override
   void initState() {
-    quantity = 0;
     // TODO: implement initState
     super.initState();
+  }
+
+  @override
+  void deactivate() {
+    print('deactive mood');
+    // TODO: implement deactivate
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    print('dispose mood');
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -151,6 +206,7 @@ class _BuildProductItemState extends State<BuildProductItem> {
     fontSize = getFontSizeVersion2(widget.deviceInfo);
     cartCubit = BlocProvider.of<CartBloc>(context);
     print(cartCubit.items.length);
+    print('From start build\n');
     return Container(
       padding: const EdgeInsets.only(bottom: 5),
       decoration: BoxDecoration(
@@ -180,43 +236,43 @@ class _BuildProductItemState extends State<BuildProductItem> {
   }
 
   Widget buildProductActions() {
-    return BlocBuilder<CartBloc, CartStates>(builder: (context, state) {
-     
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          BuildRawMaterialButton(
-            icon: Icons.add,
-            pressed: () async {
-              cartCubit.add(
-                AddingItemEvent(
-                  cartItem: CartItem(
-                    id: widget.prodcut.productId,
-                    imageName: widget.prodcut.productImage,
-                    nameAr: widget.prodcut.productName,
-                    price: widget.prodcut.productPrice,
-                    nameEn: widget.prodcut.nameEn,
-                    
-                  ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        BuildRawMaterialButton(
+          icon: Icons.add,
+          pressed: () async {
+            cartCubit.add(
+              AddingItemEvent(
+                cartItem: CartItem(
+                  id: widget.prodcut.productId,
+                  imageName: widget.prodcut.productImage,
+                  nameAr: widget.prodcut.nameAr,
+                  price: widget.prodcut.productPrice,
+                  nameEn: widget.prodcut.nameEn,
                 ),
-              );
-            },
-            deviceInfo: widget.deviceInfo,
-          ),
-          Text(
-            '${cartCubit.items.containsKey(widget.prodcut.productId) ? cartCubit.items[widget.prodcut.productId].quantity : 0}',
-            style: TextStyle(fontSize: fontSize),
-          ),
-          BuildRawMaterialButton(
-            icon: Icons.remove,
-            pressed: () {
-              cartCubit.add(DecreaseEvent(id: widget.prodcut.productId));
-            },
-            deviceInfo: widget.deviceInfo,
-          ),
-        ],
-      );
-    });
+              ),
+            );
+          },
+          deviceInfo: widget.deviceInfo,
+        ),
+        Text(
+          '${cartCubit.items.containsKey(widget.prodcut.productId) ? cartCubit.items[widget.prodcut.productId].quantity : 0}',
+          style: TextStyle(fontSize: fontSize),
+        ),
+        BuildRawMaterialButton(
+          icon: Icons.remove,
+          pressed: () {
+            cartCubit.add(DecreaseEvent(id: widget.prodcut.productId));
+          },
+          deviceInfo: widget.deviceInfo,
+        ),
+      ],
+    );
+
+    // return BlocBuilder<CartBloc, CartStates>(builder: (context, state) {
+    //   return
+    // });
   }
 
   Widget buildProductPrice() {
@@ -241,7 +297,7 @@ class _BuildProductItemState extends State<BuildProductItem> {
 
   Widget buildProductName() {
     return Text(
-      widget.prodcut.productName,
+      widget.prodcut.nameAr,
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
     );

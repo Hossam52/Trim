@@ -69,7 +69,6 @@ class HomeCubit extends Cubit<HomeStates> {
 
     final response = await DioHelper.getData(methodUrl: homeUrl, queries: {});
     homeModel = HomeModel.fromJson(json: response.data);
-
     emit(SuccessHomeState());
   }
 }

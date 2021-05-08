@@ -52,6 +52,7 @@ class Salon {
       this.salonOffers});
 
   Salon.fromJson({Map<String, dynamic> json}) {
+    print('rate : ${json['rate']}');
     id = json['id'];
     name = json['name'];
     email = json['email'];
@@ -62,7 +63,7 @@ class Salon {
     cityEn = json['city_en'];
     cityAr = json['city_ar'];
     gender = json['gender'];
-    rate = (json['rate'] as int).toDouble();
+    rate = ((json['rate']??0)as int).toDouble();
     commentsCount = json['commentsCount'];
     lat = json['lat'];
     lang = json['lang'];

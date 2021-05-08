@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:trim/modules/market/models/Category.dart';
 
 class Product {
-  final String productName;
+  final String nameAr;
   final String nameEn;
   final int productId;
   final String productImage;
@@ -13,7 +13,7 @@ class Product {
   factory Product.fromjson(Map<String, dynamic> data) {
     return Product(
         // categoryId: data['id'],
-        productName: data['name_ar'],
+        nameAr: data['name_ar'],
         nameEn: data['name_en'],
         productId: data['id'],
         productImage: data['image'],
@@ -23,7 +23,7 @@ class Product {
 
   Product(
       {this.categoryId,
-      @required this.productName,
+      @required this.nameAr,
       @required this.nameEn,
       @required this.productId,
       @required this.productImage,

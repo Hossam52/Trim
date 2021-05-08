@@ -8,6 +8,7 @@ class BuildMostSearchedSalons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mostSearcedList = HomeCubit.getInstance(context).mostSearchList;
+    
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
         print(deviceInfo.localHeight);

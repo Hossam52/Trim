@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class CustomerServiceScreen extends StatelessWidget {
@@ -9,7 +10,8 @@ class CustomerServiceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Customer service', style: TextStyle(color: Colors.black)),
+        title: Text(getWord('customer service', context),
+            style: TextStyle(color: Colors.black)),
         leading: BackButton(color: Colors.black),
         elevation: 0,
         backgroundColor: Colors.transparent,

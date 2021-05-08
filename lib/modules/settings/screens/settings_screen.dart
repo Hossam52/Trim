@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
 import 'package:trim/modules/settings/widgets/setting_item.dart';
@@ -28,10 +29,11 @@ class SettingsScreen extends StatelessWidget {
                   child: buildPersonWidget()),
             ),
             Divider(),
+    
             SettingItem(
               imagename: 'calendar',
               //label: 'حجوازتي',
-              label: 'My reservations',
+              label: getWord("my reservations", context),
               function: () {
                 Navigator.pushNamed(context, ReservationsScreen.routeName);
               },
@@ -39,7 +41,7 @@ class SettingsScreen extends StatelessWidget {
             SettingItem(
               imagename: 'bell',
               // label: 'الأشعارات',
-              label: 'Notifications',
+              label: getWord("notifications", context),
               function: () {
                 Navigator.pushNamed(context, NotificationScreen.routeName);
               },
@@ -47,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
             SettingItem(
               imagename: 'user',
               //label: 'الملف الشخصي',
-              label: 'Personal profile',
+              label: getWord("personal profile", context),
               function: () {
                 Navigator.pushNamed(context, PersonDetailScreen.routeName);
               },
@@ -56,7 +58,7 @@ class SettingsScreen extends StatelessWidget {
               imagename: 'wallet',
               // label: 'محفظتي',
 
-              label: 'My wallet',
+              label: getWord("my wallet", context),
               function: () {
                 Navigator.pushNamed(context, WalletScreen.routeName);
               },
@@ -64,7 +66,7 @@ class SettingsScreen extends StatelessWidget {
             SettingItem(
               imagename: 'coupon',
               // label: 'الكوبونات',
-              label: 'Copouns',
+              label: getWord("copouns", context),
               function: () {
                 Navigator.pushNamed(context, CouponsScreen.routeName);
               },
@@ -72,7 +74,7 @@ class SettingsScreen extends StatelessWidget {
             SettingItem(
               imagename: 'favourite',
               // label: 'مفضلتي',
-              label: 'My favorites',
+              label: getWord("my favorites", context),
               function: () {
                 Navigator.pushNamed(context, FavouritesScreen.routeName);
               },
@@ -80,7 +82,7 @@ class SettingsScreen extends StatelessWidget {
             SettingItem(
               imagename: 'support',
               // label: 'خدمة العملاء',
-              label: 'Support',
+              label: getWord("support", context),
               function: () {
                 Navigator.pushNamed(context, CustomerServiceScreen.routeName);
               },
@@ -92,7 +94,7 @@ class SettingsScreen extends StatelessWidget {
                   leading: Icon(Icons.logout, color: Colors.blue),
                   title: Text(
                     // 'تسجيل الخروج',
-                    'Log out',
+                    getWord("log out", context),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: getFontSizeVersion2(deviceInfo)),
