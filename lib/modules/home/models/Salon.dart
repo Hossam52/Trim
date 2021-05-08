@@ -1,6 +1,8 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
+import 'package:trim/modules/home/models/trim_star_model.dart';
+import 'package:trim/modules/home/models/rater_model.dart';
 
 class Salon {
   List<DateTime> availableDatas = [];
@@ -26,6 +28,7 @@ class Salon {
   bool isFavorite;
   List<SalonService> salonServices;
   List<SalonOffer> salonOffers;
+  List<RateModel> rates;
   Salon(
       {this.id,
       this.email,
@@ -49,48 +52,71 @@ class Salon {
       this.availableDatas,
       this.openFrom,
       this.salonServices,
-      this.salonOffers});
-
-  Salon.fromJson({Map<String, dynamic> json}) {
-    print('rate : ${json['rate']}');
+      this.salonOffers,
+      this.rates});
+  Salon.fromTrimStar(TrimStarModel model) {
+    id = model.id;
+    image = model.image;
+    name = model.name;
+    rate = model.rate;
+  }
+  Salon.fromTrimStarJson({Map<String, dynamic> json}) {
     id = json['id'];
     name = json['name'];
-    email = json['email'];
-    phone = json['phone'];
     image = json['image'];
-    governorateEn = json['governorate_en'];
-    governorateAr = json['governorate_ar'];
-    cityEn = json['city_en'];
-    cityAr = json['city_ar'];
-    gender = json['gender'];
-    rate = ((json['rate']??0)as int).toDouble();
-    commentsCount = json['commentsCount'];
-    lat = json['lat'];
-    lang = json['lang'];
-    address = json['address'];
-    status = json['status'];
-    isFavorite = json['is_fav'];
-    openFrom = json['from'];
-    openTo = json['to'];
+    rate = (json['rate'] as int).toDouble();
+  }
+
+  Salon.fromJson({Map<String, dynamic> json}) {
+    this.id = json['id'];
+    this.name = json['name'];
+    this.email = json['email'];
+    this.phone = json['phone'];
+    this.image = json['image'];
+    this.governorateEn = json['governorate_en'];
+    this.governorateAr = json['governorate_ar'];
+    this.cityEn = json['city_en'];
+    this.cityAr = json['city_ar'];
+    this.gender = json['gender'];
+    this.rate = ((json['rate'] ?? 0) as int).toDouble();
+    this.commentsCount = json['commentsCount'];
+    this.lat = json['lat'];
+    this.lang = json['lang'];
+    this.address = json['address'];
+    this.status = json['status'];
+    this.isFavorite = json['is_fav'];
+    this.openFrom = json['from'];
+    this.openTo = json['to'];
     if (json['services'] != null) {
-      salonServices = <SalonService>[];
+      this.salonServices = <SalonService>[];
       json['services'].forEach((service) {
-        salonServices.add(SalonService.fromJson(service));
+        this.salonServices.add(SalonService.fromJson(service));
       });
     }
 
-    // if (json['rates'] != null) {
-    //   rates = new List<Null>();
-    //   json['rates'].forEach((v) {
-    //     rates.add(new Null.fromJson(v));
-    //   });
-    // }
-    if (json['offers'] != null) {
-      salonOffers = <SalonOffer>[];
-      json['offers'].forEach((offer) {
-        salonOffers.add(SalonOffer.fromJson(json: offer));
+    if (json['rates'] != null) {
+      rates = [];
+      json['rates'].forEach((rate) {
+        rates.add(RateModel.fromJson(json: rate));
       });
     }
+    if (json['offers'] != null) {
+      this.salonOffers = <SalonOffer>[];
+      json['offers'].forEach((offer) {
+        this.salonOffers.add(SalonOffer.fromJson(json: offer));
+      });
+    }
+  }
+  String toString() {
+    return '''id:$id,
+              name:$name,
+              address:$address,
+              email:$email,
+              'image:$image,
+
+    
+    
+    ''';
   }
 }
 

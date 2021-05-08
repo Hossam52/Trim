@@ -29,9 +29,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int initialIndex = 4;
   final heightNavigationBar = 50;
-  // List<Map<String, Widget>> pagesBuilder;
+  int initialIndex = 4;
   bool showCategories = true;
   int selectedCategoryIndex = 0;
   final Color selectedIconColor = Colors.blue[900];
@@ -39,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    HomeCubit.getInstance(context).getData();
+    HomeCubit.getInstance(context).loadHomeLayout(context);
 
     pagesBuilder = [
       PageWidget(imageIcon: settingsIcon, page: SettingsScreen()),
@@ -80,54 +79,57 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          if (initialIndex != 4) {
-            setState(() {
-              initialIndex = 4;
-            });
-            return false;
-          } else {
-            return await exitConfirmationDialog(context);
-          }
-        },
-        child: BlocBuilder<HomeCubit, HomeStates>(
-          builder: (_, state) => (state is LoadingHomeState)
-              ? Center(child: CircularProgressIndicator())
-              : Scaffold(
-                  bottomNavigationBar: CurvedNavigationBar(
-                    index: initialIndex,
-                    height: 50,
-                    color: Colors.grey[300],
-                    backgroundColor: Colors.white,
-                    items: List.generate(
-                        pagesBuilder.length,
-                        (index) => index == initialIndex
-                            ? pagesBuilder[index].selectedIcon
-                            : pagesBuilder[index].unselectedIcon),
-                    onTap: (index) {
-                      if (index == 1) {
-                        pagesBuilder[index].page = showCategories
-                            ? ShoppingScreen(
-                                setCategoryIndex: setSelectedCategoryIndex,
-                              )
-                            : CategoryProductsScreen(
-                                categoryIndex: selectedCategoryIndex,
-                                backToCategories: backToCategoires,
-                              );
-                      }
-                      if (index == 3) //All Salons set type
-                        HomeCubit.getInstance(context)
-                            .setDisplayType(DisplayType.AllSalons);
-                      setState(() {
-                        initialIndex = index;
-                      });
-                    },
-                  ),
-                  body: SafeArea(
-                    child: pagesBuilder[initialIndex].page,
-                  ),
+      onWillPop: () async {
+        if (initialIndex != 4) {
+          setState(() {
+            initialIndex = 4;
+          });
+          return false;
+        } else {
+          return await exitConfirmationDialog(context);
+        }
+      },
+      child: BlocBuilder<HomeCubit, HomeStates>(
+        builder: (_, state) => (state is LoadingHomeState)
+            ? Center(child: CircularProgressIndicator())
+            : Scaffold(
+                bottomNavigationBar: CurvedNavigationBar(
+                  index: initialIndex,
+                  height: 50,
+                  color: Colors.grey[300],
+                  backgroundColor: Colors.white,
+                  items: List.generate(
+                      pagesBuilder.length,
+                      (index) => index == initialIndex
+                          ? pagesBuilder[index].selectedIcon
+                          : pagesBuilder[index].unselectedIcon),
+                  onTap: (index) {
+                    if (index == 1) {
+                      pagesBuilder[index].page = showCategories
+                          ? ShoppingScreen(
+                              setCategoryIndex: setSelectedCategoryIndex,
+                            )
+                          : CategoryProductsScreen(
+                              categoryIndex: selectedCategoryIndex,
+                              backToCategories: backToCategoires,
+                            );
+                    }
+                    if (index == 3) //All Salons set type
+                    {
+                      HomeCubit.getInstance(context).emit(AllSalonsState());
+                      // temp = Temp.All;
+                    }
+                    setState(() {
+                      initialIndex = index;
+                    });
+                  },
                 ),
-        ));
+                body: SafeArea(
+                  child: pagesBuilder[initialIndex].page,
+                ),
+              ),
+      ),
+    );
   }
 }
 

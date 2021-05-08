@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:trim/constants/api_path.dart';
 
-import 'package:trim/modules/auth/repositries/api_reponse.dart';
+import 'package:trim/api_reponse.dart';
 
 class ActivationProcessServices {
   //return token of the current user

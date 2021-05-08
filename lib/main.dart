@@ -9,6 +9,10 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:trim/appLocale/appLocale.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
+import 'package:trim/modules/home/cubit/persons_cubit.dart';
+import 'package:trim/modules/home/cubit/reserve_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
@@ -54,6 +58,12 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => ProductsCategoryBloc()),
         BlocProvider(create: (context) => CartBloc()),
         BlocProvider(create: (context)=>SearchBloc()),
+        BlocProvider(create: (_) => SalonsCubit()),
+        BlocProvider(create: (_) => PersonsCubit()),
+        BlocProvider(create: (_) => AllcategoriesCubit()),
+        BlocProvider(create: (_) => ProductsCategoryCubit()),
+        BlocProvider(create: (_) => ProductsCategoryBloc()),
+        BlocProvider(create: (context) => CartBloc()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

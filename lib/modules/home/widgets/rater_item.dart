@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
+import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import '../models/rater_model.dart';
 
 class RaterItem extends StatelessWidget {
+  final RateModel rater;
   const RaterItem({
     Key key,
+    @required this.rater,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
-        print(deviceInfo.type);
         return Card(
           margin: EdgeInsets.symmetric(vertical: 5),
           shape:
@@ -23,44 +26,41 @@ class RaterItem extends StatelessWidget {
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
-                    'assets/images/1.jpg',
-                    fit: BoxFit.cover,
-                    height: double.infinity,
-                  ),
+                  child: TrimCachedImage(src: rater.image),
                 ),
               ),
               Expanded(
                 flex: 2,
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
+                      const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        'احمد محمد',
-                        style: TextStyle(
-                            color: Colors.cyan,
-                            fontWeight: FontWeight.bold,
-                            fontSize: getFontSizeVersion2(deviceInfo)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(rater.createdAt),
+                          Text(
+                            rater.user,
+                            style: TextStyle(
+                                color: Colors.cyan,
+                                fontWeight: FontWeight.bold,
+                                fontSize: getFontSizeVersion2(deviceInfo)),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      BuildStars(stars: 5, width: deviceInfo.localWidth / 1.8),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Expanded(
-                        child: Container(
-                          child: SingleChildScrollView(
-                            child: Text(
-                              'واحد من افضل الصالونات من حيث العناية والنظافة',
-                              style:
-                                  TextStyle(fontSize: getFontSize(deviceInfo)),
-                              textDirection: TextDirection.rtl,
-                            ),
+                      BuildStars(
+                          stars: rater.rate,
+                          width: deviceInfo.localWidth / 1.8),
+                      Container(
+                        child: SingleChildScrollView(
+                          child: Text(
+                            rater.comment,
+                            style: TextStyle(fontSize: getFontSize(deviceInfo)),
+                            textDirection: TextDirection.rtl,
                           ),
                         ),
                       ),

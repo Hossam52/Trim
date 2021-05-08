@@ -1,41 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_states.dart';
 
-class AvailableTimes extends StatefulWidget {
-  final void Function(int index) updateSelectedIndex;
-  final List<String> availableDates;
-
-  const AvailableTimes(
-      {Key key,
-      @required this.availableDates,
-      @required this.updateSelectedIndex})
-      : super(key: key);
-  @override
-  _AvailableDatesState createState() => _AvailableDatesState();
-}
-
-class _AvailableDatesState extends State<AvailableTimes> {
-  int _timeSelectedIndex = 0;
-  Widget _timeBuilder(int index, [bool timeSelected = false]) {
-    final color = timeSelected ? Colors.white : Colors.black;
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _timeSelectedIndex = index;
-          widget.updateSelectedIndex(_timeSelectedIndex);
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.all(13.0),
-        decoration: BoxDecoration(
-            color: timeSelected ? Colors.black : Color(0xff96B9D4),
-            borderRadius: BorderRadius.circular(roundedRadius)),
-        child: Text(widget.availableDates[index],
-            style: TextStyle(fontSize: defaultFontSize, color: color)),
-      ),
-    );
-  }
-
+class AvailableTimes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -49,21 +18,48 @@ class _AvailableDatesState extends State<AvailableTimes> {
                   fontSize: defaultFontSize, fontWeight: FontWeight.bold)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Wrap(
-              direction: Axis.horizontal,
-              spacing: 10,
-              runSpacing: 20,
-              children: [
-                ...List.generate(
-                    widget.availableDates.length,
-                    (index) => _timeSelectedIndex ==
-                            index //means this time is selected
-                        ? _timeBuilder(index, true)
-                        : _timeBuilder(index)),
-              ],
+            child: BlocBuilder<SalonsCubit, SalonStates>(
+              builder: (_, state) {
+                if (state is LoadingAvilableDatesState) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is EmptyAvialbleDatesState)
+                  return Center(
+                      child: Text('No Times for this salon at this date'));
+                List<String> dates =
+                    SalonsCubit.getInstance(context).availableDates;
+                return Wrap(
+                  direction: Axis.horizontal,
+                  spacing: 10,
+                  runSpacing: 20,
+                  children: [
+                    ...List.generate(dates.length,
+                        (index) => _timeBuilder(context, dates[index], index)),
+                  ],
+                );
+              },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _timeBuilder(BuildContext context, String date, int index) {
+    int selectedIndex = SalonsCubit.getInstance(context).getSelectedReserveTime;
+    final color = selectedIndex == index ? Colors.white : Colors.black;
+    return InkWell(
+      onTap: () {
+        SalonsCubit.getInstance(context).changeSelectedReserveDate(index);
+      },
+      child: BlocBuilder<SalonsCubit, SalonStates>(
+        builder: (_, state) => Container(
+          padding: const EdgeInsets.all(13.0),
+          decoration: BoxDecoration(
+              color: selectedIndex == index ? Colors.black : Color(0xff96B9D4),
+              borderRadius: BorderRadius.circular(roundedRadius)),
+          child: Text(date,
+              style: TextStyle(fontSize: defaultFontSize, color: color)),
+        ),
       ),
     );
   }

@@ -4,14 +4,19 @@ import 'package:flutter/material.dart';
 class TrimCachedImage extends StatelessWidget {
   final String src;
   final double height;
+  final double width;
 
-  const TrimCachedImage({Key key, @required this.src, this.height})
-      : super(key: key);
+  const TrimCachedImage({
+    Key key,
+    @required this.src,
+    this.height,
+    this.width = double.infinity,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       fit: BoxFit.fill,
-      width: double.infinity,
+      width: width,
       height: height,
       imageUrl: src,
       placeholder: (context, url) => Center(child: CircularProgressIndicator()),

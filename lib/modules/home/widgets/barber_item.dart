@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/models/barber.dart';
+import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/trim_star_model.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
@@ -9,12 +9,13 @@ import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
 class BarberItem extends StatelessWidget {
-  // final Barber barber;
-  final TrimStarModel barber;
+  // final personItem personItem;
+  final Salon personItem;
 
   final DeviceInfo deviceInfo;
 
-  const BarberItem({Key key, @required this.deviceInfo, @required this.barber})
+  const BarberItem(
+      {Key key, @required this.deviceInfo, @required this.personItem})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -22,16 +23,13 @@ class BarberItem extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            // Navigator.pushNamed(context, DetailsScreen.routeName);
+            Navigator.pushNamed(context, DetailsScreen.routeName,
+                arguments: personItem);
           },
           child: GridTile(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                // image: DecorationImage(
-                //     image: AssetImage(barber.image), fit: BoxFit.fill),
-              ),
-              child: TrimCachedImage(src: barber.image),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: TrimCachedImage(src: personItem.image),
             ),
             footer: Container(
               color: Colors.grey[200].withAlpha(155),
@@ -39,7 +37,7 @@ class BarberItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    barber.name,
+                    personItem.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -47,7 +45,8 @@ class BarberItem extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   BuildStars(
-                      stars: barber.rate, width: deviceInfo.localWidth / 1.8)
+                      stars: personItem.rate,
+                      width: deviceInfo.localWidth / 1.8)
                 ],
               ),
             ),
@@ -57,7 +56,7 @@ class BarberItem extends StatelessWidget {
           left: deviceInfo.localWidth *
               (deviceInfo.orientation == Orientation.portrait ? 0.08 : 0.06),
           child: FavoriteContainer(
-            // isFavorite: barber.isFavorite,
+            // isFavorite: personItem.isFavorite,
             isFavorite: false,
             deviceInfo: deviceInfo,
           ),

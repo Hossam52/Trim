@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
@@ -7,8 +8,7 @@ import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 class BuildMostSearchedSalons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final mostSearcedList = HomeCubit.getInstance(context).mostSearchList;
-    
+    final mostSearcedList = HomeCubit.getInstance(context).mostSearchedSalons;
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
         print(deviceInfo.localHeight);
@@ -17,6 +17,11 @@ class BuildMostSearchedSalons extends StatelessWidget {
           padding: EdgeInsets.all(2),
           itemBuilder: (context, index) => GestureDetector(
             onTap: () {
+              SalonsCubit.getInstance(context).navigateToSalonDetailScreen(
+                  context, mostSearcedList[index].id);
+              return;
+              SalonsCubit.getInstance(context)
+                  .getSalonDetails(id: mostSearcedList[index].id);
               Navigator.pushNamed(context, DetailsScreen.routeName,
                   arguments: mostSearcedList[index]);
             },
