@@ -69,8 +69,8 @@ class BuildDetailsOrderPrice extends StatelessWidget {
                           body: {
                             'products': [
                               {
-                                'id':1,
-                                'qty':"10",
+                                'id': 1,
+                                'qty': "10",
                                 //'products.0.product_id': 3,
                                 //'products.0.quantity': 6
                               }

@@ -27,6 +27,7 @@ import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
+import 'appLocale/appLocale.dart';
 import 'bloc_observer.dart';
 import './modules/auth/cubits/auth_cubit.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
@@ -68,31 +69,20 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => HomeCubit()),
-<<<<<<< HEAD
-=======
         BlocProvider(create: (_) => AllCategoriesBloc()),
-        BlocProvider(
-          create: (_) => ProductsCategoryCubit(),
-        ),
         BlocProvider(create: (_) => ProductsCategoryBloc()),
         BlocProvider(create: (context) => CartBloc()),
         BlocProvider(create: (context) => SearchBloc()),
->>>>>>> 9801705d0fc6d70db2df6880c052965abc607e0f
         BlocProvider(create: (_) => SalonsCubit()),
         BlocProvider(create: (_) => PersonsCubit()),
-        //BlocProvider(create: (_) => AllcategoriesCubit()),
         BlocProvider(create: (_) => ProductsCategoryCubit()),
-        BlocProvider(create: (_) => ProductsCategoryBloc()),
-        BlocProvider(create: (context) => CartBloc(),),
-        BlocProvider(create: (context)=>SearchBloc()),
-        BlocProvider(create: (context) => CartBloc()),
         BlocProvider(create: (context) => SettingCubit()),
         BlocProvider(create: (context) => AuthCubit()),
-        BlocProvider(create: (context) => SearchBloc()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           localizationsDelegates: [
+            AppLocale.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
@@ -101,12 +91,20 @@ class _MyAppState extends State<MyApp> {
             const Locale('en', ''), // English, no country code
             const Locale('ar', ''),
           ],
+          localeResolutionCallback: (currentLocale, supportedLocales) {
+            if (currentLocale != null) print(currentLocale.languageCode);
+            for (Locale locale in supportedLocales) {
+              if (currentLocale.languageCode == locale.languageCode)
+                return currentLocale;
+            }
+            return supportedLocales.first;
+          }, //same3ny?no طب اتكلم كدا انا سامعك
           theme: ThemeData(
               textTheme:
                   TextTheme(button: TextStyle(fontSize: defaultFontSize))),
           // home: SplashScreen(alpha: 100, color: Color(0xff2B73A8)),
           builder: DevicePreview.appBuilder,
-          home: TrimShared.token == null ? HomeScreen() : HomeScreen(),
+          home: HomeScreen(),
           routes: routes),
     );
   }
