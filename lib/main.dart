@@ -98,7 +98,7 @@ class _MyAppState extends State<MyApp> {
                 return currentLocale;
             }
             return supportedLocales.first;
-          }, //same3ny?no طب اتكلم كدا انا سامعك
+          },
           theme: ThemeData(
               textTheme:
                   TextTheme(button: TextStyle(fontSize: defaultFontSize))),
