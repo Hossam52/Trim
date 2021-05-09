@@ -108,14 +108,7 @@ class Salon {
     }
   }
   String toString() {
-    return '''id:$id,
-              name:$name,
-              address:$address,
-              email:$email,
-              'image:$image,
-
-    
-    
+    return '''id:$id,name:$name,address:$address,email:$email,'image:$image
     ''';
   }
 }

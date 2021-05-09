@@ -98,7 +98,6 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
               (widget.deviceInfo.orientation == Orientation.portrait
                   ? 0.22
                   : .45),
-          //  widget.deviceInfo.localHeight * 0.22,
           child: Card(
             margin: EdgeInsets.symmetric(horizontal: 8),
             child: ListTile(

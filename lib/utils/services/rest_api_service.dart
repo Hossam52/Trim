@@ -21,8 +21,7 @@ class DioHelper {
 
   static Future<Response> getData(
       {@required String methodUrl,
-      @required Map<String, dynamic> queries}) async 
-  {
+      @required Map<String, dynamic> queries}) async {
     return await dio.get(methodUrl, queryParameters: queries);
   }
 

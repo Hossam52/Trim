@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
@@ -79,6 +80,8 @@ void personDetailsDialog(
                 SizedBox(height: 10),
                 Divider(),
                 elevatedButton('Reserve now', () {
+                  SalonsCubit.getInstance(context)
+                      .getSalonDetails(id: salon.id);
                   Navigator.pop(context);
                   Navigator.pushNamed(context, ReserveScreen.routeName,
                       arguments: SalonDetailModel(
@@ -88,6 +91,8 @@ void personDetailsDialog(
                           showOffersWidget: false));
                 }),
                 elevatedButton('Reserve appointment', () {
+                  SalonsCubit.getInstance(context)
+                      .getSalonDetails(id: salon.id);
                   Navigator.pop(context);
                   Navigator.pushNamed(context, ReserveScreen.routeName,
                       arguments: SalonDetailModel(

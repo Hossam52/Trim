@@ -9,3 +9,4 @@ class UpdatedItem extends CartStates{}
 class DeleteItem extends CartStates{}
 class ErrorStateCart extends CartStates{}
 class ErrorStateCartInBadge extends CartStates{}
+class DeleteAllItems extends CartStates{}

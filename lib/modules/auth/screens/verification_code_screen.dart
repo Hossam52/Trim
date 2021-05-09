@@ -93,10 +93,10 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Map arguments =
-        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
-    String token = arguments['token'];
-    String verificationCode = arguments['verificationCode'];
+    // Map arguments =
+    //     ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    // String token = arguments['token'];
+    // String verificationCode = arguments['verificationCode'];
     final node = FocusScope.of(context);
     return GestureDetector(
       onTap: () {
@@ -137,27 +137,28 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                               }
                               userEnteredVerificationCode += controller.text;
                             }
-                            if (userEnteredVerificationCode ==
-                                verificationCode) {
-                              ActivationProcessServices()
-                                  .activate(verificationCode, token)
-                                  .then((value) {
-                                if (value.error)
-                                  setState(() {
-                                    correctData = false;
-                                    errorMessage = 'Server error';
-                                  });
-                                else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text('Successiful activation')));
+                            // if (userEnteredVerificationCode ==
+                            //     verificationCode) {
+                            //   ActivationProcessServices()
+                            //       .activate(verificationCode, token)
+                            //       .then((value) {
+                            //     if (value.error)
+                            //       setState(() {
+                            //         correctData = false;
+                            //         errorMessage = 'Server error';
+                            //       });
+                            //     else {
+                            //       ScaffoldMessenger.of(context).showSnackBar(
+                            //           SnackBar(
+                            //               content:
+                            //                   Text('Successiful activation')));
 
-                                  Navigator.pushReplacementNamed(
-                                      context, LoginScreen.routeName);
-                                }
-                              });
-                            } else {
+                            //       Navigator.pushReplacementNamed(
+                            //           context, LoginScreen.routeName);
+                            //     }
+                            //   });
+                            // } else
+                            {
                               setState(() {
                                 errorMessage = "Your code not correct";
                                 correctData = false;

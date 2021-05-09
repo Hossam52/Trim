@@ -9,6 +9,11 @@ class CartItemsEvent extends CartEvents {
   CartItemsEvent({String screenId}) : super(screenId);
 }
 
+class DeleteAllItemsInCart extends CartEvents 
+{
+  DeleteAllItemsInCart({String screenId}) : super(screenId);
+}
+
 class AddingItemEvent extends CartEvents {
   final CartItem cartItem;
   AddingItemEvent({this.cartItem, String screenId}) : super(screenId);
@@ -22,5 +27,5 @@ class DecreaseEvent extends CartEvents {
 class DeleteItemEvent extends CartEvents {
   final int id;
   final int rowId;
-  DeleteItemEvent({this.id, this.rowId,String screenId }) : super(screenId);
+  DeleteItemEvent({this.id, this.rowId, String screenId}) : super(screenId);
 }

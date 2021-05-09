@@ -19,6 +19,7 @@ import 'package:trim/general_widgets/BuildAlertDialog.dart';
 import 'package:trim/modules/home/widgets/BuildCitiesChoices.dart';
 import 'package:trim/modules/home/widgets/BuildSalonItemGrid.dart';
 import 'package:trim/general_widgets/BuildSearchWidget.dart';
+import '../widgets/navigate_pages.dart';
 
 class SalonsScreen extends StatefulWidget {
   static final String routeName = 'salonScreen';
@@ -250,6 +251,8 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
               return Center(child: Text(state.error));
             final list =
                 SalonsCubit.getInstance(context).getSalonsToDisplay(context);
+            final pageNumber =
+                SalonsCubit.getInstance(context).getCurrentPage(context);
             return Column(
               children: [
                 Expanded(
@@ -272,7 +275,12 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
                   NoMoreItems(
                     deviceInfo: deviceInfo,
                     label: 'No More Salons',
-                  )
+                  ),
+                NavigatePages(
+                  nextPage: SalonsCubit.getInstance(context).getNextPage,
+                  pageNumber: pageNumber,
+                  prevPage: SalonsCubit.getInstance(context).getPreviousPage,
+                ),
               ],
             );
           },

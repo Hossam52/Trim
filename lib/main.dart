@@ -3,9 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_checkout_payment/flutter_checkout_payment.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/appLocale/appLocale.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
@@ -17,6 +19,7 @@ import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
 import 'package:trim/modules/market/cubit/products_category_cubit.dart';
+import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/modules/market/cubit/search_bloc.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import './constants/app_constant.dart';
@@ -24,6 +27,7 @@ import './config/routes/routes_builder.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
 import 'bloc_observer.dart';
+import './modules/auth/cubits/auth_cubit.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
 
 void main() {
@@ -48,23 +52,28 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    // DefaultCacheManager manager = new DefaultCacheManager();
+    // manager.emptyCache(); //clears all data in cache.
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => HomeCubit()),
-        BlocProvider(create: (_) => AllcategoriesCubit()),
+        BlocProvider(create: (_) => AllCategoriesBloc()),
         BlocProvider(
           create: (_) => ProductsCategoryCubit(),
         ),
         BlocProvider(create: (_) => ProductsCategoryBloc()),
         BlocProvider(create: (context) => CartBloc()),
-        BlocProvider(create: (context)=>SearchBloc()),
+        BlocProvider(create: (context) => SearchBloc()),
         BlocProvider(create: (_) => SalonsCubit()),
         BlocProvider(create: (_) => PersonsCubit()),
-        BlocProvider(create: (_) => AllcategoriesCubit()),
+        //BlocProvider(create: (_) => AllcategoriesCubit()),
         BlocProvider(create: (_) => ProductsCategoryCubit()),
         BlocProvider(create: (_) => ProductsCategoryBloc()),
         BlocProvider(create: (context) => CartBloc(),),
         BlocProvider(create: (context)=>SearchBloc()),
+        BlocProvider(create: (context) => CartBloc()),
+        BlocProvider(create: (context) => SettingCubit()),
+        BlocProvider(create: (context) => AuthCubit()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

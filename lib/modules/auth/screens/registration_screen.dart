@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/modules/auth/cubits/auth_cubit.dart';
+import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/auth/repositries/register_repositry.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
+import 'package:trim/modules/auth/widgets/social.dart';
 import 'package:trim/utils/services/register_service.dart';
 import 'package:trim/utils/services/verification_code_service.dart';
 
@@ -14,11 +18,6 @@ import '../../../core/auth/register/validate.dart';
 import '../widgets/gender_selection.dart';
 import '../../../general_widgets/default_button.dart';
 import '../widgets/not_correct_input.dart';
-
-enum Gender {
-  Male,
-  Female,
-}
 
 class RegistrationScreen extends StatefulWidget {
   static final String routeName = '/registration';
@@ -32,56 +31,13 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _emailController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
 
-  RegisterService _service = RegisterService();
-  String errorMessage = 'يجب ادخال البيانات';
-  Gender selectedGender;
-  bool correctData = true;
-  void changeGender(Gender gender) {
-    setState(() {
-      selectedGender = gender;
-    });
-  }
-
-  void onRegisteration() async {
-    if (!correctData)
-      setState(() {
-        correctData = true;
-      });
-    RegisterReposistry user = RegisterReposistry(
+  void onRegisteration(BuildContext context) async {
+    AuthCubit.getInstance(context).register(
       name: _nameController.text,
-      phone: _phoneController.text,
-      password: _passwordController.text,
-      confirmPassword: _passwordController.text,
-      gender: selectedGender == Gender.Male ? 'male' : 'female',
       email: _emailController.text,
+      password: _passwordController.text,
+      phone: _phoneController.text,
     );
-
-    _service.signUp(user).then((response) {
-      if (response.error) {
-        setState(() {
-          correctData = false;
-          errorMessage = response.errorMessage;
-        });
-        print(response.errorMessage);
-      } else {
-        print('Succissiful');
-        String token = response.data;
-        ActivationProcessServices()
-            .getVerificationCode(
-                _emailController.text, _passwordController.text, token)
-            .then((value) {
-          print(value.data);
-
-          Navigator.pushReplacementNamed(
-              context, VerificationCodeScreen.routeName,
-              arguments: {
-                "verificationCode": value.data,
-                "token": token,
-              });
-        });
-      }
-    });
-    return;
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -89,9 +45,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     Widget _alreadyHasAccount = TextButton(
-      onPressed: () {
-        Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-      },
+      onPressed: () => AuthCubit.getInstance(context).navigateToLogin(context),
       child: Text(
         'هل لديك حساب بالفعل؟',
         style: TextStyle(color: Colors.grey, fontSize: 20),
@@ -105,60 +59,79 @@ class RegistrationScreenState extends State<RegistrationScreen> {
           TrimTextField(
             controller: _nameController,
             placeHolder: 'الاسم',
-            validator: validateName,
+            validator: null,
           ),
           TrimTextField(
             controller: _emailController,
             placeHolder: 'الايميل',
-            validator: validateEmail,
+            validator: null,
             textInputType: TextInputType.emailAddress,
           ),
           TrimTextField(
             controller: _phoneController,
             placeHolder: 'رقم التليفون',
-            validator: validatePhone,
+            validator: null,
             textInputType: TextInputType.phone,
           ),
           TrimTextField(
             controller: _passwordController,
             placeHolder: 'كلمة المرور',
-            validator: validatePassword,
+            validator: null,
             password: true,
           ),
         ],
       ),
     );
+
+    AuthCubit.getInstance(context).emit(LoadedAuthState());
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: TransparentAppBar(),
         body: Center(
           child: Container(
             height: ResponsiveFlutter.of(context).scale(620),
-            child: CardLayout(
-              children: [
-                if (!correctData) ErrorWarning(text: errorMessage),
-                formFields,
-                GenderSelectionWidget(
-                  changeGender: changeGender,
-                  selectedGender: selectedGender,
-                ),
-                DefaultButton(
-                  text: 'تسجيل حساب',
-                  formKey: _formKey,
-                  onPressed: onRegisteration,
-                ),
-                _alreadyHasAccount,
-                Text('أو يمكنك التسجيل من خلال'),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+            child: BlocConsumer<AuthCubit, AuthStates>(
+              buildWhen: (old, newState) {
+                return newState is! ChangeGenderState;
+              },
+              listener: (_, state) {
+                if (state is NotActivatedAccountState)
+                  Navigator.of(context)
+                      .pushNamed(VerificationCodeScreen.routeName);
+              },
+              builder: (_, state) {
+                return CardLayout(
                   children: [
-                    IconButton(
-                        icon: Image.asset(facebookImagePath), onPressed: () {}),
-                    IconButton(
-                        icon: Image.asset(googleImagePath), onPressed: () {}),
+                    if (state is InvalidFieldState)
+                      ErrorWarning(text: state.errorMessage),
+                    if (state is ErrorAuthState)
+                      ErrorWarning(text: state.errorMessage),
+                    formFields,
+                    BlocBuilder<AuthCubit, AuthStates>(
+                      buildWhen: (oldState, newState) {
+                        return newState is ChangeGenderState;
+                      },
+                      builder: (_, state) => GenderSelectionWidget(
+                          changeGender:
+                              AuthCubit.getInstance(context).changeGender,
+                          selectedGender:
+                              AuthCubit.getInstance(context).selectedGender),
+                    ),
+                    DefaultButton(
+                      text: 'تسجيل حساب',
+                      widget: state is LoadingAuthState
+                          ? Center(child: CircularProgressIndicator())
+                          : null,
+                      onPressed: state is LoadingAuthState
+                          ? null
+                          : () => onRegisteration(context),
+                    ),
+                    _alreadyHasAccount,
+                    Text('أو يمكنك التسجيل من خلال'),
+                    SocialAuth(),
                   ],
-                ),
-              ],
+                );
+              },
             ),
           ),
         ));

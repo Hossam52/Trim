@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
+import 'package:trim/modules/settings/cubits/settings_cubit.dart';
+import 'package:trim/modules/settings/cubits/settings_states.dart';
 import 'package:trim/modules/settings/widgets/setting_item.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/auth/screens/personal_detail_screen.dart';
@@ -29,7 +33,6 @@ class SettingsScreen extends StatelessWidget {
                   child: buildPersonWidget()),
             ),
             Divider(),
-    
             SettingItem(
               imagename: 'calendar',
               //label: 'حجوازتي',

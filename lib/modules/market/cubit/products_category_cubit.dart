@@ -33,15 +33,30 @@ class ProductsCategoryBloc
       ProductsCategoryEvents event) async* {
     try {
       products = [];
+      var body;
       yield LoadingStateProductsCategory();
-      final response = await DioHelper.postData(
-          url: '$productsCategoryUrl?category_id=${event.categoryId}',
-          body: {});
-      print('Cross to catch\n');
-      yield LoadedStateProductsCategory();
-      print(response.data);
-      var body = response.data['data'];
-      for (var product in body) products.add(Product.fromjson(product));
+      Response response;
+      if (event is FetchDataFromApi) {
+        response = await DioHelper.postData(
+            url: '$productsCategoryUrl?category_id=${event.categoryId}',
+            body: {});
+        print('Cross to catch\n');
+        yield LoadedStateProductsCategory();
+        print(response.data);
+        body = response.data['data'];
+        for (var product in body) products.add(Product.fromjson(product));
+      } else if (event is Searchedproducts) {
+        response = await DioHelper.postData(
+            url: '$productsCategoryUrl?category_id=${event.categoryId}',
+            body: {
+              'category_id': event.categoryId,
+              'name': event.searchedWord,
+            });
+         yield LoadedStateProductsCategory();
+        print('Searhc ${response.data}');
+        body = response.data['data'];
+        for (var product in body) products.add(Product.fromjson(product));
+      }
     } on DioError catch (e) {
       if (e.type == DioErrorType.connectTimeout) print('Internet Connecation');
 

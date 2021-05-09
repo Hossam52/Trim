@@ -47,17 +47,17 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     super.initState();
   }
 
+  int categoryId;
   @override
-  void didChangeDependencies() 
-  {
+  void didChangeDependencies() {
     searchBloc = BlocProvider.of<SearchBloc>(context);
-    int categoryId = ModalRoute.of(context).settings.arguments as int;
+    categoryId = ModalRoute.of(context).settings.arguments as int;
     productsBloc.add(FetchDataFromApi(categoryId: categoryId));
     super.didChangeDependencies();
   }
 
   GlobalKey globalKey = GlobalKey<ScaffoldState>();
-  TextEditingController textEditingController=TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
   String searchedString;
   bool isCategory;
   @override
@@ -70,7 +70,8 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
           backgroundColor: Colors.blue[800],
 
           // leading: BackButton(
-          //   onPressed: () {
+          //   onPressed: ()
+          // {
           //     widget.backToCategories();
           //   },
           // ),
@@ -88,69 +89,44 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
             padding: const EdgeInsets.all(15.0),
             child: InfoWidget(
               responsiveWidget: (context, deviceInfo) {
-                return BlocConsumer<SearchBloc,SearchStates>(
-                  listener: (_,state){},
-                    builder:(_,state)=> Column(
-                    children: [
-                      BuildSearchWidget(
-                        textEditingController: textEditingController,
-                        prefixButton: ElevatedButton(
-                            onPressed: () 
-                            {
-                              searchBloc.add(SearchEvent(
-                                  searchWord: textEditingController.text,
-                                  products: productsBloc.products));
-                              print('Search bar products button search');
-                              print(textEditingController.text);
-                            },
-                            child: Icon(
-                              Icons.search,
-                              color: Colors.white,
-                            ),
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.cyan),
-                                shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(25))))),
-                        onChanged: (value) async 
-                        {
-                          
-                          searchBloc.add(SearchEvent(
-                              searchWord: value,
-                              products: productsBloc.products));
-                          print('Search bar products');
-                        },
-                        validator: (value) 
-                        {
-                          if (value.isEmpty)
-                            return 'Please Enter word to search';
-                          else
-                            return null;
-                        },
-                      ),
-                      BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
-                          builder: (_, state) {
-                        print('rebuild');
-                        if (state is InitialState ||
-                            state is LoadingStateProductsCategory)
-                          return Center(child: CircularProgressIndicator());
-                        else if (state is LoadedStateProductsCategory)
-                          return Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: buildProducts(deviceInfo),
-                            ),
-                          );
-                        else if (state is ErrorStateProductsCategory)
-                          return Center(
-                            child: Text(
-                                'Please Check from your internet connecation !!'),
-                          );
-                      })
-                    ],
-                  ),
+                return Column(
+                  children: [
+                    BuildSearchWidget(
+                      onChanged: (value) async {
+                        productsBloc.add(Searchedproducts(
+                            categoryId: categoryId, searchedWord: value));
+                        print('Search bar products');
+                      },
+                    ),
+                    BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
+                        builder: (_, state) {
+                      if (state is InitialState ||
+                          state is LoadingStateProductsCategory)
+                        return Center(child: CircularProgressIndicator());
+                      else if (state is LoadedStateProductsCategory)
+                        return Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: buildRefershIndicatorProducts(child:buildProducts(deviceInfo),),
+                          ),
+                        );
+                      else if (state is ErrorStateProductsCategory)
+                        return Center(
+                          child:
+                          buildRefershIndicatorProducts(child:
+                          SingleChildScrollView
+                          (
+                      physics: AlwaysScrollableScrollPhysics(),
+
+                            child:
+                          Container(
+                            height: deviceInfo.localHeight*0.5,
+                            child:
+                          Text(
+                              'Please Check from your internet connecation !!'),)))
+                        );
+                    })
+                  ],
                 );
               },
             ),
@@ -158,41 +134,48 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
         ));
   }
 
+  Widget buildRefershIndicatorProducts({Widget child}) {
+    return RefreshIndicator(child: child, onRefresh: () async 
+    {
+          productsBloc.add(FetchDataFromApi(categoryId: categoryId));
+    });
+  }
+
   Widget buildProducts(DeviceInfo deviceInfo) {
     bool isSearch = searchBloc.searchedProducts.isEmpty;
     return BlocConsumer<CartBloc, CartStates>(
-        listener: (_, state) {
-          print('Inside Category products');
-          isCategoryScreen = true;
-          if (state is ErrorStateCart) {
-            if (isCategoryScreen) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Error in your internet connecation !!'),
-                ),
-              );
-            }
-          }
-        },
-        builder: (_, state) => GridView.builder(
-              itemCount: isSearch
-                  ? productsBloc.products.length
-                  : searchBloc.searchedProducts.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 7,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.47,
+      listener: (_, state) {
+        print('Inside Category products');
+        isCategoryScreen = true;
+        if (state is ErrorStateCart) {
+          if (isCategoryScreen) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error in your internet connecation !!'),
               ),
-              itemBuilder: (context, index) {
-                return BuildProductItem(
-                  deviceInfo: deviceInfo,
-                  prodcut: isSearch
-                      ? productsBloc.products[index]
-                      : searchBloc.searchedProducts[index],
-                );
-              }),
-        );
+            );
+          }
+        }
+      },
+      builder: (_, state) => GridView.builder(
+          itemCount: isSearch
+              ? productsBloc.products.length
+              : searchBloc.searchedProducts.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 7,
+            mainAxisSpacing: 10,
+            childAspectRatio: 0.47,
+          ),
+          itemBuilder: (context, index) {
+            return BuildProductItem(
+              deviceInfo: deviceInfo,
+              prodcut: isSearch
+                  ? productsBloc.products[index]
+                  : searchBloc.searchedProducts[index],
+            );
+          }),
+    );
   }
 }
 
@@ -213,20 +196,6 @@ class _BuildProductItemState extends State<BuildProductItem> {
   void initState() {
     // TODO: implement initState
     super.initState();
-  }
-
-  @override
-  void deactivate() {
-    print('deactive mood');
-    // TODO: implement deactivate
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    print('dispose mood');
-    // TODO: implement dispose
-    super.dispose();
   }
 
   @override
@@ -264,24 +233,30 @@ class _BuildProductItemState extends State<BuildProductItem> {
   }
 
   Widget buildProductActions() {
+    bool isEnabled = cartCubit.items.containsKey(widget.prodcut.productId);
+    if (isEnabled)
+      isEnabled =
+          (cartCubit.items[widget.prodcut.productId].quantity ?? '0') == '10';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         BuildRawMaterialButton(
           icon: Icons.add,
-          pressed: () async {
-            cartCubit.add(
-              AddingItemEvent(
-                  cartItem: CartItem(
-                    id: widget.prodcut.productId,
-                    imageName: widget.prodcut.productImage,
-                    nameAr: widget.prodcut.nameAr,
-                    price: widget.prodcut.productPrice,
-                    nameEn: widget.prodcut.nameEn,
-                  ),
-                  screenId: '1'),
-            );
-          },
+          pressed: isEnabled
+              ? null
+              : () async {
+                  cartCubit.add(
+                    AddingItemEvent(
+                        cartItem: CartItem(
+                          id: widget.prodcut.productId,
+                          imageName: widget.prodcut.productImage,
+                          nameAr: widget.prodcut.nameAr,
+                          price: widget.prodcut.productPrice,
+                          nameEn: widget.prodcut.nameEn,
+                        ),
+                        screenId: '1'),
+                  );
+                },
           deviceInfo: widget.deviceInfo,
         ),
         Text(
@@ -307,7 +282,7 @@ class _BuildProductItemState extends State<BuildProductItem> {
   Widget buildProductPrice() {
     return BlocBuilder<CartBloc, CartStates>(
         builder: (_, state) => Text(
-            '${cartCubit.items.containsKey(widget.prodcut.productId) ? (double.parse(cartCubit.items[widget.prodcut.productId].price) * double.parse(cartCubit.items[widget.prodcut.productId].quantity)).toStringAsFixed(2) : double.parse(widget.prodcut.productPrice).toStringAsFixed(2)}',
+            '${cartCubit.items.containsKey(widget.prodcut.productId) ? (double.parse(cartCubit.items[widget.prodcut.productId].price)).toStringAsFixed(2) : double.parse(widget.prodcut.productPrice).toStringAsFixed(2)}',
             style: TextStyle(fontSize: fontSize, color: Colors.green)));
   }
 

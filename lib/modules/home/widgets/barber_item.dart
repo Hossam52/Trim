@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/trim_star_model.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
@@ -23,6 +24,7 @@ class BarberItem extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
+            SalonsCubit.getInstance(context).getSalonDetails(id: personItem.id);
             Navigator.pushNamed(context, DetailsScreen.routeName,
                 arguments: personItem);
           },
@@ -56,8 +58,7 @@ class BarberItem extends StatelessWidget {
           left: deviceInfo.localWidth *
               (deviceInfo.orientation == Orientation.portrait ? 0.08 : 0.06),
           child: FavoriteContainer(
-            // isFavorite: personItem.isFavorite,
-            isFavorite: false,
+            isFavorite: personItem.isFavorite,
             deviceInfo: deviceInfo,
           ),
         )

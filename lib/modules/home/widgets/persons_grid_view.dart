@@ -9,6 +9,7 @@ import 'package:trim/modules/home/cubit/person_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
 import 'package:trim/modules/home/widgets/barber_item.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/modules/home/widgets/navigate_pages.dart';
 
 class PersonsGridView extends StatefulWidget {
   final bool filterFavorite;
@@ -62,6 +63,8 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                   PersonsCubit.getInstance(context).getPersonToDisplay(context);
               // List.generate(2, (index) => trimStarList.add(trimStarList[0]));
 
+              int pageNumber =
+                  PersonsCubit.getInstance(context).getCurrentPage(context);
               return Column(
                 children: [
                   Expanded(
@@ -90,6 +93,11 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                       deviceInfo: deviceInfo,
                       label: 'No more persons',
                     ),
+                  NavigatePages(
+                    nextPage: PersonsCubit.getInstance(context).getNextPage,
+                    pageNumber: pageNumber,
+                    prevPage: PersonsCubit.getInstance(context).getPreviousPage,
+                  ),
                 ],
               );
             }

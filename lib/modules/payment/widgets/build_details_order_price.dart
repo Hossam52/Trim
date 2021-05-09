@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
+import 'package:trim/modules/market/cubit/cart_events.dart';
+import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
+import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/market/widgets/build_listTile_confirm.dart';
 
@@ -48,18 +52,44 @@ class BuildDetailsOrderPrice extends StatelessWidget {
           ),
           BuildListTileCofirm(
             leading: 'السعر الكلي',
-            trailing: '${(cartBloc.getTotalPrice()+20).toStringAsFixed(2)} جنيه',
+            trailing:
+                '${(cartBloc.getTotalPrice() + 20).toStringAsFixed(2)} جنيه',
             fontSize: fontSize,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ElevatedButton(
-              onPressed: pressed,
+              onPressed: stepNumber == 2
+                  ? () async {
+                      CartBloc cartBloc = BlocProvider.of<CartBloc>(context);
+                      List<CartItem> items = cartBloc.getCartList();
+
+                      final response = await DioHelper.postData(
+                          url: newOrderWithProduct,
+                          body: {
+                            'products': [
+                              {
+                                'id':1,
+                                'qty':"10",
+                                //'products.0.product_id': 3,
+                                //'products.0.quantity': 6
+                              }
+                            ],
+                            //'${products[1][product_id]}': 6,
+                            //'products[1][quantity]': 4,
+                          });
+                      print(response.data);
+
+                      cartBloc.add(DeleteAllItemsInCart());
+                      //.add(DeleteAllItemsInCart());
+                    }
+                  : pressed,
               child: Text(
-                  stepNumber == 2
-                      ? 'تأكيد'
-                      : 'المواصلة في ${stepsCompleteOrder[stepNumber - 1]}',
-                  style: TextStyle(fontSize: fontSize)),
+                stepNumber == 2
+                    ? 'تأكيد'
+                    : 'المواصلة في ${stepsCompleteOrder[stepNumber - 1]}',
+                style: TextStyle(fontSize: fontSize),
+              ),
             ),
           ),
         ],

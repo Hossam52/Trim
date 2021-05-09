@@ -5,20 +5,20 @@ import '../modules/auth/screens/registration_screen.dart';
 const defaultColor = Color(0xff2B72A6);
 
 class DefaultButton extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
   final String text;
   final VoidCallback onPressed;
   final Color color;
   final Color textColor;
   final double fontSize;
+  final Widget widget;
   const DefaultButton({
     Key key,
-    this.formKey,
     @required this.text,
     @required this.onPressed,
     this.color = defaultColor,
     this.fontSize = 20,
     this.textColor = Colors.white,
+    this.widget,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -26,11 +26,11 @@ class DefaultButton extends StatelessWidget {
       child: Container(
         width: double.infinity,
         child: ElevatedButton(
-          child: Text(text,
-              style: TextStyle(fontSize: fontSize, color: textColor)),
+          child: widget ??
+              Text(text,
+                  style: TextStyle(fontSize: fontSize, color: textColor)),
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-              // textStyle: TextStyle(fontSize: fontSize, color: textColor),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(roundedRadius),
               ),

@@ -9,5 +9,5 @@ class FetchDataFromApi extends ProductsCategoryEvents {
 
 class Searchedproducts extends ProductsCategoryEvents {
   final String searchedWord;
-  Searchedproducts({int categoryId, this.searchedWord}) : super(0);
+  Searchedproducts({int categoryId, this.searchedWord}) : super(categoryId);
 }
