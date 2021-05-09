@@ -7,6 +7,7 @@ import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/cart_states.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
+import 'package:trim/modules/payment/screens/confirm_order_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -28,11 +29,8 @@ class BadgeScrren extends StatelessWidget {
               child: InfoWidget(
                 responsiveWidget: (context, deviceInfo) {
                   return BlocConsumer<CartBloc, CartStates>(
-
-                      listener: (ctx, state) 
-                    {
-                    if (state is ErrorStateCart) 
-                    {
+                      listener: (ctx, state) {
+                    if (state is ErrorStateCartInBadge) {
                       print('Appear Here');
                       Fluttertoast.showToast(
                           msg: 'Please check your internet connecation2');
@@ -73,8 +71,7 @@ class BadgeScrren extends StatelessWidget {
     );
   }
 
-  Widget buildBackButton() 
-  {
+  Widget buildBackButton() {
     return Container(
       width: double.infinity,
       color: Colors.grey.withAlpha(150),
@@ -94,9 +91,10 @@ class BadgeScrren extends StatelessWidget {
       width: deviceInfo.localWidth / 1.3,
       child: DefaultButton(
         onPressed: () async {
+          Navigator.pushNamed(context, ConfirmOrderScreen.routeName);
           try {
-            List<CartItem> cartItems =
-                BlocProvider.of<CartBloc>(context).getCartList();
+            // List<CartItem> cartItems =
+            //     BlocProvider.of<CartBloc>(context).getCartList();
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text('please make sure from internet conntection')));
@@ -133,8 +131,7 @@ class _ProductItemState extends State<ProductItem> {
           ? widget.deviceInfo.localHeight / 4
           : widget.deviceInfo.localHeight / 2,
       child: Card(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         child: Row(
           children: [
@@ -184,7 +181,9 @@ class _ProductItemState extends State<ProductItem> {
           await Future.delayed(Duration(seconds: 3));
           if (isDeleted)
             cartBloc.add(DeleteItemEvent(
-                id: widget.cartItem.id, rowId: widget.cartItem.rowId));
+                id: widget.cartItem.id,
+                rowId: widget.cartItem.rowId,
+                screenId: '2'));
         },
       ),
     );
@@ -198,16 +197,16 @@ class _ProductItemState extends State<ProductItem> {
           pressed: () {
             cartBloc.add(
               AddingItemEvent(
-                cartItem: CartItem(
-                  rowId: widget.cartItem.rowId,
-                  id: widget.cartItem.id,
-                  imageName: widget.cartItem.imageName,
-                  nameAr: widget.cartItem.nameAr,
-                  price: widget.cartItem.price,
-                  nameEn: widget.cartItem.nameEn,
-                  quantity: widget.cartItem.quantity,
-                ),
-              ),
+                  cartItem: CartItem(
+                    rowId: widget.cartItem.rowId,
+                    id: widget.cartItem.id,
+                    imageName: widget.cartItem.imageName,
+                    nameAr: widget.cartItem.nameAr,
+                    price: widget.cartItem.price,
+                    nameEn: widget.cartItem.nameEn,
+                    quantity: widget.cartItem.quantity,
+                  ),
+                  screenId: '2'),
             );
           },
           deviceInfo: deviceInfo,
@@ -221,7 +220,8 @@ class _ProductItemState extends State<ProductItem> {
           pressed: widget.cartItem.quantity == '1'
               ? null
               : () {
-                  cartBloc.add(DecreaseEvent(id: widget.cartItem.id));
+                  cartBloc.add(
+                      DecreaseEvent(id: widget.cartItem.id, screenId: '2'));
                 },
           deviceInfo: deviceInfo,
         ),

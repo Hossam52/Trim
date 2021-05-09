@@ -4,6 +4,7 @@ import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/cart_states.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
+import 'package:trim/modules/market/cubit/categories_events.dart';
 import 'package:trim/modules/market/cubit/categories_states.dart';
 import 'package:trim/modules/market/models/Category.dart';
 import 'package:trim/modules/market/screens/CategoryProductsScreen.dart';
@@ -26,9 +27,12 @@ class ShoppingScreen extends StatefulWidget {
 
 class _ShoppingScreenState extends State<ShoppingScreen> {
   CartBloc cartBloc;
+  AllCategoriesBloc allCategoriesBloc;
   @override
   void initState() {
     cartBloc = BlocProvider.of<CartBloc>(context);
+    allCategoriesBloc = BlocProvider.of<AllCategoriesBloc>(context);
+    allCategoriesBloc.add(CategoriesFetchDataFromApi());
     cartBloc.add(CartItemsEvent());
     super.initState();
   }
@@ -57,7 +61,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           horizontal: 10, vertical: 20),
                       child: buildHeader(),
                     ),
-                    BlocBuilder<AllcategoriesCubit, CategoriesStates>(
+                    BlocBuilder<AllCategoriesBloc, CategoriesStates>(
                         builder: (_, state) {
                       if (state is LoadingState || state is InitialState)
                         return Center(child: CircularProgressIndicator());
@@ -66,14 +70,22 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                         return Expanded(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: buildCategories(deviceInfo, categoriess),
+                            child:buildRefershIndicatorCategories(child:
+                            buildCategories(deviceInfo, categoriess),
+                          ),
                           ),
                         );
                       } else
-                        return Center(
+                        return buildRefershIndicatorCategories(child: Center(
+                        child: SingleChildScrollView(
+                         physics: AlwaysScrollableScrollPhysics(),
+                          child: Container(
+                            height: deviceInfo.localHeight*0.5,
                             child: Text(
-                                'Please Make sure from internet connection'));
-                    })
+                                  'Please Make sure from internet connection'),
+                          ),
+                          )));
+                    }),
                   ],
                 ),
               );
@@ -84,11 +96,19 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     );
   }
 
-  GridView buildCategories(DeviceInfo deviceInfo, List<Category> categoriess) {
+  Widget buildRefershIndicatorCategories({Widget child}) {
+    return RefreshIndicator(
+        child: child,
+        onRefresh: () async{
+          allCategoriesBloc.add(CategoriesFetchDataFromApi());
+        });
+  }
+
+  Widget buildCategories(DeviceInfo deviceInfo, List<Category> categoriess) {
     return GridView.builder(
       itemBuilder: (context, index) => GestureDetector(
         onTap: () {
-        //  widget.setCategoryIndex(index);
+          //  widget.setCategoryIndex(index);
           Navigator.pushNamed(
             context,
             CategoryProductsScreen.routeName,
@@ -113,8 +133,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
         Cart(),
         Expanded(
           child: BuildSearchWidget(
-            pressed: () {},
             onChanged: (value) async {
+              allCategoriesBloc.add(SearchedCategories(searchedWord: value));
               print("search\n");
             },
           ),

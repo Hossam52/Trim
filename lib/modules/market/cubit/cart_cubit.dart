@@ -16,8 +16,10 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
         yield InitialStateGetCartItems();
         await getCartItems();
         yield LoadedStateGetCartItems();
-      }
-      if (event is AddingItemEvent) {
+      } else if (event is DeleteAllItemsInCart) {
+        await deleteAllitemsFromCart();//added
+        yield DeleteAllItems();
+      } else if (event is AddingItemEvent) {
         await addItem(event.cartItem);
         yield AddItem();
       } else if (event is DecreaseEvent) {
@@ -28,8 +30,12 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
         yield DeleteItem();
       }
     } catch (e) {
-      print('state error');
-      yield ErrorStateCart();
+      if (event.screenId == '1') {
+        yield ErrorStateCart();
+      } else if (event.screenId == '2')
+        yield ErrorStateCartInBadge();
+      else
+        yield ErrorStateCart();
     }
   }
 
@@ -180,14 +186,23 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
       });
       print('Delete\n');
       print(response.data);
-    } catch (e) 
-    {
+    } catch (e) {
       throw Exception;
     }
   }
 
-  void updateItem(int id) 
-  {
+  Future<void> deleteAllitemsFromCart() async {
+    try {
+      final response =
+          await DioHelper.postData(url: deleteAllCartItemsUrl, body: {});
+      print(response.data);
+      items.clear();
+    } catch (e) {
+      throw Exception;
+    }
+  }
+
+  void updateItem(int id) {
     if (items.containsKey(id))
       items.update(id, (value) {
         int qty = int.parse(value.quantity) + 1;

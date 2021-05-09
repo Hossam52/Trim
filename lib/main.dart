@@ -68,11 +68,23 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => HomeCubit()),
+<<<<<<< HEAD
+=======
+        BlocProvider(create: (_) => AllCategoriesBloc()),
+        BlocProvider(
+          create: (_) => ProductsCategoryCubit(),
+        ),
+        BlocProvider(create: (_) => ProductsCategoryBloc()),
+        BlocProvider(create: (context) => CartBloc()),
+        BlocProvider(create: (context) => SearchBloc()),
+>>>>>>> 9801705d0fc6d70db2df6880c052965abc607e0f
         BlocProvider(create: (_) => SalonsCubit()),
         BlocProvider(create: (_) => PersonsCubit()),
-        BlocProvider(create: (_) => AllcategoriesCubit()),
+        //BlocProvider(create: (_) => AllcategoriesCubit()),
         BlocProvider(create: (_) => ProductsCategoryCubit()),
         BlocProvider(create: (_) => ProductsCategoryBloc()),
+        BlocProvider(create: (context) => CartBloc(),),
+        BlocProvider(create: (context)=>SearchBloc()),
         BlocProvider(create: (context) => CartBloc()),
         BlocProvider(create: (context) => SettingCubit()),
         BlocProvider(create: (context) => AuthCubit()),

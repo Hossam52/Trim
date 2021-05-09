@@ -22,12 +22,12 @@ class Cart extends StatelessWidget {
               icon: Icon(
                 Icons.shopping_cart_outlined,
               ),
-              onPressed: () 
+              onPressed: ()
               {
                 Navigator.pushNamed(context, BadgeScrren.routeName);
               },
               padding: const EdgeInsets.all(0),
-            ));
+            ),);
     });
   }
 }
