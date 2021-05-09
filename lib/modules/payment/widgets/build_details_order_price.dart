@@ -63,25 +63,20 @@ class BuildDetailsOrderPrice extends StatelessWidget {
                   ? () async {
                       CartBloc cartBloc = BlocProvider.of<CartBloc>(context);
                       List<CartItem> items = cartBloc.getCartList();
+                        List<Map<String,dynamic>>productsOrder=[];
+                        for(CartItem item in items)
+                        productsOrder.add({
+                          'product_id':item.id,
+                          'quantity':item.quantity,
 
+                        });
                       final response = await DioHelper.postData(
                           url: newOrderWithProduct,
                           body: {
-                            'products': [
-                              {
-                                'id':1,
-                                'qty':"10",
-                                //'products.0.product_id': 3,
-                                //'products.0.quantity': 6
-                              }
-                            ],
-                            //'${products[1][product_id]}': 6,
-                            //'products[1][quantity]': 4,
+                           'products':productsOrder,
                           });
                       print(response.data);
-
                       cartBloc.add(DeleteAllItemsInCart());
-                      //.add(DeleteAllItemsInCart());
                     }
                   : pressed,
               child: Text(

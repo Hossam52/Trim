@@ -253,6 +253,7 @@ class _BuildProductItemState extends State<BuildProductItem> {
                           nameAr: widget.prodcut.nameAr,
                           price: widget.prodcut.productPrice,
                           nameEn: widget.prodcut.nameEn,
+                          
                         ),
                         screenId: '1'),
                   );

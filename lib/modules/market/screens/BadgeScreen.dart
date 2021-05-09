@@ -91,14 +91,12 @@ class BadgeScrren extends StatelessWidget {
       width: deviceInfo.localWidth / 1.3,
       child: DefaultButton(
         onPressed: () async {
+          if(BlocProvider.of<CartBloc>(context).items.length==0)
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('The cart is empty please enter items')));
+                else
           Navigator.pushNamed(context, ConfirmOrderScreen.routeName);
-          try {
-            // List<CartItem> cartItems =
-            //     BlocProvider.of<CartBloc>(context).getCartList();
-          } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('please make sure from internet conntection')));
-          }
+          
         },
         text: 'Confirm order',
       ),
@@ -190,11 +188,12 @@ class _ProductItemState extends State<ProductItem> {
   }
 
   Widget buildActionButtons(DeviceInfo deviceInfo) {
+     bool isEnabled =(widget.cartItem.quantity?? '0') == '10';
     return Row(
       children: [
         BuildRawMaterialButton(
           icon: Icons.add,
-          pressed: () {
+          pressed: isEnabled?null:() {
             cartBloc.add(
               AddingItemEvent(
                   cartItem: CartItem(
