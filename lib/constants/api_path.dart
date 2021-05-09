@@ -19,6 +19,7 @@ String get getVerificationCodeApi {
 final String baseUrl = 'https://trim.style/public/api/client/';
 final String loginUrl = 'login';
 final String registerUrl = 'register';
+final String activateAccountUrl = 'user/activate';
 final String contatcsUrl = 'contacts';
 final String homeUrl = 'mainLists';
 final String allSalonsUrl = 'allSalons';

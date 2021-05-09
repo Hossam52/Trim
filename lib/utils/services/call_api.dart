@@ -16,13 +16,16 @@ enum CallType {
 Future<RecievedData> callAPI(String url,
     {Map<String, dynamic> body = const {},
     Map<String, dynamic> quiries = const {},
+    String accessToken,
     @required CallType callType}) async {
   String error = "Un expected error happened";
   Map<String, dynamic> data;
   try {
     final response = callType == CallType.Post
-        ? await DioHelper.postData(url: url, body: body, queries: quiries)
-        : await DioHelper.getData(methodUrl: url, queries: quiries);
+        ? await DioHelper.postData(
+            url: url, accessToken: accessToken, body: body, queries: quiries)
+        : await DioHelper.getData(
+            methodUrl: url, accessToken: accessToken, queries: quiries);
     data = response.data;
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.data['success'] != true)
