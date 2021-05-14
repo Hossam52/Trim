@@ -29,4 +29,7 @@ class SalonService {
     descriptionAr = json['description_ar'];
     selected = false;
   }
+  Map<String, dynamic> toJson() {
+    return {'service_id': id, 'quantity': 1};
+  }
 }

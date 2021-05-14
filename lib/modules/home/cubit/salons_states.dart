@@ -31,3 +31,11 @@ class LoadingAvilableDatesState extends SalonStates {}
 class EmptyAvialbleDatesState extends SalonStates {}
 
 class ErrorAvilableDatesState extends SalonStates {}
+
+class ChangeFavoriteState extends SalonStates {}
+
+class ToggleSelectedServiceState extends SalonStates {}
+
+class LoadingMakeOrderState extends SalonStates {}
+
+class LoadedMakeOrderState extends SalonStates {}

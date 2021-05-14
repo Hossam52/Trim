@@ -1,9 +1,9 @@
 List<String> canceledReasons = [
-  'غيرت رأيي هطلب من صالون اخر',
-  'الخدمات غير مكتملة',
-  'كنت بجرب التطبيق',
-  'انتظرت طويلا',
-  'الصالون غير منظم',
-  'لم احصل على خصم الكوبون',
-  'سبب اخر'
+  'Change My openion and request another salon',
+  'Services is not complete',
+  'Try The app',
+  'Wait too long',
+  'Salon is not arranged',
+  'Don\'t get copoun',
+  'Another reason'
 ];

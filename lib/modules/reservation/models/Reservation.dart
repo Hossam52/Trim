@@ -21,24 +21,3 @@ class Reservation {
       @required this.reservationData,
       @required this.requestNumber});
 }
-
-List<Reservation> reservations = [
-  Reservation(
-      salonName: 'الكسندرا',
-      address: 'عمارات الامداد والتموين متفرع من 10 شارع النصر',
-      reservationId: DateTime.now().toIso8601String(),
-      stateReservation: 'ملغي بواسطة العميل',
-      typeService: 'قص شعر',
-      reservationData:
-          ReservationData(data: '19-08-2020', day: 'الاربعاء', hour: '5:00'),
-      requestNumber: '123'),
-  Reservation(
-      salonName: 'بيوتي سنتر',
-      address: 'عمارات الامداد والتموين متفرع من 10 شارع النصر',
-      reservationId: DateTime.now().toIso8601String(),
-      stateReservation: 'تم عمله',
-      typeService: 'عرض العروسة',
-      reservationData:
-          ReservationData(data: '19-04-2021', day: 'الثلاثاء', hour: '5:00'),
-      requestNumber: '456'),
-];

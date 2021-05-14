@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
+import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/repositories/home_repo.dart';
 import 'package:trim/modules/home/repositories/salons_repo.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
+import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
+
+enum Search { Name, City, Both }
 
 class SalonsCubit extends Cubit<SalonStates> {
   SalonsCubit() : super(InitialSalonState()) {
@@ -20,16 +25,22 @@ class SalonsCubit extends Cubit<SalonStates> {
 
   static SalonsCubit getInstance(BuildContext context) =>
       BlocProvider.of<SalonsCubit>(context);
-  int _selectedDateIndex = 0;
+  double totalPrice = 0;
+  Search _search;
+  String searchName = '';
+  bool filterData = false;
+  int selectedDateIndex = 0;
   int _currentPageAllSalonsIndex = 1;
   int _currentPageMostSearchedSalonsIndex = 1;
   int _currentPageFavoritesIndex = 1;
+  int selectedCityId;
   List<List<Salon>> _allSalons =
       []; //every Index express of a page in all salons
   List<List<Salon>> _mostSearchSalons = [];
   List<List<Salon>> _favoriteSalons = [];
 
   Salon salonDetail;
+  DateTime reservationDate = DateTime.now();
   List<String> availableDates = [];
   int salonIdToDisplay;
 
@@ -39,7 +50,9 @@ class SalonsCubit extends Cubit<SalonStates> {
   Future<void> _loadAllSalonsForFirstTime({@required refreshPage}) async {
     if (!refreshPage) emit(LoadingSalonState());
     final response = await loadAllSalonsFromServer(
-        /*_allSalonsPageCount*/ _currentPageAllSalonsIndex);
+      _currentPageAllSalonsIndex,
+      body: _getAllSalonsBody(),
+    );
     if (response.error)
       emit(ErrorSalonState(error: response.errorMessage));
     else {
@@ -54,10 +67,11 @@ class SalonsCubit extends Cubit<SalonStates> {
   }
 
 //When scroll to the end of list we get more items
-  Future<void> _loadMoreAllSalons() async {
+  Future<void> _loadMoreAllSalons({String name}) async {
     emit(LoadingMoreSalonState());
-    final response =
-        await loadAllSalonsFromServer(_currentPageAllSalonsIndex + 1);
+    final response = await loadAllSalonsFromServer(
+        _currentPageAllSalonsIndex + 1,
+        body: _getAllSalonsBody());
     if (response.error) {
       print(response.data.allSalons);
       emit(ErrorSalonState(error: response.errorMessage));
@@ -114,19 +128,28 @@ class SalonsCubit extends Cubit<SalonStates> {
     }
   }
 
-  Future<void> searchSalonsByName(String name) async {
-    emit(LoadingSalonState());
-    final response = await loadAllSalonsFromServer(1, body: {'name': name});
-    if (response.error)
-      emit(ErrorSalonState(error: response.errorMessage));
-    else {
-      // print(response.data.allSalons);
-      // _allSalons = response.data.allSalons;
-    }
-    emit(LoadedSalonState());
-  }
+  Future<void> searchForSalon({String name, int cityId}) async {
+    if ((name == null || name.isEmpty) && cityId != null)
+      _search = Search.City;
+    else if (name != null && cityId == null)
+      _search = Search.Name;
+    else if (name != null && cityId != null)
+      _search = Search.City;
+    else
+      _search = Search.Both;
+    searchName = name;
+    selectedCityId = cityId;
 
-  Future<void> _getAllCities() {}
+    _currentPageAllSalonsIndex = 1;
+    _allSalons.clear();
+
+    if ((name == null || name.isEmpty) && cityId == null)
+      filterData = false;
+    else {
+      filterData = true;
+    }
+    await _loadAllSalonsForFirstTime(refreshPage: false);
+  }
 
   Future<void> getSalonDetails({@required int id}) async {
     emit(LoadingSalonDetailState());
@@ -135,12 +158,16 @@ class SalonsCubit extends Cubit<SalonStates> {
       emit(ErrorSalonState(error: response.errorMessage));
     else {
       salonDetail = response.data.salon;
+      print('length is ${salonDetail.salonServices.length}');
+      totalPrice = 0;
       await getAvilableDates(DateTime.now());
       emit(LoadedSalonState());
     }
   }
 
   Future<void> getAvilableDates(DateTime date) async {
+    reservationDate = date;
+    print(DateFormat('y/MM/dd').format(reservationDate));
     emit(LoadingAvilableDatesState());
     final response =
         await getAvailableDatesFromServer(id: salonDetail.id, date: date);
@@ -192,7 +219,47 @@ class SalonsCubit extends Cubit<SalonStates> {
       }
     }
   }
+
+  Future<void> addSalonToFavorite({@required int salonId}) async {
+    _favoriteSalons.forEach((page) {
+      int index = page.indexWhere((element) => element.id == salonId);
+      if (index != -1) {
+        page[index].isFavorite = !page[index].isFavorite;
+      }
+    });
+    if (salonDetail != null && salonDetail.id == salonId) {
+      salonDetail.isFavorite = !salonDetail.isFavorite;
+    }
+    emit(ChangeFavoriteState());
+
+    await addToFavorite(salonId: salonId);
+
+    loadFavoriteSalons(refreshPage: true); //To refresh data of favorite
+  }
+
+  Future<void> orderSalonWithServices(BuildContext context) async {
+    emit(LoadingMakeOrderState());
+    final response = await orderSalonServicesFromServer(
+        salonDetail, reservationDate, availableDates[selectedDateIndex]);
+    ReservationCubit.getInstance(context).loadMyOrders(refreshPage: true);
+    emit(LoadedMakeOrderState());
+  }
+
 //--------------API Calls End ----------------
+  Map<String, dynamic> _getAllSalonsBody() {
+    Map<String, dynamic> body = {};
+    if (filterData) {
+      if (_search == Search.Name)
+        body = {
+          'name': searchName,
+        };
+      else if (_search == Search.City)
+        body = {
+          'city_id': selectedCityId,
+        };
+    }
+    return body;
+  }
 
   void getNextPage(BuildContext context) async {
     final state = HomeCubit.getInstance(context).state;
@@ -201,7 +268,7 @@ class SalonsCubit extends Cubit<SalonStates> {
         _currentPageAllSalonsIndex++;
         emit(LoadedMoreSalonState());
       } else {
-        await _loadMoreAllSalons();
+        await _loadMoreAllSalons(name: searchName);
       }
     } else if (state is MostSearchState) {
       if (_currentPageMostSearchedSalonsIndex != _mostSearchSalons.length) {
@@ -256,12 +323,12 @@ class SalonsCubit extends Cubit<SalonStates> {
   }
 
   void changeSelectedReserveDate(int index) {
-    _selectedDateIndex = index;
+    selectedDateIndex = index;
     emit(ChangeSelecteTimeState());
   }
 
   int get getSelectedReserveTime {
-    return _selectedDateIndex;
+    return selectedDateIndex;
   }
 
   Future<void> loadSalons(
@@ -291,5 +358,32 @@ class SalonsCubit extends Cubit<SalonStates> {
       return _favoriteSalons[_currentPageFavoritesIndex - 1];
     else
       return _allSalons[_currentPageAllSalonsIndex - 1];
+  }
+
+  void toggelSelectedService(int serviceId) {
+    int index = salonDetail.salonServices
+        .indexWhere((element) => element.id == serviceId);
+    if (index != -1) {
+      double servicePrice =
+          double.tryParse(salonDetail.salonServices[index].price);
+
+      if (salonDetail.salonServices[index].selected)
+        totalPrice -= servicePrice ?? 0;
+      else
+        totalPrice += servicePrice ?? 0;
+      print(totalPrice);
+      salonDetail.salonServices[index].selected =
+          !salonDetail.salonServices[index].selected;
+      emit(ToggleSelectedServiceState());
+    }
+  }
+
+  bool canReserveSalon() {
+    if (totalPrice != 0 &&
+        availableDates.isNotEmpty &&
+        state is! LoadingAvilableDatesState) {
+      return true;
+    }
+    return false;
   }
 }

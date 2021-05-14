@@ -21,91 +21,97 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, PersonDetailScreen.routeName);
-                  },
-                  child: buildPersonWidget()),
-            ),
-            Divider(),
-            SettingItem(
-              imagename: 'calendar',
-              //label: 'حجوازتي',
-              label: getWord("my reservations", context),
-              function: () {
-                Navigator.pushNamed(context, ReservationsScreen.routeName);
-              },
-            ),
-            SettingItem(
-              imagename: 'bell',
-              // label: 'الأشعارات',
-              label: getWord("notifications", context),
-              function: () {
-                Navigator.pushNamed(context, NotificationScreen.routeName);
-              },
-            ),
-            SettingItem(
-              imagename: 'user',
-              //label: 'الملف الشخصي',
-              label: getWord("personal profile", context),
-              function: () {
-                Navigator.pushNamed(context, PersonDetailScreen.routeName);
-              },
-            ),
-            SettingItem(
-              imagename: 'wallet',
-              // label: 'محفظتي',
+        child: BlocBuilder<SettingCubit, SettingsStatates>(
+          buildWhen: (oldState, newState) {
+            if (newState is LoadingContactsSettingState) return true;
+            return false;
+          },
+          builder: (_, state) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                          context, PersonDetailScreen.routeName);
+                    },
+                    child: buildPersonWidget()),
+              ),
+              Divider(),
+              SettingItem(
+                imagename: 'calendar',
+                //label: 'حجوازتي',
+                label: getWord("my reservations", context),
+                function: () {
+                  Navigator.pushNamed(context, ReservationsScreen.routeName);
+                },
+              ),
+              SettingItem(
+                imagename: 'bell',
+                // label: 'الأشعارات',
+                label: getWord("notifications", context),
+                function: () {
+                  Navigator.pushNamed(context, NotificationScreen.routeName);
+                },
+              ),
+              SettingItem(
+                imagename: 'user',
+                //label: 'الملف الشخصي',
+                label: getWord("personal profile", context),
+                function: () {
+                  Navigator.pushNamed(context, PersonDetailScreen.routeName);
+                },
+              ),
+              SettingItem(
+                imagename: 'wallet',
+                // label: 'محفظتي',
 
-              label: getWord("my wallet", context),
-              function: () {
-                Navigator.pushNamed(context, WalletScreen.routeName);
-              },
-            ),
-            SettingItem(
-              imagename: 'coupon',
-              // label: 'الكوبونات',
-              label: getWord("copouns", context),
-              function: () {
-                Navigator.pushNamed(context, CouponsScreen.routeName);
-              },
-            ),
-            SettingItem(
-              imagename: 'favourite',
-              // label: 'مفضلتي',
-              label: getWord("my favorites", context),
-              function: () {
-                Navigator.pushNamed(context, FavouritesScreen.routeName);
-              },
-            ),
-            SettingItem(
-              imagename: 'support',
-              // label: 'خدمة العملاء',
-              label: getWord("support", context),
-              function: () {
-                Navigator.pushNamed(context, CustomerServiceScreen.routeName);
-              },
-            ),
-            InfoWidget(
-              responsiveWidget: (context, deviceInfo) {
-                return ListTile(
-                  onTap: () {},
-                  leading: Icon(Icons.logout, color: Colors.blue),
-                  title: Text(
-                    // 'تسجيل الخروج',
-                    getWord("log out", context),
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: getFontSizeVersion2(deviceInfo)),
-                  ),
-                );
-              },
-            )
-          ],
+                label: getWord("my wallet", context),
+                function: () {
+                  Navigator.pushNamed(context, WalletScreen.routeName);
+                },
+              ),
+              SettingItem(
+                imagename: 'coupon',
+                // label: 'الكوبونات',
+                label: getWord("copouns", context),
+                function: () {
+                  Navigator.pushNamed(context, CouponsScreen.routeName);
+                },
+              ),
+              SettingItem(
+                imagename: 'favourite',
+                // label: 'مفضلتي',
+                label: getWord("my favorites", context),
+                function: () =>
+                    HomeCubit.getInstance(context).navigateToFavoriets(context),
+              ),
+              SettingItem(
+                imagename: 'support',
+                // label: 'خدمة العملاء',
+                label: getWord("support", context),
+                function: () {
+                  Navigator.pushNamed(context, CustomerServiceScreen.routeName);
+                },
+              ),
+              InfoWidget(
+                responsiveWidget: (context, deviceInfo) {
+                  return ListTile(
+                    onTap: () {},
+                    leading: Icon(Icons.logout, color: Colors.blue),
+                    title: Text(
+                      // 'تسجيل الخروج',
+                      getWord("log out", context),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: getFontSizeVersion2(deviceInfo)),
+                    ),
+                  );
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

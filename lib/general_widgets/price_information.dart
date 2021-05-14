@@ -6,9 +6,17 @@ import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/trim_text_field.dart';
 
 class PriceInformation extends StatelessWidget {
+  final String total;
+  final String discount;
+  final String totalAfterDiscount;
   final bool showCopounsField;
 
-  const PriceInformation({Key key, this.showCopounsField = true})
+  const PriceInformation(
+      {Key key,
+      this.showCopounsField = true,
+      @required this.total,
+      @required this.discount,
+      @required this.totalAfterDiscount})
       : super(key: key);
   Widget getCopunTextField(BuildContext context) {
     return TrimTextField(
@@ -34,18 +42,15 @@ class PriceInformation extends StatelessWidget {
   }
 
   Widget reservationDetails(DeviceInfo deviceInfo) {
-    int totalPrice = 400;
-    int discount = 20;
-    int afterDiscount = totalPrice - (totalPrice * discount / 100).floor();
     TextStyle style = TextStyle(fontSize: getFontSizeVersion2(deviceInfo));
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Total: $totalPrice', style: style),
+          Text('Total: $total', style: style),
           Text('Discount: $discount', style: style),
-          Text('Total after dicount: $afterDiscount', style: style)
+          Text('Total after dicount: $totalAfterDiscount', style: style)
         ],
       ),
     );

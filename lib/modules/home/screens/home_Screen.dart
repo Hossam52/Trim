@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
           return false;
         } else {
-          return await exitConfirmationDialog(context);
+          return await exitConfirmationDialog(context, 'Are you sure to exit?');
         }
       },
       child: BlocBuilder<HomeCubit, HomeStates>(
@@ -140,7 +140,7 @@ class BuildHomeWidget extends StatelessWidget {
   final int heightNavigationBar;
 
   @override
-  Widget build(BuildContext context) {   
+  Widget build(BuildContext context) {
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
         double fontSize = constants.getFontSizeVersion2(deviceInfo);

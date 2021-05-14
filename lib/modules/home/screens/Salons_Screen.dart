@@ -6,6 +6,7 @@ import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
+import 'package:trim/modules/home/cubit/persons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
@@ -20,6 +21,7 @@ import 'package:trim/modules/home/widgets/BuildCitiesChoices.dart';
 import 'package:trim/modules/home/widgets/BuildSalonItemGrid.dart';
 import 'package:trim/general_widgets/BuildSearchWidget.dart';
 import '../widgets/navigate_pages.dart';
+import '../cubit/cities_cubit.dart';
 
 class SalonsScreen extends StatefulWidget {
   static final String routeName = 'salonScreen';
@@ -28,21 +30,9 @@ class SalonsScreen extends StatefulWidget {
 }
 
 class _SalonsScreenState extends State<SalonsScreen> {
-  String selectedCity = 'all';
   bool displaySalons = true;
 
   List<Salon> filterSalonsData = [];
-  List<Salon> filterSalons(bool mostSearch) {
-    if (mostSearch != null) //the screen show only most search salons
-      filterSalonsData = mostSearchSalons
-          .where((element) => element.cityEn == selectedCity)
-          .toList();
-    else // the screen show all salons
-      filterSalonsData = salonsData
-          .where((element) => element.cityEn == selectedCity)
-          .toList();
-    return filterSalonsData;
-  }
 
   Future<void> showCities(BuildContext context) {
     return showDialog(
@@ -51,12 +41,7 @@ class _SalonsScreenState extends State<SalonsScreen> {
           return BuildAlertDialog(
             child: BuildCitiesRadio(),
           );
-        }).then((value) {
-      if (value != null) //selected one
-        selectedCity = value;
-
-      print(value);
-    });
+        });
   }
 
   @override
@@ -75,13 +60,14 @@ class _SalonsScreenState extends State<SalonsScreen> {
     final state = HomeCubit.getInstance(context).state;
     return Scaffold(
       appBar: appBar(context),
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              // if (temp != Temp.Home)
-              if (state is AllSalonsState) buildSearchAndSettings(context),
+              if (state is AllSalonsState || state is AllPersonsState)
+                buildSearchAndSettings(context),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(
@@ -93,10 +79,16 @@ class _SalonsScreenState extends State<SalonsScreen> {
                       name: 'Salons',
                       active: displaySalons,
                       pressed: () {
-                        if (!(HomeCubit.getInstance(context).state
-                            is AllSalonsState))
+                        final state = HomeCubit.getInstance(context).state;
+                        if (state is TrimStarState)
                           HomeCubit.getInstance(context)
                               .emit(MostSearchState());
+                        else if (state is AllPersonsState)
+                          HomeCubit.getInstance(context).emit(AllSalonsState());
+                        // if (!(HomeCubit.getInstance(context).state
+                        //     is AllSalonsState))
+                        //   HomeCubit.getInstance(context)
+                        //       .emit(MostSearchState());
                         if (!displaySalons)
                           setState(() {
                             displaySalons = true;
@@ -109,10 +101,12 @@ class _SalonsScreenState extends State<SalonsScreen> {
                       name: 'Persons',
                       active: !displaySalons,
                       pressed: () {
-                        if (!(HomeCubit.getInstance(context).state
-                            is AllSalonsState))
+                        final state = HomeCubit.getInstance(context).state;
+                        if (state is MostSearchState)
                           HomeCubit.getInstance(context).emit(TrimStarState());
-                        // SalonsCubit.getInstance(context).emit(TrimStarState());
+                        else if (state is AllSalonsState)
+                          HomeCubit.getInstance(context)
+                              .emit(AllPersonsState());
                         if (displaySalons)
                           setState(() {
                             displaySalons = false;
@@ -124,11 +118,8 @@ class _SalonsScreenState extends State<SalonsScreen> {
               ),
               Container(
                 child: Expanded(
-                  child: displaySalons
-                      ? BuildGridViewSalons(
-                          selectedCity: selectedCity,
-                        )
-                      : PersonsGridView(),
+                  child:
+                      displaySalons ? BuildGridViewSalons() : PersonsGridView(),
                 ),
               ),
             ],
@@ -139,6 +130,15 @@ class _SalonsScreenState extends State<SalonsScreen> {
   }
 
   Row buildSearchAndSettings(BuildContext context) {
+    String getIntialText() {
+      final state = HomeCubit.getInstance(context).state;
+      if (state is AllSalonsState)
+        return SalonsCubit.getInstance(context).searchName;
+      else if (state is AllPersonsState)
+        return PersonsCubit.getInstance(context).searchName;
+      return '';
+    }
+
     return Row(
       children: [
         ElevatedButton(
@@ -161,8 +161,14 @@ class _SalonsScreenState extends State<SalonsScreen> {
         ),
         Expanded(
           child: BuildSearchWidget(
-            onChanged: (String val) {
-              SalonsCubit.getInstance(context).searchSalonsByName(val);
+            initialText: getIntialText(),
+            onChanged: (String val) async {
+              if (HomeCubit.getInstance(context).state is AllSalonsState)
+                await SalonsCubit.getInstance(context)
+                    .searchForSalon(name: val);
+              else if (HomeCubit.getInstance(context).state is AllPersonsState)
+                await PersonsCubit.getInstance(context)
+                    .searchForPerson(name: val);
             },
           ),
         ),
@@ -171,8 +177,8 @@ class _SalonsScreenState extends State<SalonsScreen> {
   }
 
   AppBar appBar(BuildContext context) {
-    // bool displayAppBar = temp == Temp.Home ? true : false;
-    bool displayAppBar = HomeCubit.getInstance(context).state is AllSalonsState;
+    final state = HomeCubit.getInstance(context).state;
+    bool displayAppBar = state is AllSalonsState || state is AllPersonsState;
     return !displayAppBar
         ? AppBar(
             backgroundColor: Colors.blue[800],
@@ -187,11 +193,7 @@ class _SalonsScreenState extends State<SalonsScreen> {
 }
 
 class BuildGridViewSalons extends StatefulWidget {
-  const BuildGridViewSalons({
-    @required this.selectedCity,
-  });
-
-  final String selectedCity;
+  const BuildGridViewSalons();
 
   @override
   _BuildGridViewSalonsState createState() => _BuildGridViewSalonsState();

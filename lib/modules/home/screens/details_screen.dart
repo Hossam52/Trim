@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
-import 'package:trim/modules/home/cubit/reserve_cubit.dart';
-import 'package:trim/modules/home/cubit/reserve_states.dart';
+import 'package:trim/modules/home/cubit/cities_cubit.dart';
+import 'package:trim/modules/home/cubit/cities_states.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
@@ -127,6 +128,7 @@ class DetailsScreen extends StatelessWidget {
   }
 
   void reserveSalon(context, DeviceInfo deviceInfo) {
+    SalonsCubit.getInstance(context).getAvilableDates(DateTime.now());
     Navigator.pushNamed(context, ReserveScreen.routeName,
         arguments: SalonDetailModel(
             showDateWidget: true,
@@ -175,7 +177,8 @@ class DetailsScreen extends StatelessWidget {
         elevation: 10,
         child: InkWell(
           onTap: () {
-            Navigator.pushNamed(context, DirectionMapScreen.routeName);
+            MapsLauncher.launchCoordinates(
+                37.4220041, -122.0862462, 'Google Headquarters are here');
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),

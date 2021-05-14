@@ -32,13 +32,21 @@ class FavoriteItem extends StatelessWidget {
           Positioned(
             bottom: 20,
             right: 10,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                buildSalonName(),
-                buildSalonStars(),
-              ],
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey.withAlpha(155),
+                borderRadius:
+                    BorderRadius.horizontal(left: Radius.circular(20)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  buildSalonName(),
+                  buildSalonStars(),
+                ],
+              ),
             ),
           ),
         ],

@@ -20,6 +20,8 @@ import 'package:trim/modules/settings/screens/notifications_screen.dart';
 import 'package:trim/modules/settings/screens/wallet_screen.dart';
 import '../../modules/auth/screens/registration_screen.dart';
 import '../../modules/auth/screens/login_screen.dart';
+import '../../modules/payment/screens/payment_detail_screen.dart';
+import '../../modules/payment/screens/payment_methods_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
   LoginScreen.routeName: (_) => LoginScreen(),
@@ -43,4 +45,6 @@ final Map<String, WidgetBuilder> routes = {
   FavouritesScreen.routeName: (_) => FavouritesScreen(),
   SalonsScreen.routeName: (_) => SalonsScreen(),
   ConfirmOrderScreen.routeName: (_) => ConfirmOrderScreen(),
+  PaymentDetailScreen.routeName: (_) => PaymentDetailScreen(),
+  PaymentMethodsScreen.routeName: (_) => PaymentMethodsScreen(),
 };

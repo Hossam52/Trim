@@ -1,57 +1,68 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:trim/modules/home/models/availableCities.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/modules/home/cubit/home_cubit.dart';
+import 'package:trim/modules/home/cubit/home_states.dart';
+import 'package:trim/modules/home/cubit/persons_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import '../cubit/cities_cubit.dart';
+import '../cubit/cities_states.dart';
 
-class BuildCitiesRadio extends StatefulWidget {
-  @override
-  _BuildCitiesRadioState createState() => _BuildCitiesRadioState();
-}
-
-class _BuildCitiesRadioState extends State<BuildCitiesRadio> {
-  String selectedCity = availableCities[0];
-  List<Widget> buildSelectedCity() {
-    List<Widget> widgets = [];
-    for (String city in availableCities) {
-      widgets.add(
-        ListTile(
-          onTap: () {
-            setState(() {
-              selectedCity = city;
-            });
-          },
-          leading: Radio<String>(
-            value: city,
-            groupValue: selectedCity,
-            onChanged: (value) {
-              setState(() {
-                selectedCity = value;
-              });
-            },
-          ),
-          title: Text(city),
-        ),
-      );
-    }
-    return widgets;
-  }
-
+class BuildCitiesRadio extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ...buildSelectedCity(),
-        Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: DefaultButton(
-              text: 'Search now',
-              onPressed: () {
-                Navigator.pop(context, selectedCity);
-              },
-              color: Colors.black,
-            )),
-      ],
+    return BlocConsumer<CitiesCubit, CitiesStates>(
+      listener: (_, states) {},
+      builder: (_, state) {
+        if (state is LoadingCitiesState)
+          return Center(child: CircularProgressIndicator());
+        if (state is EmptyCitiesState)
+          return Center(child: Text('No Cities Found'));
+        final cities = CitiesCubit.getInstance(context).cities;
+        int selectedId = CitiesCubit.getInstance(context).selectedCity.id;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...cities
+                .map((city) => ListTile(
+                      contentPadding: const EdgeInsets.all(0),
+                      onTap: () {
+                        CitiesCubit.getInstance(context)
+                            .changeSelecteCity(city);
+                      },
+                      leading: Radio<int>(
+                        value: city.id,
+                        groupValue: selectedId,
+                        onChanged: (value) {
+                          CitiesCubit.getInstance(context)
+                              .changeSelecteCity(city);
+                        },
+                      ),
+                      title: Text(city.nameEn),
+                    ))
+                .toList(),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: DefaultButton(
+                  text: 'Search now',
+                  onPressed: () async {
+                    if (HomeCubit.getInstance(context).state is AllSalonsState)
+                      SalonsCubit.getInstance(context)
+                          .searchForSalon(cityId: selectedId);
+                    else if (HomeCubit.getInstance(context).state
+                        is AllPersonsState)
+                      PersonsCubit.getInstance(context)
+                          .searchForPerson(cityId: selectedId);
+
+                    Navigator.pop(context);
+                  },
+                  color: Colors.black,
+                )),
+          ],
+        );
+      },
     );
   }
 }

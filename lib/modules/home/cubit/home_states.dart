@@ -16,4 +16,6 @@ class MostSearchState extends HomeStates {}
 
 class AllSalonsState extends HomeStates {}
 
+class AllPersonsState extends HomeStates {}
+
 class FavoriteState extends HomeStates {}

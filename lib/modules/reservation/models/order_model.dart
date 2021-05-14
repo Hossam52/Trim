@@ -10,14 +10,14 @@ class OrderModel {
   String lng;
   String userId;
   String userName;
-  int barberId;
+  String barberId;
   String barberName;
   String statusId;
   String statusAr;
   String statusEn;
   String cancelReason;
   String approve;
-  int rate;
+  String rate;
   String review;
   String reviewImage;
   String paymentMethod;

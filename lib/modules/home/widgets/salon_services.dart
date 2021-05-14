@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
-class SalonServices extends StatefulWidget {
+class SalonServices extends StatelessWidget {
   final Widget child;
   final DeviceInfo deviceInfo;
   final List<SalonService> services;
 
-  const SalonServices(
-      {Key key, this.child, this.deviceInfo, @required this.services})
+  SalonServices({Key key, this.child, this.deviceInfo, @required this.services})
       : super(key: key);
-  @override
-  _SalonServicesState createState() => _SalonServicesState();
-}
 
-class _SalonServicesState extends State<SalonServices> {
   double fontSize;
 
   Widget serviceDiscription(SalonService service) {
-    fontSize = getFontSizeVersion2(widget.deviceInfo);
+    fontSize = getFontSizeVersion2(deviceInfo);
     if (service.descriptionEn == null && service.descriptionAr == null)
       return null;
     else
@@ -36,52 +32,49 @@ class _SalonServicesState extends State<SalonServices> {
       );
   }
 
-  List<Widget> allServices() {
+  List<Widget> allServices(BuildContext context) {
     final List<Widget> returnedServices = [];
-    fontSize = getFontSizeVersion2(widget.deviceInfo);
+    fontSize = getFontSizeVersion2(deviceInfo);
     final ktextStyle =
         TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
-    for (int i = 0; i < widget.services.length; i++)
-      if (widget.services[i].titleEn != null &&
-          widget.services[i].titleAr != null &&
-          widget.services[i].price != null)
-        returnedServices.add(
-          ListTile(
-            onTap: () {
-              setState(() {
-                widget.services[i].selected = !widget.services[i].selected;
-              });
-            },
-            title: Text(
-              widget.services[i].titleEn == null
-                  ? widget.services[i].titleAr
-                  : widget.services[i].titleEn,
-              style: ktextStyle,
-            ),
-            subtitle: serviceDiscription(
-              widget.services[i],
-            ),
-            trailing: Text(
-              widget.services[i].price.toString(),
-              style: ktextStyle,
-            ),
-            leading: Checkbox(
-              onChanged: (bool value) {
-                setState(() {
-                  widget.services[i].selected = value;
-                });
-              },
-              value: widget.services[i].selected,
-            ),
-          ),
-        );
 
+    for (int i = 0; i < services.length; i++)
+      returnedServices.add(
+        ListTile(
+          onTap: () {
+            SalonsCubit.getInstance(context)
+                .toggelSelectedService(services[i].id);
+          },
+          title: Text(
+            services[i].titleEn == null
+                ? services[i].titleAr
+                : services[i].titleEn,
+            style: ktextStyle,
+          ),
+          subtitle: serviceDiscription(
+            services[i],
+          ),
+          trailing: Text(
+            services[i].price.toString(),
+            style: ktextStyle,
+          ),
+          leading: Checkbox(
+            onChanged: (bool value) {
+              SalonsCubit.getInstance(context)
+                  .toggelSelectedService(services[i].id);
+              print(SalonsCubit.getInstance(context).totalPrice);
+            },
+            value: services[i].selected,
+          ),
+        ),
+      );
+    print(returnedServices.length);
     return returnedServices;
   }
 
   @override
   Widget build(BuildContext context) {
-    final salonServicesWidget = allServices();
+    final salonServicesWidget = allServices(context);
     return Card(
       elevation: 10,
       child: Conditional.single(
@@ -97,7 +90,7 @@ class _SalonServicesState extends State<SalonServices> {
     return Column(
       children: [
         ...salonServicesWidget,
-        if (widget.child != null) widget.child,
+        if (child != null) child,
       ],
     );
   }

@@ -112,7 +112,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                             },
                           )
                         : PersonsGridView(
-                            filterFavorite: true,
+                            showFavoriteContainer: true,
                           )),
               ],
             ),
