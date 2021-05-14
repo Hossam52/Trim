@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/models/Category.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -32,8 +33,9 @@ class CategoryItem extends StatelessWidget {
   }
 
   Text buildCategoryName() {
+    print('English ${category.nameEn}');
     return Text(
-      category.nameAr,
+      isArabic ? category.nameAr : category.nameEn,
       textAlign: TextAlign.center,
       style: TextStyle(
           fontSize: deviceInfo.type == deviceType.mobile &&

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
+import 'package:trim/modules/reservation/Bloc/products_order_bloc.dart';
+import 'package:trim/modules/reservation/Bloc/products_order_events.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/market/widgets/build_listTile_confirm.dart';
@@ -36,13 +39,13 @@ class BuildDetailsOrderPrice extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           BuildListTileCofirm(
-            leading: 'الاجمالي',
-            trailing: '${cartBloc.getTotalPrice().toStringAsFixed(2)} جنيه',
+            leading: getWord('total', context),
+            trailing: '${cartBloc.getTotalPrice().toStringAsFixed(2)} '+getWord('bound', context),
             fontSize: fontSize,
           ),
           BuildListTileCofirm(
-            leading: 'الشحن',
-            trailing: '20 جنيه',
+            leading: getWord('shipping', context),
+            trailing: '20 '+getWord('bound', context),
             fontSize: fontSize,
           ),
           Divider(
@@ -51,9 +54,9 @@ class BuildDetailsOrderPrice extends StatelessWidget {
             color: Colors.black,
           ),
           BuildListTileCofirm(
-            leading: 'السعر الكلي',
+            leading: getWord('total price', context),
             trailing:
-                '${(cartBloc.getTotalPrice() + 20).toStringAsFixed(2)} جنيه',
+                '${(cartBloc.getTotalPrice() + 20).toStringAsFixed(2)} '+getWord('bound', context),
             fontSize: fontSize,
           ),
           Padding(
@@ -61,28 +64,28 @@ class BuildDetailsOrderPrice extends StatelessWidget {
             child: ElevatedButton(
               onPressed: stepNumber == 2
                   ? () async {
-                      CartBloc cartBloc = BlocProvider.of<CartBloc>(context);
-                      List<CartItem> items = cartBloc.getCartList();
-                        List<Map<String,dynamic>>productsOrder=[];
-                        for(CartItem item in items)
-                        productsOrder.add({
-                          'product_id':item.id,
-                          'quantity':item.quantity,
+                      try {
+                        CartBloc cartBloc = BlocProvider.of<CartBloc>(context);
+                        List<CartItem> items = cartBloc.getCartList();
+                        ProductsOrderBloc productsOrderBloc =
+                            BlocProvider.of<ProductsOrderBloc>(context);
+                        productsOrderBloc
+                            .add(PostDataOrderProducts(productsOrder: items));
+                        cartBloc.add(DeleteAllItemsInCart());
+                      } catch (e) {
+                        print('Inside error order');
+                      }
 
-                        });
-                      final response = await DioHelper.postData(
-                          url: newOrderWithProduct,
-                          body: {
-                           'products':productsOrder,
-                          });
-                      print(response.data);
-                      cartBloc.add(DeleteAllItemsInCart());
+                      // print('MyOrders');
+                      // final newData = await DioHelper.getData(
+                      //     methodUrl: 'myOrders', queries: {});
+                      // print(newData.data);
                     }
                   : pressed,
               child: Text(
                 stepNumber == 2
-                    ? 'تأكيد'
-                    : 'المواصلة في ${stepsCompleteOrder[stepNumber - 1]}',
+                    ? getWord('Confirm order', context)
+                    : getWord('continue to pay', context),
                 style: TextStyle(fontSize: fontSize),
               ),
             ),

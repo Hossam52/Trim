@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
+import 'package:trim/modules/auth/models/register_model.dart';
 import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/repositries/register_repositry.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
@@ -21,7 +22,7 @@ class _LoginErrors {
 class AuthCubit extends Cubit<AuthStates> {
   AuthCubit() : super(IntialAuthLoginState());
   static AuthCubit getInstance(context) => BlocProvider.of(context);
-
+  RegisterModel registerModel;
   Gender selectedGender = Gender.Male;
 //----------------------API Calls Start-------------------
   void login(String userName, String password) async {
@@ -30,7 +31,8 @@ class AuthCubit extends Cubit<AuthStates> {
     if (fieldsValidateError == null) {
       //Call API
       final response = await loginUser(userName, password);
-      if (response.error) {
+      if (response.error) 
+      {
         if (response.errorMessage == _LoginErrors.notActivated)
           emit(NotActivatedAccountState());
         else
@@ -68,6 +70,7 @@ class AuthCubit extends Cubit<AuthStates> {
       if (response.error) {
         emit(ErrorAuthState(response.errorMessage));
       } else {
+        registerModel = response.data;
         print(response.data.accessToken);
         emit(NotActivatedAccountState());
       }

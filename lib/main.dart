@@ -3,12 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:io' show Platform;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_checkout_payment/flutter_checkout_payment.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
-import 'package:trim/appLocale/appLocale.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
@@ -19,18 +21,24 @@ import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
 import 'package:trim/modules/market/cubit/products_category_cubit.dart';
-import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/modules/market/cubit/search_bloc.dart';
+import 'package:trim/modules/reservation/Bloc/products_order_bloc.dart';
+import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
+import 'package:trim/utils/services/sercure_storage_service.dart';
 import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
+import 'appLocale/appLocale.dart';
 import 'bloc_observer.dart';
 import './modules/auth/cubits/auth_cubit.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await TrimShared.getDataFromShared('token');
+  print('From Main${TrimShared.token}');
   Bloc.observer = MyBlocObserver();
 
   DioHelper.init(
@@ -50,30 +58,30 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String token;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // DefaultCacheManager manager = new DefaultCacheManager();
-    // manager.emptyCache(); //clears all data in cache.
+    // TrimShared.saveDataToShared('token', 'hossam');
+    // TrimShared.removeFromShared('token');
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => HomeCubit()),
         BlocProvider(create: (_) => AllCategoriesBloc()),
-        BlocProvider(
-          create: (_) => ProductsCategoryCubit(),
-        ),
         BlocProvider(create: (_) => ProductsCategoryBloc()),
         BlocProvider(create: (context) => CartBloc()),
         BlocProvider(create: (context) => SearchBloc()),
         BlocProvider(create: (_) => SalonsCubit()),
         BlocProvider(create: (_) => PersonsCubit()),
-        //BlocProvider(create: (_) => AllcategoriesCubit()),
         BlocProvider(create: (_) => ProductsCategoryCubit()),
-        BlocProvider(create: (_) => ProductsCategoryBloc()),
-        BlocProvider(create: (context) => CartBloc(),),
-        BlocProvider(create: (context)=>SearchBloc()),
-        BlocProvider(create: (context) => CartBloc()),
         BlocProvider(create: (context) => SettingCubit()),
         BlocProvider(create: (context) => AuthCubit()),
+        BlocProvider(create: (context) => ProductsOrderBloc()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -88,13 +96,18 @@ class _MyAppState extends State<MyApp> {
             const Locale('ar', ''),
           ],
           localeResolutionCallback: (currentLocale, supportedLocales) {
-            if (currentLocale != null) print(currentLocale.languageCode);
+            if (currentLocale != null) {
+              
+             // isArabic = currentLocale.languageCode == 'en' ? false : true;
+              print(currentLocale.languageCode);
+            }
+
             for (Locale locale in supportedLocales) {
               if (currentLocale.languageCode == locale.languageCode)
                 return currentLocale;
             }
             return supportedLocales.first;
-          },
+          }, //same3ny?no طب اتكلم كدا انا سامعك
           theme: ThemeData(
               textTheme:
                   TextTheme(button: TextStyle(fontSize: defaultFontSize))),

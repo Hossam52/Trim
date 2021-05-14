@@ -1,5 +1,11 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:trim/core/auth/register/validate.dart';
+import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -26,6 +32,17 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   TextEditingController _phoneController;
 
   TextEditingController _passwordController;
+  ImagePicker imagePicker;
+  File coverImage;
+  File image;
+  Future<File> getImageFromGellary() async {
+    imagePicker = ImagePicker();
+    final imagePicked = await imagePicker.getImage(source: ImageSource.gallery);
+    return File(imagePicked.path);
+    // setState(() {
+    //   coverImage = File(imagePicked.path);
+    // });
+  }
 
   @override
   void initState() {
@@ -112,6 +129,17 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   }
 
   Widget _buildCoverPhoto() {
+    return coverImage == null
+        ? Image.asset(
+            'assets/images/4.jpg',
+            fit: BoxFit.fill,
+            width: double.infinity,
+          )
+        : Image.file(
+            coverImage,
+            fit: BoxFit.fill,
+            width: double.infinity,
+          );
     return Image.asset(
       'assets/images/4.jpg',
       fit: BoxFit.fill,
@@ -123,8 +151,11 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     return Align(
       alignment: Alignment.bottomLeft,
       child: InkWell(
-        onTap: () {
-          print('Tapped');
+        onTap: () async{
+                      coverImage = await getImageFromGellary();
+
+          setState(()  {
+          });
         },
         child: Container(
             decoration: BoxDecoration(color: Colors.black.withAlpha(100)),
@@ -144,16 +175,22 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     // double sizeImage = deviceInfo.localHeight / 4;
     return Align(
       alignment: Alignment.bottomCenter,
-      child: InkWell(
-        onTap: () {
-          ///TO-DO open gallery to choose picture
-          print('image tapped');
-        },
-        child: CircleAvatar(
-          radius: deviceInfo.type == deviceType.mobile ? 50 : 65,
-          backgroundColor: Colors.red,
-          backgroundImage: AssetImage('assets/images/2.jpg'),
+      child: CircleAvatar(
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: IconButton(
+            icon: Icon((Icons.add_a_photo)),
+            onPressed: () async{
+                                  image = await getImageFromGellary();
+              setState(()  {
+              });
+            },
+          ),
         ),
+        radius: deviceInfo.type == deviceType.mobile ? 50 : 65,
+        backgroundColor: Colors.red,
+        backgroundImage:image!=null?
+            FileImage(image) :AssetImage('assets/images/2.jpg'),
       ),
     );
   }
@@ -198,8 +235,48 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
         Expanded(
             child: DefaultButton(
           text: 'Save',
-          onPressed: () {
-            _formKey.currentState.validate();
+          onPressed: () async {
+            if (_formKey.currentState.validate()) {
+              print('data name ${_nameController.text}');
+              print(coverImage.path);
+              String fileName = coverImage.path.split('/').last;
+              //new
+
+              var formData = FormData.fromMap(<String, dynamic>{
+                'name': _nameController.text,
+                'email': _emailController.text,
+                'password': _passwordController.text,
+                'password_confirmation': _passwordController.text,
+                //   'image':,
+                //    'cover': formData,
+                'phone': _phoneController.text,
+                "cover": await MultipartFile.fromFile(
+                  coverImage.path,
+                  filename: fileName,
+                  //  contentType: MediaType('image', 'jpg'),
+                ),
+              });
+
+              final response = await DioHelper.postDataToImages(
+                url: 'user/profile',
+                //body is a formData
+                formData: formData,
+              );
+              print(response.data);
+              if (response.statusCode > 400) {
+                var data = response.data['errors'];
+                print('Data of Errors\n');
+                var email = data['email'] == null ? '' : data['email'][0];
+                var phone = data['phone'] == null ? '' : data['phone'][0];
+                var c = (email == '') ? '' : ' & ' + email;
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(phone == '' ? email : phone + c)));
+                print(email);
+                print(phone);
+              }
+            }
+
+            //    _formKey.currentState.validate();
           },
         )),
       ],

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/widgets/not_correct_input.dart';
 import 'package:trim/utils/services/verification_code_service.dart';
@@ -93,10 +94,6 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Map arguments =
-    //     ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
-    // String token = arguments['token'];
-    // String verificationCode = arguments['verificationCode'];
     final node = FocusScope.of(context);
     return GestureDetector(
       onTap: () {
@@ -119,7 +116,17 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       child: ErrorWarning(text: errorMessage)),
                 Text('Enter verification code',
                     style: Theme.of(context).textTheme.button),
-                digits(node),
+                // digits(node),
+                VerificationCode(
+                  textStyle: TextStyle(fontSize: 20.0, color: Colors.red[900]),
+                  keyboardType: TextInputType.number,
+                  underlineColor: Colors.amber,
+                  length: 5,
+                  onCompleted: (String value) {
+                    print('value is $value');
+                  },
+                  onEditing: (bool value) {},
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Row(
@@ -127,43 +134,22 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       button(
                           text: 'Submit',
                           onPressed: () {
-                            String userEnteredVerificationCode = "";
-                            for (var controller in _controllers) {
-                              if (controller.text.isEmpty) {
-                                setState(() {
-                                  correctData = false;
-                                });
-                                return;
-                              }
-                              userEnteredVerificationCode += controller.text;
-                            }
-                            // if (userEnteredVerificationCode ==
-                            //     verificationCode) {
-                            //   ActivationProcessServices()
-                            //       .activate(verificationCode, token)
-                            //       .then((value) {
-                            //     if (value.error)
-                            //       setState(() {
-                            //         correctData = false;
-                            //         errorMessage = 'Server error';
-                            //       });
-                            //     else {
-                            //       ScaffoldMessenger.of(context).showSnackBar(
-                            //           SnackBar(
-                            //               content:
-                            //                   Text('Successiful activation')));
-
-                            //       Navigator.pushReplacementNamed(
-                            //           context, LoginScreen.routeName);
-                            //     }
+                            // String userEnteredVerificationCode = "";
+                            // for (var controller in _controllers) {
+                            //   if (controller.text.isEmpty) {
+                            //     setState(() {
+                            //       correctData = false;
+                            //     });
+                            //     return;
+                            //   }
+                            //   userEnteredVerificationCode += controller.text;
+                            // }
+                            // {
+                            //   setState(() {
+                            //     errorMessage = "Your code not correct";
+                            //     correctData = false;
                             //   });
-                            // } else
-                            {
-                              setState(() {
-                                errorMessage = "Your code not correct";
-                                correctData = false;
-                              });
-                            }
+                            // }
                           }),
                       button(
                           text: 'Reset',

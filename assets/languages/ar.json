@@ -8,7 +8,29 @@
     "copouns":"كوبونات",
     "my favorites":"مفضلتي",
     "support":"الدعم الفني",
-    "log out":" تسجيل الخروج"
+    "log out":" تسجيل الخروج",
+    "Please Make sure from internet connection":"من فضلك تأكد من الاتصال بالانترنت",
+    "Are you sure to remove item ?":"هل انت متأكد من ازالة المنتج",
+    "undo":"تراجع",
+    "Confirm order":"تأكيد الطلب",
+    "Search for":"ابحث عن",
+    "The cart is empty please enter items":"السلة فارغة ادخل منتجات اولا",
+    "total price":"السعر الكلي",
+    "delivery":"التوصيل",
+    "payment":"الدفع",
+    "choice payment method":"اختيار طريقة الدفع",
+    "payment from card":"الدفع من خلال البطاقة الالكترونية",
+    "one of the best payment way now":"واحدة من احسن طرق الدفع حاليا",
+    "payment when recieving":"الدفع عند الاستلام",
+    "change":"غير",
+    "address details":"تفاصيل العنوان",
+    "delivery to home":"توصيل إلى المنزل",
+    "choice deliver method":"اختيار طريقة التوصيل",
+    "Shipping expenses":"مصاريف الشحن",
+    "total":"الاجمالي",
+    "shipping":"الشحن",
+    "bound":"جنيه",
+    "continue to pay":"المواصلة في الدفع"
     
 
 }

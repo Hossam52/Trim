@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
@@ -53,7 +54,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                         icon: Icon(Icons.close),
                       ),
                       title: Text(
-                        'انهاء الطلب',
+                        getWord('Confirm order', context),
                         style: TextStyle(fontSize: fontSize),
                       ),
                     ),
@@ -70,7 +71,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                   stepNumber = 1;
                                 });
                             },
-                            label: stepsCompleteOrder[0],
+                            label: getWord('delivery', context) ,
                             textColor:
                                 stepNumber != 1 ? secondaryColor : Colors.white,
                             color: stepNumber == 1
@@ -82,7 +83,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                           SizedBox(width: 30),
                           BuildStepOrder(
                             onPressed: () {},
-                            label: stepsCompleteOrder[1],
+                            label: getWord('payment', context),
                             textColor:
                                 stepNumber != 2 ? secondaryColor : Colors.white,
                             color: stepNumber == 2
@@ -123,7 +124,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'اختيار طريقة الدفع',
+                                getWord('choice payment method', context),
                                 style: TextStyle(fontSize: fontSize),
                               ),
                               Card(
@@ -138,12 +139,12 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                     },
                                   ),
                                   title: Text(
-                                    'الدفع عن طريق البطاقة الالكترونية',
+                                    getWord('payment from card', context),
                                     style: TextStyle(fontSize: fontSize),
                                   ),
                                   subtitle: paymentmethod != 'online'
                                       ? Container()
-                                      : Text('واحدة من احسن طرق الدفع حاليا'),
+                                      : Text(getWord('one of the best payment way now', context)),
                                 ),
                               ),
                               Card(
@@ -157,11 +158,11 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                       });
                                     },
                                   ),
-                                  title: Text('الدفع عند الاستلام',
+                                  title: Text(getWord('payment when recieving', context),
                                       style: TextStyle(fontSize: fontSize)),
                                   subtitle: paymentmethod != 'cash'
                                       ? Container()
-                                      : Text('يتم الدفع عند الاستلام '),
+                                      : Text(getWord('payment when recieving', context)),
                                 ),
                               ),
                               BuildDetailsOrderPrice(

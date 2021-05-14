@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 
 class BuildSearchWidget extends StatelessWidget {
   final Future Function(String value) onChanged;
@@ -11,7 +12,7 @@ class BuildSearchWidget extends StatelessWidget {
       child: TextFormField(
         onChanged: onChanged,
         decoration: InputDecoration(
-            hintText: 'Search for',
+            hintText: getWord('Search for', context),
             prefixIcon: Icon(Icons.search,color: Colors.lightBlue,),
             fillColor: Colors.grey[200],
             filled: true,

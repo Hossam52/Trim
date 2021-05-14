@@ -32,6 +32,8 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _passwordController = new TextEditingController();
 
   void onRegisteration(BuildContext context) async {
+    Navigator.of(context).pushNamed(VerificationCodeScreen.routeName);
+    return;
     AuthCubit.getInstance(context).register(
       name: _nameController.text,
       email: _emailController.text,

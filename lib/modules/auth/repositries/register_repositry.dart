@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:trim/api_reponse.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/auth/models/register_model.dart';
+import 'package:trim/modules/auth/models/token_model.dart';
 import 'package:trim/utils/services/call_api.dart';
 
 Future<APIResponse<RegisterModel>> registerUser(
@@ -18,6 +19,24 @@ Future<APIResponse<RegisterModel>> registerUser(
     }
   } catch (e) {
     return APIResponse(error: true, errorMessage: 'Unknown error happens');
+  }
+}
+
+Future<APIResponse<TokenModel>> activateAccount(String accessToken) async {
+  final response = await callAPI(activateAccountUrl,
+      accessToken: accessToken, callType: CallType.Post);
+  try {
+    if (response.error) {
+      if (response.data['message'] != null)
+        return APIResponse(
+            error: true, errorMessage: (response.data['message']));
+      return APIResponse(
+          error: true, errorMessage: response.data['errors']['sms_token'][0]);
+    } else {
+      return APIResponse(data: response.data['data']);
+    }
+  } catch (e) {
+    return APIResponse(error: true, errorMessage: 'Unknown error happened.');
   }
 }
 

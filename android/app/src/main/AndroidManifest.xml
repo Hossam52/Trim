@@ -5,6 +5,7 @@
    <application
         android:label="trim"
         android:icon="@mipmap/ic_launcher"> 
+        android:requestLegacyExternalStorage="true"<!--for permissions images-->
         android:usesCleartextTraffic="true" <!-- This Line -->
         <meta-data android:name="com.google.android.geo.API_KEY"
               android:value="AIzaSyC3QZTLUUQAxlik3D9MtzsxaHJG5Y75B8M"/>

@@ -19,6 +19,7 @@ String get getVerificationCodeApi {
 final String baseUrl = 'https://trim.style/public/api/client/';
 final String loginUrl = 'login';
 final String registerUrl = 'register';
+final String activateAccountUrl = 'user/activate';
 final String contatcsUrl = 'contacts';
 final String homeUrl = 'mainLists';
 final String allSalonsUrl = 'allSalons';
@@ -34,4 +35,4 @@ final String deleteAllCartItemsUrl = 'delete-all-cart-items';
 final String getCartItemsUrl = 'get-cart-items';
 final String favoriteSalonsUrl = 'myFav_salon';
 final String favoritePersonsUrl = 'myFav_person';
-final String newOrderWithProduct = 'newOrderWithProduct';
+final String newOrderWithProductUrl = 'newOrderWithProduct';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
@@ -31,9 +32,10 @@ class BadgeScrren extends StatelessWidget {
                   return BlocConsumer<CartBloc, CartStates>(
                       listener: (ctx, state) {
                     if (state is ErrorStateCartInBadge) {
-                      print('Appear Here');
                       Fluttertoast.showToast(
-                          msg: 'Please check your internet connecation2');
+                          msg: getWord(
+                              'Please Make sure from internet connection',
+                              context));
                     }
                   }, builder: (_, state) {
                     List<CartItem> cartItems =
@@ -91,14 +93,14 @@ class BadgeScrren extends StatelessWidget {
       width: deviceInfo.localWidth / 1.3,
       child: DefaultButton(
         onPressed: () async {
-          if(BlocProvider.of<CartBloc>(context).items.length==0)
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('The cart is empty please enter items')));
-                else
-          Navigator.pushNamed(context, ConfirmOrderScreen.routeName);
-          
+          if (BlocProvider.of<CartBloc>(context).items.length == 0)
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+                    getWord('The cart is empty please enter items', context))));
+          else
+            Navigator.pushNamed(context, ConfirmOrderScreen.routeName);
         },
-        text: 'Confirm order',
+        text: getWord('Confirm order', context),
       ),
     );
   }
@@ -167,10 +169,10 @@ class _ProductItemState extends State<ProductItem> {
         onPressed: () async {
           bool isDeleted = true;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Are you sure to remove item ?'),
+            content: Text(getWord('Are you sure to remove item ?', context)),
             duration: Duration(seconds: 3),
             action: SnackBarAction(
-              label: 'undo',
+              label: getWord('undo', context),
               onPressed: () {
                 isDeleted = false;
               },
@@ -188,26 +190,29 @@ class _ProductItemState extends State<ProductItem> {
   }
 
   Widget buildActionButtons(DeviceInfo deviceInfo) {
-     bool isEnabled =(widget.cartItem.quantity?? '0') == '10';
+    bool isEnabled = widget.cartItem.quantity == '10';
+    print('qty ${widget.cartItem.quantity}');
     return Row(
       children: [
         BuildRawMaterialButton(
           icon: Icons.add,
-          pressed: isEnabled?null:() {
-            cartBloc.add(
-              AddingItemEvent(
-                  cartItem: CartItem(
-                    rowId: widget.cartItem.rowId,
-                    id: widget.cartItem.id,
-                    imageName: widget.cartItem.imageName,
-                    nameAr: widget.cartItem.nameAr,
-                    price: widget.cartItem.price,
-                    nameEn: widget.cartItem.nameEn,
-                    quantity: widget.cartItem.quantity,
-                  ),
-                  screenId: '2'),
-            );
-          },
+          pressed: isEnabled
+              ? null
+              : () {
+                  cartBloc.add(
+                    AddingItemEvent(
+                        cartItem: CartItem(
+                          rowId: widget.cartItem.rowId,
+                          id: widget.cartItem.id,
+                          imageName: widget.cartItem.imageName,
+                          nameAr: widget.cartItem.nameAr,
+                          price: widget.cartItem.price,
+                          nameEn: widget.cartItem.nameEn,
+                          quantity: widget.cartItem.quantity,
+                        ),
+                        screenId: '2'),
+                  );
+                },
           deviceInfo: deviceInfo,
         ),
         Text(
@@ -231,7 +236,8 @@ class _ProductItemState extends State<ProductItem> {
   Widget buildTotalPrice(DeviceInfo deviceInfo) {
     return FittedBox(
       child: Text(
-        'total price: ${double.parse(widget.cartItem.price) * double.parse(widget.cartItem.quantity)}',
+        getWord('total price', context) +
+            ': ${double.parse(widget.cartItem.price) * double.parse(widget.cartItem.quantity)}',
         style: TextStyle(
             fontSize: getFontSizeVersion2(deviceInfo) - 13,
             color: Colors.green),
@@ -242,7 +248,7 @@ class _ProductItemState extends State<ProductItem> {
   Widget buildProductName(DeviceInfo deviceInfo) {
     return FittedBox(
       child: Text(
-        widget.cartItem.nameAr,
+        isArabic ? widget.cartItem.nameAr : widget.cartItem.nameEn,
         style: TextStyle(
             fontSize: getFontSizeVersion2(deviceInfo) - 10,
             color: Colors.lightBlue),
@@ -261,32 +267,6 @@ class _ProductItemState extends State<ProductItem> {
       //   height: double.infinity,
       //   fit: BoxFit.fill,
       // ),
-    );
-  }
-}
-
-class ConfirmDeleteItem extends StatelessWidget {
-  const ConfirmDeleteItem({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      content: Text('Are you sure to delete this item ?'),
-      actions: [
-        TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-              return true;
-            },
-            child: Text('Yes')),
-        TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            child: Text('No')),
-      ],
     );
   }
 }

@@ -21,13 +21,26 @@ class DioHelper {
 
   static Future<Response> getData(
       {@required String methodUrl,
+      String accessToken,
       @required Map<String, dynamic> queries}) async {
-    return await dio.get(methodUrl, queryParameters: queries);
+    return await dio.get(
+      methodUrl,
+      queryParameters: queries,
+      options: Options(
+          headers: accessToken == null
+              ? null
+              : {HttpHeaders.authorizationHeader: accessToken},
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          }),
+    );
   }
 
   static Future<Response> postData({
     @required String url,
     Map<String, dynamic> body = const {},
+    String accessToken,
     Map<String, dynamic> queries = const {},
   }) async {
     return await dio.post(
@@ -35,6 +48,29 @@ class DioHelper {
       queryParameters: queries,
       data: body,
       options: Options(
+          headers: accessToken == null
+              ? null
+              : {HttpHeaders.authorizationHeader: accessToken},
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          }),
+    );
+  }
+  static Future<Response> postDataToImages({
+    @required String url,
+    FormData formData,
+    String accessToken,
+    Map<String, dynamic> queries = const {},
+  }) async {
+    return await dio.post(
+      url,
+      queryParameters: queries,
+      data: formData,
+      options: Options(
+          headers: accessToken == null
+              ? null
+              : {HttpHeaders.authorizationHeader: accessToken},
           followRedirects: false,
           validateStatus: (status) {
             return status < 500;
