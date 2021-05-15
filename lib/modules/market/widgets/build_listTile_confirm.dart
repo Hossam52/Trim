@@ -10,14 +10,14 @@ class BuildListTileCofirm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Text(
-        leading,
-        style: TextStyle(fontSize: fontSize - 3),
-      ),
-      trailing: Text(
-        trailing,
-        style: TextStyle(fontSize: fontSize - 3, color: Colors.lightBlueAccent),
-      ),
-    );
+        leading: Text(
+    leading,
+    style: TextStyle(fontSize: fontSize - 3),
+        ),
+        trailing: Text(
+    trailing,
+    style: TextStyle(fontSize: fontSize - 3, color: Colors.lightBlueAccent),
+        ),
+      );
   }
 }

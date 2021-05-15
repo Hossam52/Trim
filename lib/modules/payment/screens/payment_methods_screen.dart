@@ -11,8 +11,10 @@ class PaymentMethodsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double totalPrice =
-        ModalRoute.of(context).settings.arguments as double ?? 0;
+    final arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    final showCashPayment = arguments['showCashPayment'] ?? true;
+    double totalPrice = arguments['totalPrice'] ?? 0;
     return WillPopScope(
       onWillPop: () {
         PaymentCubit.getInstance(context).successPayment = false;
@@ -71,7 +73,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                   ),
                   Spacer(),
                   DefaultButton(
-                      text: getWord('Pay Now', context),
+                      text: getWord('Pay Now', context) + ' $totalPrice EGP',
                       onPressed: () {
                         Navigator.pushNamed(
                             context, PaymentDetailScreen.routeName,
