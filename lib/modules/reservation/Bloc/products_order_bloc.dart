@@ -22,6 +22,7 @@ class ProductsOrderBloc extends Bloc<ProductsOrderEvents, ProductOrderStates> {
       final response =
           await DioHelper.postData(url: newOrderWithProductUrl, body: {
         'products': productsOrder,
+        'payment_coupon':event.coupon,
       });
       print(response.data);
       yield LoadedStateProductsOrder(productsOrder);

@@ -8,10 +8,9 @@ import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 
 class CategoryItem extends StatelessWidget {
   const CategoryItem({
-    Key key,
     @required this.category,
     @required this.deviceInfo,
-  }) : super(key: key);
+  });
 
   final Category category;
   final DeviceInfo deviceInfo;

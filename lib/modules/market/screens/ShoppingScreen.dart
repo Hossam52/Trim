@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
-import 'package:trim/modules/market/cubit/cart_states.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
 import 'package:trim/modules/market/cubit/categories_events.dart';
 import 'package:trim/modules/market/cubit/categories_states.dart';
@@ -16,8 +15,7 @@ import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/BuildSearchWidget.dart';
 
-class ShoppingScreen extends StatefulWidget 
-{
+class ShoppingScreen extends StatefulWidget {
   static final routeName = 'shoppingScreen';
   final void Function(int categoryIndex) setCategoryIndex;
 
@@ -42,6 +40,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   @override
   void dispose() {
     print('Dispose shopping screen');
+    allCategoriesBloc.close();
+    cartBloc.close();
     super.dispose();
   }
 
@@ -72,21 +72,23 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                         return Expanded(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
-                            child:buildRefershIndicatorCategories(child:
-                            buildCategories(deviceInfo, categoriess),
-                          ),
+                            child: buildRefershIndicatorCategories(
+                              child: buildCategories(deviceInfo, categoriess),
+                            ),
                           ),
                         );
                       } else
-                        return buildRefershIndicatorCategories(child: Center(
-                        child: SingleChildScrollView(
-                         physics: AlwaysScrollableScrollPhysics(),
+                        return buildRefershIndicatorCategories(
+                            child: Center(
+                                child: SingleChildScrollView(
+                          physics: AlwaysScrollableScrollPhysics(),
                           child: Container(
-                            height: deviceInfo.localHeight*0.5,
-                            child: Text(
-                                  getWord('Please Make sure from internet connection', context)),
+                            height: deviceInfo.localHeight * 0.5,
+                            child: Text(getWord(
+                                'Please Make sure from internet connection',
+                                context)),
                           ),
-                          )));
+                        )));
                     }),
                   ],
                 ),
@@ -101,7 +103,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   Widget buildRefershIndicatorCategories({Widget child}) {
     return RefreshIndicator(
         child: child,
-        onRefresh: () async{
+        onRefresh: () async {
           allCategoriesBloc.add(CategoriesFetchDataFromApi());
         });
   }
@@ -114,7 +116,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           Navigator.pushNamed(
             context,
             CategoryProductsScreen.routeName,
-            arguments: {'key':isArabic?categoriess[index].nameAr:categoriess[index].nameEn,'value':categoriess[index].id} ,
+            arguments: {
+              'key': isArabic
+                  ? categoriess[index].nameAr
+                  : categoriess[index].nameEn,
+              'value': categoriess[index].id
+            },
           );
         },
         child:

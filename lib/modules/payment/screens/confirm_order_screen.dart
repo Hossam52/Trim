@@ -33,10 +33,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                // height: deviceInfo.localHeight *
-                //     (deviceInfo.orientation == Orientation.portrait
-                //         ? 0.15
-                //         : .35),
+               
                 color: Colors.white,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
