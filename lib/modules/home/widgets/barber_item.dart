@@ -10,24 +10,24 @@ import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
 class BarberItem extends StatelessWidget {
-  // final personItem personItem;
+  final bool showFavoriteContainer;
   final Salon personItem;
 
   final DeviceInfo deviceInfo;
 
   const BarberItem(
-      {Key key, @required this.deviceInfo, @required this.personItem})
+      {Key key,
+      @required this.deviceInfo,
+      @required this.personItem,
+      this.showFavoriteContainer = false})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () {
-            SalonsCubit.getInstance(context).getSalonDetails(id: personItem.id);
-            Navigator.pushNamed(context, DetailsScreen.routeName,
-                arguments: personItem);
-          },
+          onTap: () => SalonsCubit.getInstance(context)
+              .navigateToSalonDetailScreen(context, personItem.id),
           child: GridTile(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
@@ -54,14 +54,16 @@ class BarberItem extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          left: deviceInfo.localWidth *
-              (deviceInfo.orientation == Orientation.portrait ? 0.08 : 0.06),
-          child: FavoriteContainer(
-            isFavorite: personItem.isFavorite,
-            deviceInfo: deviceInfo,
-          ),
-        )
+        if (showFavoriteContainer)
+          Positioned(
+            left: deviceInfo.localWidth *
+                (deviceInfo.orientation == Orientation.portrait ? 0.08 : 0.06),
+            child: FavoriteContainer(
+              salonId: personItem.id,
+              isFavorite: personItem.isFavorite,
+              deviceInfo: deviceInfo,
+            ),
+          )
       ],
     );
   }

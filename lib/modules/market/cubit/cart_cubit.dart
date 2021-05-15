@@ -17,7 +17,7 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
         await getCartItems();
         yield LoadedStateGetCartItems();
       } else if (event is DeleteAllItemsInCart) {
-        await deleteAllitemsFromCart();//added
+        await deleteAllitemsFromCart(); //added
         yield DeleteAllItems();
       } else if (event is AddingItemEvent) {
         await addItem(event.cartItem);
@@ -63,9 +63,9 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
         print('Decrease');
         if (qty == 0) {
           items.remove(index);
-          await deleteItemFromCart(rowId);
+          deleteItemFromCart(rowId);
         } else {
-          await updateItemToCart(quantity: qty.toString(), rowId: rowId);
+          updateItemToCart(quantity: qty.toString(), rowId: rowId);
           items.update(index, (value) {
             return CartItem(
               quantity: qty.toString(),
@@ -113,7 +113,7 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
       if (items.containsKey(cartItem.id)) {
         int rowIdd = items[cartItem.id].rowId;
         int qty = int.parse((items[cartItem.id].quantity)) + 1;
-        await updateItemToCart(quantity: qty.toString(), rowId: rowIdd);
+        updateItemToCart(quantity: qty.toString(), rowId: rowIdd);
         items.update(cartItem.id, (value) {
           print('value of row id : ${value.rowId}');
           return CartItem(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/models/trim_star_model.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';

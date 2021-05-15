@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/person_states.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/repositories/home_repo.dart';
 import 'package:trim/modules/home/repositories/salons_repo.dart';
@@ -18,9 +19,14 @@ class PersonsCubit extends Cubit<PersonStates> {
     await loadFavoritePersons(refreshPage: false);
   }
 
+  Search _search;
+
+  String searchName = '';
   int _currentAllPersonsPage = 1;
   int _currentStarsPage = 1;
   int _currentFavoritePersons = 1;
+  bool filterData = false;
+  int selectedCityId;
 
   static PersonsCubit getInstance(BuildContext context) =>
       BlocProvider.of<PersonsCubit>(context);
@@ -31,7 +37,8 @@ class PersonsCubit extends Cubit<PersonStates> {
 //----------------API Calls Start-------------
   Future<void> _loadAllPersons({@required bool refreshPage}) async {
     if (!refreshPage) emit(LoadingPersonsState());
-    final response = await loadAllPersonsFromServer(_currentAllPersonsPage);
+    final response = await loadAllPersonsFromServer(_currentAllPersonsPage,
+        body: _getAllPersonsBody());
     if (response.error) {
       emit(ErrorPersonsState(error: response.errorMessage));
     } else {
@@ -46,7 +53,8 @@ class PersonsCubit extends Cubit<PersonStates> {
 
   Future<void> _loadMoreAllPersons() async {
     emit(LoadingMorePersonState());
-    final response = await loadAllPersonsFromServer(_currentAllPersonsPage + 1);
+    final response = await loadAllPersonsFromServer(_currentAllPersonsPage + 1,
+        body: _getAllPersonsBody());
     if (response.error) {
       print(response.data.allPersons);
       emit(ErrorMorePersonState(error: response.errorMessage));
@@ -138,10 +146,49 @@ class PersonsCubit extends Cubit<PersonStates> {
     }
   }
 
+  Future<void> searchForPerson({String name, int cityId}) async {
+    if ((name == null || name.isEmpty) && cityId != null)
+      _search = Search.City;
+    else if (name != null && cityId == null)
+      _search = Search.Name;
+    else if (name != null && cityId != null)
+      _search = Search.City;
+    else
+      _search = Search.Both;
+
+    searchName = name;
+    selectedCityId = cityId;
+
+    _currentAllPersonsPage = 1;
+    _allPersons.clear();
+
+    if ((name == null || name.isEmpty) && cityId == null)
+      filterData = false;
+    else {
+      filterData = true;
+    }
+    await _loadAllPersons(refreshPage: false);
+  }
+
 //-----------------API Calls End-------------
+  Map<String, dynamic> _getAllPersonsBody() {
+    Map<String, dynamic> body = {};
+    if (filterData) {
+      if (_search == Search.Name)
+        body = {
+          'name': searchName,
+        };
+      else if (_search == Search.City)
+        body = {
+          'city_id': selectedCityId,
+        };
+    }
+    return body;
+  }
+
   List<Salon> getPersonToDisplay(BuildContext context) {
     final state = HomeCubit.getInstance(context).state;
-    if (state is AllSalonsState)
+    if (state is AllPersonsState)
       return _allPersons[_currentAllPersonsPage - 1];
     else if (state is TrimStarState)
       return _starsPersons[_currentStarsPage - 1];
@@ -153,7 +200,7 @@ class PersonsCubit extends Cubit<PersonStates> {
 
   void getNextPage(BuildContext context) async {
     final state = HomeCubit.getInstance(context).state;
-    if (state is AllSalonsState) {
+    if (state is AllPersonsState) {
       if (_currentAllPersonsPage != _allPersons.length) {
         _currentAllPersonsPage++;
         emit(LoadedPersonsState());
@@ -180,7 +227,7 @@ class PersonsCubit extends Cubit<PersonStates> {
 
   void getPreviousPage(BuildContext context) async {
     final state = HomeCubit.getInstance(context).state;
-    if (state is AllSalonsState) {
+    if (state is AllPersonsState) {
       if (_currentAllPersonsPage != 1) {
         _currentAllPersonsPage--;
         emit(LoadedPersonsState());
@@ -200,7 +247,7 @@ class PersonsCubit extends Cubit<PersonStates> {
 
   int getCurrentPage(BuildContext context) {
     final state = HomeCubit.getInstance(context).state;
-    if (state is AllSalonsState)
+    if (state is AllPersonsState)
       return _currentAllPersonsPage;
     else if (state is TrimStarState)
       return _currentStarsPage;
@@ -211,7 +258,7 @@ class PersonsCubit extends Cubit<PersonStates> {
   Future<void> loadAllPersons(BuildContext context,
       {@required bool refreshPage}) async {
     final state = HomeCubit.getInstance(context).state;
-    if (state is AllSalonsState)
+    if (state is AllPersonsState)
       await _loadAllPersons(refreshPage: refreshPage);
     else if (state is TrimStarState)
       await _loadTrimStars(refreshPage: refreshPage);

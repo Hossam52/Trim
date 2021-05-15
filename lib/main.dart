@@ -14,7 +14,7 @@ import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
-import 'package:trim/modules/home/cubit/reserve_cubit.dart';
+import 'package:trim/modules/home/cubit/cities_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
@@ -22,6 +22,7 @@ import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
 import 'package:trim/modules/market/cubit/products_category_cubit.dart';
 import 'package:trim/modules/market/cubit/search_bloc.dart';
+import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/Bloc/products_order_bloc.dart';
 import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
@@ -33,7 +34,9 @@ import 'dart:async';
 import 'appLocale/appLocale.dart';
 import 'bloc_observer.dart';
 import './modules/auth/cubits/auth_cubit.dart';
-import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
+import './modules/home/cubit/cities_cubit.dart';
+import './modules/payment/screens/payment_methods_screen.dart';
+import './modules/payment/cubits/payment_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,6 +84,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => ProductsCategoryCubit()),
         BlocProvider(create: (context) => SettingCubit()),
         BlocProvider(create: (context) => AuthCubit()),
+        BlocProvider(create: (context) => ReservationCubit()),
+        BlocProvider(create: (context) => CitiesCubit()),
+        BlocProvider(create: (context) => PaymentCubit()),
         BlocProvider(create: (context) => ProductsOrderBloc()),
       ],
       child: MaterialApp(
@@ -97,8 +103,7 @@ class _MyAppState extends State<MyApp> {
           ],
           localeResolutionCallback: (currentLocale, supportedLocales) {
             if (currentLocale != null) {
-              
-             // isArabic = currentLocale.languageCode == 'en' ? false : true;
+              // isArabic = currentLocale.languageCode == 'en' ? false : true;
               print(currentLocale.languageCode);
             }
 
@@ -250,7 +255,7 @@ class _PaymentGatewayState extends State<PaymentGateway> {
                     cvvCode: '',
                     expiryDate: '',
                     formKey: null,
-                    themeColor: Colors.purple,
+                    themeColor: Colors.red,
                   ),
                 ),
               ),

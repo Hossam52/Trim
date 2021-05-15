@@ -25,7 +25,9 @@ class _DateBuilderState extends State<DateBuilder> {
     days = dateOperations.generateDays(now);
     month = DateFormat('MMM').format(now);
     year = now.year.toString();
-    selectedDayIndex = 0;
+    // selectedDayIndex = 0;
+    print(SalonsCubit.getInstance(context).selectedDateIndex);
+    selectedDayIndex = SalonsCubit.getInstance(context).selectedDateIndex;
   }
 
   Widget buildDay(int index, [bool selected = false]) {

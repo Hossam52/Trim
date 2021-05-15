@@ -6,32 +6,8 @@ import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
 class SalonOffers extends StatelessWidget {
   final DeviceInfo deviceInfo;
-  List<SalonOffer> salonOffers;
+  final List<SalonOffer> salonOffers;
   SalonOffers(this.deviceInfo, this.salonOffers);
-  final List<SalonOffer> offers = [
-    SalonOffer(
-        image: 'assets/images/1.jpg',
-        descriptionEn:
-            'Bride offer and to their friends and so beautiful girl that i want'),
-    SalonOffer(
-        image: 'assets/images/1.jpg',
-        descriptionEn: 'Bride offer and to their friends'),
-    SalonOffer(
-        image: 'assets/images/1.jpg',
-        descriptionEn: 'Bride offer and to their friends'),
-    SalonOffer(
-        image: 'assets/images/1.jpg',
-        descriptionEn: 'Bride offer and to their friends'),
-    SalonOffer(
-        image: 'assets/images/1.jpg',
-        descriptionEn: 'Bride offer and to their friends'),
-    SalonOffer(
-        image: 'assets/images/1.jpg',
-        descriptionEn: 'Bride offer and to their friends'),
-    SalonOffer(
-        image: 'assets/images/1.jpg',
-        descriptionEn: 'Bride offer and to their friends'),
-  ];
 
   final temp = {
     "id": 1,
@@ -50,10 +26,12 @@ class SalonOffers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    salonOffers = [SalonOffer.fromJson(json: temp)];
+    // salonOffers = [SalonOffer.fromJson(json: temp)];
     return Container(
-      height: deviceInfo.localHeight /
-          (deviceInfo.orientation == Orientation.portrait ? 2.5 : 1.5),
+      height: salonOffers.isEmpty
+          ? 0
+          : deviceInfo.localHeight /
+              (deviceInfo.orientation == Orientation.portrait ? 2.5 : 1.5),
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
@@ -145,11 +123,6 @@ class SalonOfferItem extends StatelessWidget {
                 src: offer.image,
                 height: deviceInfo.localHeight / (isPortrait ? 4.3 : 2.9),
               ),
-              // Image.asset(
-              //   offer.image,
-              //   fit: BoxFit.fill,
-              //   height: deviceInfo.localHeight / (isPortrait ? 4.3 : 2.9),
-              // ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(

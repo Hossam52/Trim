@@ -2,10 +2,12 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
@@ -18,20 +20,13 @@ import 'Core/BuilderWidget/InfoWidget.dart';
 
 void personDetailsDialog(
     DeviceInfo deviceInfo, BuildContext context, Salon salon) async {
-  Widget elevatedButton(String text, VoidCallback onPressed,
-      [Color color = Colors.blue]) {
-    return Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        width: double.infinity,
-        child: ElevatedButton(
-            style: ButtonStyle(
-              padding: MaterialStateProperty.all(const EdgeInsets.all(10)),
-              backgroundColor: MaterialStateProperty.all(color),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(roundedRadius))),
-            ),
-            onPressed: onPressed,
-            child: FittedBox(child: Text(text))));
+  Widget elevatedButton(
+      {String text, VoidCallback onPressed, Color color = Colors.blue}) {
+    return DefaultButton(
+      text: text,
+      onPressed: onPressed,
+      color: color,
+    );
   }
 
   await showDialog(
@@ -39,76 +34,96 @@ void personDetailsDialog(
       builder: (_) {
         return AlertDialog(
           content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
+            child: BlocBuilder<SalonsCubit, SalonStates>(
+              builder: (_, state) {
+                if (state is LoadingSalonDetailState ||
+                    state is LoadingAvilableDatesState)
+                  return Center(child: CircularProgressIndicator());
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      flex: 1,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        child: TrimCachedImage(
-                          src: salon.image,
-                          width: 0,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              salon.name,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: getFontSizeVersion2(deviceInfo)),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            child: TrimCachedImage(
+                              src: salon.image,
+                              width: 0,
                             ),
-                            BuildStars(
-                                stars: salon.rate,
-                                width: MediaQuery.of(context).size.width / 2),
-                            Text('${salon.commentsCount} Openion')
-                          ],
+                          ),
                         ),
-                      ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  salon.name,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize:
+                                          getFontSizeVersion2(deviceInfo)),
+                                ),
+                                BuildStars(
+                                    stars: salon.rate,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2),
+                                Text('${salon.commentsCount} Openion')
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Divider(),
+                    elevatedButton(
+                      text: 'Reserve now',
+                      onPressed: () async {
+                        await SalonsCubit.getInstance(context)
+                            .getSalonDetails(id: salon.id);
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, ReserveScreen.routeName,
+                            arguments: SalonDetailModel(
+                                showDateWidget: false,
+                                showAvailableTimes: true,
+                                showServiceWidget: true,
+                                showOffersWidget: false));
+                      },
+                    ),
+                    elevatedButton(
+                      text: 'Reserve appointment',
+                      onPressed: () async {
+                        await SalonsCubit.getInstance(context)
+                            .getSalonDetails(id: salon.id);
+                        print(SalonsCubit.getInstance(context)
+                            .salonDetail
+                            .salonServices);
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, ReserveScreen.routeName,
+                            arguments: SalonDetailModel(
+                                showDateWidget: true,
+                                showAvailableTimes: true,
+                                showServiceWidget: true,
+                                showOffersWidget: true));
+                      },
+                      color: Colors.black,
                     ),
                   ],
-                ),
-                SizedBox(height: 10),
-                Divider(),
-                elevatedButton('Reserve now', () {
-                  SalonsCubit.getInstance(context)
-                      .getSalonDetails(id: salon.id);
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, ReserveScreen.routeName,
-                      arguments: SalonDetailModel(
-                          showDateWidget: false,
-                          showAvailableTimes: true,
-                          showServiceWidget: true,
-                          showOffersWidget: false));
-                }),
-                elevatedButton('Reserve appointment', () {
-                  SalonsCubit.getInstance(context)
-                      .getSalonDetails(id: salon.id);
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, ReserveScreen.routeName,
-                      arguments: SalonDetailModel(
-                          showDateWidget: true,
-                          showAvailableTimes: true,
-                          showServiceWidget: true,
-                          showOffersWidget: true));
-                }, Colors.black),
-              ],
+                );
+              },
             ),
           ),
         );
       });
 }
 
-Future<bool> exitConfirmationDialog(BuildContext context) async {
+Future<bool> exitConfirmationDialog(
+    BuildContext context, String alertMessage) async {
   return await showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -125,7 +140,7 @@ Future<bool> exitConfirmationDialog(BuildContext context) async {
                   },
                   child: Text('Yes', style: TextStyle(color: Colors.red))),
             ],
-            content: Text('Are you sure to exit?'),
+            content: Text(alertMessage),
             contentTextStyle: TextStyle(
                 fontSize: MediaQuery.of(context).size.width / 15,
                 color: Colors.black),

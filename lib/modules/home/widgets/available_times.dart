@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
@@ -13,7 +14,7 @@ class AvailableTimes extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Available Dates',
+          Text(getWord('Available Dates', context),
               style: TextStyle(
                   fontSize: defaultFontSize, fontWeight: FontWeight.bold)),
           Padding(
@@ -24,7 +25,8 @@ class AvailableTimes extends StatelessWidget {
                   return Center(child: CircularProgressIndicator());
                 } else if (state is EmptyAvialbleDatesState)
                   return Center(
-                      child: Text('No Times for this salon at this date'));
+                      child: Text(getWord(
+                          'No Times for this salon at this date', context)));
                 List<String> dates =
                     SalonsCubit.getInstance(context).availableDates;
                 return Wrap(

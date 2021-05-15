@@ -4,6 +4,7 @@ import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:flutter_conditional_rendering/conditional_switch.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/api_reponse.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/registration_screen.dart';
@@ -119,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     widget: state is LoadingAuthState
                         ? Center(child: CircularProgressIndicator())
                         : null,
-                    text: 'تسجيل الدخول',
+                    text: getWord("Login", context), //'تسجيل الدخول',
                     onPressed: state is LoadingAuthState
                         ? null
                         : () {

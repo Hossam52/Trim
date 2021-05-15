@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/core/auth/register/validate.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
@@ -151,11 +152,10 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     return Align(
       alignment: Alignment.bottomLeft,
       child: InkWell(
-        onTap: () async{
-                      coverImage = await getImageFromGellary();
+        onTap: () async {
+          coverImage = await getImageFromGellary();
 
-          setState(()  {
-          });
+          setState(() {});
         },
         child: Container(
             decoration: BoxDecoration(color: Colors.black.withAlpha(100)),
@@ -180,17 +180,17 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
           alignment: Alignment.bottomRight,
           child: IconButton(
             icon: Icon((Icons.add_a_photo)),
-            onPressed: () async{
-                                  image = await getImageFromGellary();
-              setState(()  {
-              });
+            onPressed: () async {
+              image = await getImageFromGellary();
+              setState(() {});
             },
           ),
         ),
         radius: deviceInfo.type == deviceType.mobile ? 50 : 65,
         backgroundColor: Colors.red,
-        backgroundImage:image!=null?
-            FileImage(image) :AssetImage('assets/images/2.jpg'),
+        backgroundImage: image != null
+            ? FileImage(image)
+            : AssetImage('assets/images/2.jpg'),
       ),
     );
   }
@@ -234,11 +234,11 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
       children: [
         Expanded(
             child: DefaultButton(
-          text: 'Save',
+          text: getWord('Save', context),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
               print('data name ${_nameController.text}');
-              print(coverImage.path);
+              // print(coverImage.path);
               String fileName = coverImage.path.split('/').last;
               //new
 

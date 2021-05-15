@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
+import 'package:trim/modules/reservation/cubits/reservation_states.dart';
 import 'package:trim/modules/reservation/models/Reservation.dart';
 import 'package:trim/general_widgets/price_information.dart';
+import 'package:trim/modules/reservation/models/order_model.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 import 'package:trim/general_widgets/BuildAppBar.dart';
@@ -14,44 +19,65 @@ class ReservationDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Reservation reservationData =
-        ModalRoute.of(context).settings.arguments as Reservation;
+    OrderModel reservationData =
+        ModalRoute.of(context).settings.arguments as OrderModel;
     return Scaffold(
       body: SafeArea(child: InfoWidget(
         responsiveWidget: (context, deviceInfo) {
           double fontSize = getFontSizeVersion2(deviceInfo);
-          return Column(
-            children: [
-              buildAppBar(
-                  localHeight: deviceInfo.localHeight,
-                  fontSize: fontSize,
-                  screenName: 'Reservation details'),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: TrimCard(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ReservationItem(
-                            reservation: reservationData,
-                            fontSize: fontSize,
-                            showMoreDetails: false),
-                        Divider(
-                          height: 2,
-                          color: Colors.grey,
-                          thickness: 1,
+          return BlocConsumer<ReservationCubit, ReservationStates>(
+            listener: (_, state) {
+              if (state is LoadedCancedReservationState) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                        'The reservaion number ${reservationData.id} cancelled successifully')));
+                Navigator.pop(context);
+              }
+            },
+            builder: (_, state) {
+              if (state is LoadingCancelReservationState)
+                return Center(child: CircularProgressIndicator());
+
+              return Column(
+                children: [
+                  buildAppBar(
+                      localHeight: deviceInfo.localHeight,
+                      fontSize: fontSize,
+                      screenName: getWord('Reservation details', context)),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: TrimCard(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ReservationItem(
+                                reservation: reservationData,
+                                fontSize: fontSize,
+                                showMoreDetails: false),
+                            Divider(
+                              height: 2,
+                              color: Colors.grey,
+                              thickness: 1,
+                            ),
+                            if (reservationData.statusId != "2")
+                              PriceInformation(
+                                showCopounsField: false,
+                                total: reservationData.cost ?? "0",
+                                discount: reservationData.discount ?? "0",
+                                totalAfterDiscount:
+                                    reservationData.total ?? "0",
+                              ),
+                            if (reservationData.statusId != "2")
+                              buildReservationActions(fontSize, context),
+                          ],
                         ),
-                        PriceInformation(
-                          showCopounsField: false,
-                        ),
-                        buildReservationActions(fontSize, context),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           );
         },
       )),
@@ -66,7 +92,7 @@ class ReservationDetailsScreen extends StatelessWidget {
             child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: DefaultButton(
-            text: 'Modify order',
+            text: getWord('Modify order', context),
             fontSize: fontSize,
             onPressed: () {},
           ),
@@ -75,7 +101,7 @@ class ReservationDetailsScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: DefaultButton(
-              text: 'Cancel order',
+              text: getWord('Cancel order', context),
               color: Colors.black,
               fontSize: fontSize,
               onPressed: () async {

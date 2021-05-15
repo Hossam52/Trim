@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
@@ -12,8 +13,8 @@ import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/home/widgets/navigate_pages.dart';
 
 class PersonsGridView extends StatefulWidget {
-  final bool filterFavorite;
-  PersonsGridView({Key key, this.filterFavorite = false});
+  final bool showFavoriteContainer;
+  PersonsGridView({Key key, this.showFavoriteContainer = false});
 
   @override
   _PersonsGridViewState createState() => _PersonsGridViewState();
@@ -41,8 +42,6 @@ class _PersonsGridViewState extends State<PersonsGridView> {
 
   @override
   Widget build(BuildContext context) {
-    // final Temp whatToDisplay = temp;
-
     return InfoWidget(
       responsiveWidget: (_, deviceInfo) => RefreshIndicator(
         onRefresh: () async {
@@ -61,8 +60,6 @@ class _PersonsGridViewState extends State<PersonsGridView> {
             else {
               var trimStarList =
                   PersonsCubit.getInstance(context).getPersonToDisplay(context);
-              // List.generate(2, (index) => trimStarList.add(trimStarList[0]));
-
               int pageNumber =
                   PersonsCubit.getInstance(context).getCurrentPage(context);
               return Column(
@@ -81,6 +78,8 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                         return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: BarberItem(
+                                showFavoriteContainer:
+                                    widget.showFavoriteContainer,
                                 personItem: trimStarList[index],
                                 deviceInfo: deviceInfo));
                       },
@@ -91,7 +90,7 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                   if (state is NoMorePersonState)
                     NoMoreItems(
                       deviceInfo: deviceInfo,
-                      label: 'No more persons',
+                      label: getWord('No More Salons', context),
                     ),
                   NavigatePages(
                     nextPage: PersonsCubit.getInstance(context).getNextPage,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/payment/widgets/build_details_order_price.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
@@ -127,7 +128,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                   Row(
                     children: [
                       Text(
-                      getWord('Shipping expenses', context)+' :',
+                        getWord('Shipping expenses', context) + ' :',
                         style: TextStyle(
                           fontSize: widget.deviceInfo.orientation ==
                                   Orientation.portrait
@@ -155,12 +156,9 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
         SizedBox(
           height: 10,
         ),
-        BuildDetailsOrderPrice(
-          stepNumber: widget.stepNumber,
-          fontSize: widget.fontSize,
-          deviceInfo: widget.deviceInfo,
-          pressed: widget.pressed,
-        ),
+        DefaultButton(
+            text: getWord('Continue to pay', context),
+            onPressed: widget.pressed),
       ],
     );
   }

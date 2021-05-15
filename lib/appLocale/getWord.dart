@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 
 String getWord(String key, BuildContext context) {
-  return AppLocale.of(context).getTranslatedWord(key);
+  return AppLocale.of(context).getTranslatedWord(key) ?? "N/A";
 }
 
 bool isArabic = (Platform.localeName.split('_')[0]) == 'ar';

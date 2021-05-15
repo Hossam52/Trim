@@ -8,8 +8,12 @@ class LoadingReservationState extends ReservationStates {}
 
 class LoadedReservationStates extends ReservationStates {}
 
-class ErrorReservationStates extends ReservationStates {
+class ErrorReservationState extends ReservationStates {
   final String errorMessage;
 
-  ErrorReservationStates(this.errorMessage);
+  ErrorReservationState(this.errorMessage);
 }
+
+class LoadingCancelReservationState extends ReservationStates {}
+
+class LoadedCancedReservationState extends ReservationStates {}

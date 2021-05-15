@@ -48,6 +48,7 @@ class _SalonLogoState extends State<SalonLogo> {
             Positioned(
                 left: widget.deviceInfo.localWidth * (isPortrait ? 0.08 : 0.06),
                 child: FavoriteContainer(
+                  salonId: widget.salon.id,
                   deviceInfo: widget.deviceInfo,
                   isFavorite: widget.salon.isFavorite,
                 )),

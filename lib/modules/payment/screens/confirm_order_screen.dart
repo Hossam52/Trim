@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
+import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/payment/widgets/build_delivery_widget.dart';
@@ -18,7 +19,7 @@ class ConfirmOrderScreen extends StatefulWidget {
 
 class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   int stepNumber = 1;
-  String paymentmethod = 'online';
+  PaymentMethod paymentMethod = PaymentMethod.VisaMaster;
   Color secondaryColor = Color(0xffCBCBCD);
   bool showDetails = true;
   @override
@@ -33,7 +34,6 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-               
                 color: Colors.white,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -68,7 +68,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                   stepNumber = 1;
                                 });
                             },
-                            label: getWord('delivery', context) ,
+                            label: getWord('delivery', context),
                             textColor:
                                 stepNumber != 1 ? secondaryColor : Colors.white,
                             color: stepNumber == 1
@@ -126,12 +126,12 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                               ),
                               Card(
                                 child: ListTile(
-                                  leading: Radio(
-                                    value: 'online',
-                                    groupValue: paymentmethod,
+                                  leading: Radio<PaymentMethod>(
+                                    value: PaymentMethod.VisaMaster,
+                                    groupValue: paymentMethod,
                                     onChanged: (value) {
                                       setState(() {
-                                        paymentmethod = value;
+                                        paymentMethod = value;
                                       });
                                     },
                                   ),
@@ -139,30 +139,37 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                     getWord('payment from card', context),
                                     style: TextStyle(fontSize: fontSize),
                                   ),
-                                  subtitle: paymentmethod != 'online'
-                                      ? Container()
-                                      : Text(getWord('one of the best payment way now', context)),
+                                  subtitle:
+                                      paymentMethod != PaymentMethod.VisaMaster
+                                          ? Container()
+                                          : Text(getWord(
+                                              'one of the best payment way now',
+                                              context)),
                                 ),
                               ),
                               Card(
                                 child: ListTile(
-                                  leading: Radio(
-                                    value: 'cash',
-                                    groupValue: paymentmethod,
+                                  leading: Radio<PaymentMethod>(
+                                    value: PaymentMethod.Cash,
+                                    groupValue: paymentMethod,
                                     onChanged: (value) {
                                       setState(() {
-                                        paymentmethod = value;
+                                        paymentMethod = value;
                                       });
                                     },
                                   ),
-                                  title: Text(getWord('payment when recieving', context),
+                                  title: Text(
+                                      getWord(
+                                          'payment when recieving', context),
                                       style: TextStyle(fontSize: fontSize)),
-                                  subtitle: paymentmethod != 'cash'
+                                  subtitle: paymentMethod != PaymentMethod.Cash
                                       ? Container()
-                                      : Text(getWord('payment when recieving', context)),
+                                      : Text(getWord(
+                                          'payment when recieving', context)),
                                 ),
                               ),
                               BuildDetailsOrderPrice(
+                                  paymentMethod: paymentMethod,
                                   fontSize: fontSize,
                                   pressed: () {
                                     setState(() {
@@ -209,18 +216,5 @@ class BuildStepOrder extends StatelessWidget {
       onPressed: isActive == false ? null : onPressed,
       text: label,
     ));
-
-    return Expanded(
-      child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 5),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: fontSize - 5, color: textColor),
-        ),
-        color: color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-      ),
-    );
   }
 }
