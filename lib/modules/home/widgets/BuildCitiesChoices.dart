@@ -19,7 +19,7 @@ class BuildCitiesRadio extends StatelessWidget {
         if (state is LoadingCitiesState)
           return Center(child: CircularProgressIndicator());
         if (state is EmptyCitiesState)
-          return Center(child: Text('No Cities Found'));
+          return Center(child: Text(getWord('No Cities Found', context)));
         final cities = CitiesCubit.getInstance(context).cities;
         int selectedId = CitiesCubit.getInstance(context).selectedCity.id;
         return Column(
@@ -41,7 +41,7 @@ class BuildCitiesRadio extends StatelessWidget {
                               .changeSelecteCity(city);
                         },
                       ),
-                      title: Text(city.nameEn),
+                      title: Text(getTranslatedName(city)),
                     ))
                 .toList(),
             Padding(

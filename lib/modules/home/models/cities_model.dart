@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:trim/basic_data_model.dart';
 
 class Cities {
   List<CityModel> cities = [];
@@ -11,11 +12,14 @@ class Cities {
   }
 }
 
-class CityModel {
+class CityModel extends BasicData {
   int id;
-  String nameEn;
-  String nameAr;
-  CityModel({this.id, this.nameAr, this.nameEn});
+  // String nameEn;
+  // String nameAr;
+  CityModel({this.id, String nameArabic, String nameEnglish}) {
+    nameAr = nameArabic;
+    nameEn = nameEnglish;
+  }
   CityModel.fromJson({@required Map<String, dynamic> json}) {
     id = json['id'];
     nameEn = json['name_en'];

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:trim/constants/api_path.dart';
-import 'package:trim/modules/home/models/category_products.dart';
 import 'package:trim/modules/market/cubit/categories_events.dart';
 import 'package:trim/modules/market/cubit/categories_states.dart';
 import 'package:trim/modules/market/models/Category.dart';
@@ -22,7 +21,7 @@ class AllCategoriesBloc extends Bloc<CategoriesEvents, CategoriesStates> {
       if (event is CategoriesFetchDataFromApi) {
         yield LoadingState();
         response = await DioHelper.postData(url: allCategoriesUrl, body: {});
-         body = response.data['data'];
+        body = response.data['data'];
         for (var category in body) {
           categories.add(Category.fromjson(category));
         }
@@ -30,12 +29,13 @@ class AllCategoriesBloc extends Bloc<CategoriesEvents, CategoriesStates> {
       } else if (event is SearchedCategories) {
         yield LoadingState();
         response = await DioHelper.postData(url: allCategoriesUrl, body: {
-          'name':event.searchedWord,
+          'name': event.searchedWord,
         });
-         body = response.data['data'];
+        body = response.data['data'];
         for (var category in body) {
           categories.add(Category.fromjson(category));
-        }        yield LoadedState(categories);
+        }
+        yield LoadedState(categories);
       }
     } catch (e) {
       print('Error Appear in Categories');

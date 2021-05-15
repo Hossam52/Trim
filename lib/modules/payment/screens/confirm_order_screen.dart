@@ -4,7 +4,6 @@ import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
-import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/payment/widgets/build_delivery_widget.dart';
 import 'package:trim/modules/payment/widgets/build_details_order_price.dart';

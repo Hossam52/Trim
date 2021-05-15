@@ -9,7 +9,6 @@ import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
-import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
 import 'package:trim/modules/payment/screens/payment_detail_screen.dart';
 import 'package:trim/modules/payment/screens/payment_methods_screen.dart';
 import 'package:trim/modules/reservation/Bloc/products_order_bloc.dart';

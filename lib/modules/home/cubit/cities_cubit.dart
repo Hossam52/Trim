@@ -24,7 +24,7 @@ class CitiesCubit extends Cubit<CitiesStates> {
       if (response.data.cities.isEmpty)
         emit(EmptyCitiesState());
       else {
-        cities.add(CityModel(id: null, nameEn: 'All', nameAr: 'الكل'));
+        cities.add(CityModel(id: null, nameEnglish: 'All', nameArabic: 'الكل'));
 
         response.data.cities.forEach((city) {
           cities.add(city);

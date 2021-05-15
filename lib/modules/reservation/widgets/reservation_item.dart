@@ -102,7 +102,7 @@ class ReservationItem extends StatelessWidget {
       return reservation.offers.map((element) => element.nameEn).toList();
     else if (reservation.services.isNotEmpty) {
       print(true);
-      return reservation.services.map((element) => element.titleEn).toList();
+      return reservation.services.map((element) => element.nameEn).toList();
     } else {
       if (reservation.products.isNotEmpty)
         return reservation.products.map((element) => element.nameEn).toList();

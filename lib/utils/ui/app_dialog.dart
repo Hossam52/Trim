@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
@@ -29,6 +30,7 @@ void personDetailsDialog(
     );
   }
 
+  SalonsCubit.getInstance(context).getSalonDetails(id: salon.id);
   await showDialog(
       context: context,
       builder: (_) {
@@ -39,6 +41,7 @@ void personDetailsDialog(
                 if (state is LoadingSalonDetailState ||
                     state is LoadingAvilableDatesState)
                   return Center(child: CircularProgressIndicator());
+                salon = SalonsCubit.getInstance(context).salonDetail;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -72,7 +75,8 @@ void personDetailsDialog(
                                     stars: salon.rate,
                                     width:
                                         MediaQuery.of(context).size.width / 2),
-                                Text('${salon.commentsCount} Openion')
+                                Text(
+                                    '${salon.commentsCount} ${getWord('openions', context)}')
                               ],
                             ),
                           ),
@@ -82,10 +86,10 @@ void personDetailsDialog(
                     SizedBox(height: 10),
                     Divider(),
                     elevatedButton(
-                      text: 'Reserve now',
+                      text: getWord('Reserve now', context),
                       onPressed: () async {
-                        await SalonsCubit.getInstance(context)
-                            .getSalonDetails(id: salon.id);
+                        // await SalonsCubit.getInstance(context)
+                        //     .getSalonDetails(id: salon.id);
                         Navigator.pop(context);
                         Navigator.pushNamed(context, ReserveScreen.routeName,
                             arguments: SalonDetailModel(
@@ -96,10 +100,10 @@ void personDetailsDialog(
                       },
                     ),
                     elevatedButton(
-                      text: 'Reserve appointment',
+                      text: getWord('Reserve appointment', context),
                       onPressed: () async {
-                        await SalonsCubit.getInstance(context)
-                            .getSalonDetails(id: salon.id);
+                        // await SalonsCubit.getInstance(context)
+                        //     .getSalonDetails(id: salon.id);
                         print(SalonsCubit.getInstance(context)
                             .salonDetail
                             .salonServices);
@@ -133,12 +137,13 @@ Future<bool> exitConfirmationDialog(
                   onPressed: () {
                     Navigator.pop(context, false);
                   },
-                  child: Text('Cancel')),
+                  child: Text(getWord('Cancel', context))),
               TextButton(
                   onPressed: () {
                     Navigator.pop(context, true);
                   },
-                  child: Text('Yes', style: TextStyle(color: Colors.red))),
+                  child: Text(getWord('Yes', context),
+                      style: TextStyle(color: Colors.red))),
             ],
             content: Text(alertMessage),
             contentTextStyle: TextStyle(

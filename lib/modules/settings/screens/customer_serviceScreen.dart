@@ -5,8 +5,6 @@ import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class CustomerServiceScreen extends StatelessWidget {
   static const routeName = '/customer-service';
-  // final email = 'hossam.fcis@gmail.com';
-  // final phones = ['01115425561', '0248581898', '12345676', '1111111111'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +46,7 @@ class CustomerServiceScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
-                child: Text('Customer service numbers:',
+                child: Text(getWord('Customer service numbers ', context),
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               Column(
@@ -64,7 +62,7 @@ class CustomerServiceScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
-                  child: Text('Eamil: ',
+                  child: Text(getWord('Email', context),
                       style: TextStyle(fontWeight: FontWeight.bold))),
               Column(
                 mainAxisSize: MainAxisSize.min,

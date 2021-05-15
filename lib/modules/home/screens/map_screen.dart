@@ -108,6 +108,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     initMarkerIcon(context);
+    List<Salon> mapSalons = [];
     return Scaffold(
         body: Container(
             child: SizedBox(
@@ -208,6 +209,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void makeSalonsMarkers(List<LatLng> salonsLocations) {
+    List<Salon> mapSalons = [];
     for (int i = 0; i < mapSalons.length; i++) {
       Marker f = Marker(
           markerId: MarkerId(Random().nextInt(1000).toString()),

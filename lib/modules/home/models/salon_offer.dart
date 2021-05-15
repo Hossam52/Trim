@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:trim/basic_data_model.dart';
 
-class SalonOffer {
+class SalonOffer extends BasicData {
   int id;
-  String nameEn;
-  String nameAr;
+  // String nameEn;
+  // String nameAr;
   String descriptionAr;
   String descriptionEn;
   String price;
@@ -19,25 +20,23 @@ class SalonOffer {
       this.categoryEn,
       this.descriptionAr,
       this.descriptionEn,
-      this.nameAr,
-      this.nameEn,
+      // this.nameAr,
+      // this.nameEn,
       this.price,
       this.salon,
       this.qty});
 
-  factory SalonOffer.fromJson({Map<String, dynamic> json}) {
-    return SalonOffer(
-      id: json['id'],
-      nameEn: json['name_en'],
-      nameAr: json['name_ar'],
-      descriptionAr: json['description_ar'],
-      descriptionEn: json['description_en'],
-      price: json['price'],
-      image: json['image'],
-      salon: json['salon'],
-      categoryAr: json['category_ar'],
-      categoryEn: json['category_en'],
-      qty: json['qty'],
-    );
+  SalonOffer.fromJson({Map<String, dynamic> json}) {
+    id = json['id'];
+    nameEn = json['name_en'];
+    nameAr = json['name_ar'];
+    descriptionAr = json['description_ar'];
+    descriptionEn = json['description_en'];
+    price = json['price'];
+    image = json['image'];
+    salon = json['salon'];
+    categoryAr = json['category_ar'];
+    categoryEn = json['category_en'];
+    qty = json['qty'];
   }
 }

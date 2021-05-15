@@ -23,7 +23,8 @@ class AvailableTimes extends StatelessWidget {
               builder: (_, state) {
                 if (state is LoadingAvilableDatesState) {
                   return Center(child: CircularProgressIndicator());
-                } else if (state is EmptyAvialbleDatesState)
+                } else if (state is EmptyAvialbleDatesState ||
+                    SalonsCubit.getInstance(context).availableDates.isEmpty)
                   return Center(
                       child: Text(getWord(
                           'No Times for this salon at this date', context)));
