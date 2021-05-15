@@ -21,6 +21,10 @@ import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/market/widgets/build_listTile_confirm.dart';
 
 class BuildDetailsOrderPrice extends StatefulWidget {
+  final double fontSize;
+  final DeviceInfo deviceInfo;
+  final Function pressed;
+  final int stepNumber;
   BuildDetailsOrderPrice(
       {@required this.fontSize,
       @required this.pressed,
@@ -28,10 +32,6 @@ class BuildDetailsOrderPrice extends StatefulWidget {
       @required this.stepNumber,
       @required this.paymentMethod});
   final PaymentMethod paymentMethod;
-  final double fontSize;
-  final DeviceInfo deviceInfo;
-  final Function pressed;
-  final int stepNumber;
 
   @override
   _BuildDetailsOrderPriceState createState() => _BuildDetailsOrderPriceState();
@@ -39,13 +39,30 @@ class BuildDetailsOrderPrice extends StatefulWidget {
 
 class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
   CartBloc cartBloc;
+
   String coupon;
 
-  TextEditingController controller = TextEditingController();
+  TextEditingController controller;
+  @override
+  void initState() {
+    cartBloc = BlocProvider.of<CartBloc>(
+      context,
+    );
+    controller = TextEditingController();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    cartBloc = BlocProvider.of<CartBloc>(context);
+    print('print inside details order price');
     return Container(
       height: widget.deviceInfo.localHeight *
           (widget.deviceInfo.orientation == Orientation.portrait ? 0.50 : 0.82),
@@ -119,6 +136,11 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
           ProductsOrderBloc productsOrderBloc =
               BlocProvider.of<ProductsOrderBloc>(context);
           productsOrderBloc.add(PostDataOrderProducts(productsOrder: items));
+          if (productsOrderBloc.discount != 0 ||
+              productsOrderBloc.discount != null)
+            Fluttertoast.showToast(
+                msg:
+                    'we will apply discount with ${productsOrderBloc.discount} when paying');
           cartBloc.add(DeleteAllItemsInCart());
 
           ReservationCubit.getInstance(context).loadMyOrders(refreshPage: true);
@@ -131,7 +153,9 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
           Navigator.pop(
               context); //for products screen and stay at categories screen
         } catch (e) {
-          print('Inside error order');
+          Fluttertoast.showToast(
+              msg: getWord(
+                  'Please Make sure from internet connection', context));
         }
       }
     };
@@ -148,24 +172,30 @@ Widget getCopunTextField(
           flex: 1,
           child: DefaultButton(
             onPressed: () async {
-              FocusScope.of(context).unfocus();
-              if (controller.text.isEmpty) {
-                Fluttertoast.showToast(
-                    msg: getWord('Pleas Enter coupoun code', context));
-              } else {
-                final response =
-                    await DioHelper.postData(url: 'winCoupone', body: {
-                  'code': controller.text,
-                });
-                if (!response.data['success']) {
+              try {
+                FocusScope.of(context).unfocus();
+                if (controller.text.isEmpty) {
                   Fluttertoast.showToast(
-                      msg: isArabic
-                          ? 'الكوبون غير متاح'
-                          : response.data['message']);
+                      msg: getWord('Pleas Enter coupoun code', context));
                 } else {
-                  print(response.data);
-                  print(controller.text);
+                  final response =
+                      await DioHelper.postData(url: 'winCoupone', body: {
+                    'code': controller.text,
+                  });
+                  if (!response.data['success']) {
+                    Fluttertoast.showToast(
+                        msg: isArabic
+                            ? 'الكوبون غير متاح'
+                            : response.data['message']);
+                  } else {
+                    print(response.data);
+                    print(controller.text);
+                  }
                 }
+              } catch (e) {
+                Fluttertoast.showToast(
+                    msg: getWord(
+                        'Please Make sure from internet connection', context));
               }
             },
             text: getWord('apply', context),

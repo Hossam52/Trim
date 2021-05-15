@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
@@ -8,6 +10,7 @@ import 'package:trim/utils/services/rest_api_service.dart';
 class ProductsOrderBloc extends Bloc<ProductsOrderEvents, ProductOrderStates> {
   ProductsOrderBloc() : super(InitialStateProductsOrder());
   List<Map<String, dynamic>> productsOrder;
+  var discount;
 
   @override
   Stream<ProductOrderStates> mapEventToState(ProductsOrderEvents event) async* {
@@ -19,15 +22,25 @@ class ProductsOrderBloc extends Bloc<ProductsOrderEvents, ProductOrderStates> {
           'product_id': item.id,
           'quantity': item.quantity,
         });
-      final response =
-          await DioHelper.postData(url: newOrderWithProductUrl, body: {
-        'products': productsOrder,
-        'payment_coupon':event.coupon,
-      });
+      var response;
+      if (event.coupon.isNotEmpty) {
+        response = await DioHelper.postData(url: newOrderWithProductUrl, body: {
+          'products': productsOrder,
+          'payment_coupon': event.coupon,
+        });
+      } else {
+        response = await DioHelper.postData(url: newOrderWithProductUrl, body: {
+          'products': productsOrder,
+        });
+      }
+      print('dis is ${response.data['data']['discount']}');
+      discount = response.data['data']['discount'] ;
+    //  print('$discount this is discount');
+
+      print('Order Response');
       print(response.data);
       yield LoadedStateProductsOrder(productsOrder);
     } catch (e) {
-      
       yield ErrorStateProductsOrder();
     }
   }

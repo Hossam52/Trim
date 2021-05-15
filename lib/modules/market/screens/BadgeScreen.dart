@@ -17,11 +17,9 @@ import 'package:trim/general_widgets/default_button.dart';
 
 class BadgeScrren extends StatelessWidget {
   static String routeName = 'BadgeScreen';
-  GlobalKey globalKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: globalKey,
       body: SafeArea(
         child: Stack(
           children: [
