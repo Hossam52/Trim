@@ -14,7 +14,7 @@ import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/market/widgets/build_listTile_confirm.dart';
 
-class BuildDetailsOrderPrice extends StatelessWidget {
+class BuildDetailsOrderPrice extends StatefulWidget {
   final double fontSize;
   final DeviceInfo deviceInfo;
   final Function pressed;
@@ -24,15 +24,40 @@ class BuildDetailsOrderPrice extends StatelessWidget {
       @required this.pressed,
       @required this.deviceInfo,
       @required this.stepNumber});
+
+  @override
+  _BuildDetailsOrderPriceState createState() => _BuildDetailsOrderPriceState();
+}
+
+class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
   CartBloc cartBloc;
+
   String coupon;
-  TextEditingController controller=TextEditingController();
+
+  TextEditingController controller;
+  @override
+  void initState() {
+    cartBloc = BlocProvider.of<CartBloc>(
+      context,
+    );
+    controller = TextEditingController();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    cartBloc = BlocProvider.of<CartBloc>(context);
+    print('print inside details order price');
     return Container(
-      height: deviceInfo.localHeight *
-          (deviceInfo.orientation == Orientation.portrait ? 0.50 : 0.82),
+      height: widget.deviceInfo.localHeight *
+          (widget.deviceInfo.orientation == Orientation.portrait ? 0.50 : 0.82),
       decoration: BoxDecoration(
         border: Border.all(width: 0.5, color: Colors.white),
         color: Colors.white,
@@ -42,19 +67,19 @@ class BuildDetailsOrderPrice extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            stepNumber == 2
+            widget.stepNumber == 2
                 ? getCopunTextField(context: context, controller: controller)
                 : SizedBox(),
             BuildListTileCofirm(
               leading: getWord('total', context),
               trailing: '${cartBloc.getTotalPrice().toStringAsFixed(2)} ' +
                   getWord('bound', context),
-              fontSize: fontSize,
+              fontSize: widget.fontSize,
             ),
             BuildListTileCofirm(
               leading: getWord('shipping', context),
               trailing: '20 ' + getWord('bound', context),
-              fontSize: fontSize,
+              fontSize: widget.fontSize,
             ),
             Divider(
               endIndent: 10,
@@ -66,25 +91,28 @@ class BuildDetailsOrderPrice extends StatelessWidget {
               trailing:
                   '${(cartBloc.getTotalPrice() + 20).toStringAsFixed(2)} ' +
                       getWord('bound', context),
-              fontSize: fontSize,
+              fontSize: widget.fontSize,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ElevatedButton(
-                onPressed: stepNumber == 2
+                onPressed: widget.stepNumber == 2
                     ? () async {
                         try {
-                          CartBloc cartBloc =
-                              BlocProvider.of<CartBloc>(context);
                           List<CartItem> items = cartBloc.getCartList();
                           ProductsOrderBloc productsOrderBloc =
                               BlocProvider.of<ProductsOrderBloc>(context);
-                          productsOrderBloc
-                              .add(PostDataOrderProducts(productsOrder: items,
-                                                         coupon:controller.text));
+                          productsOrderBloc.add(PostDataOrderProducts(
+                              productsOrder: items, coupon: controller.text));
+                      if(productsOrderBloc.discount!=0||productsOrderBloc.discount!=null)Fluttertoast.showToast(
+                              msg:
+                                  'we will apply discount with ${productsOrderBloc.discount} when paying');
                           cartBloc.add(DeleteAllItemsInCart());
                         } catch (e) {
-                          print('Inside error order');
+                          Fluttertoast.showToast(
+                              msg: getWord(
+                                  'Please Make sure from internet connection',
+                                  context));
                         }
 
                         // print('MyOrders');
@@ -92,12 +120,12 @@ class BuildDetailsOrderPrice extends StatelessWidget {
                         //     methodUrl: 'myOrders', queries: {});
                         // print(newData.data);
                       }
-                    : pressed,
+                    : widget.pressed,
                 child: Text(
-                  stepNumber == 2
+                  widget.stepNumber == 2
                       ? getWord('Confirm order', context)
                       : getWord('continue to pay', context),
-                  style: TextStyle(fontSize: fontSize),
+                  style: TextStyle(fontSize: widget.fontSize),
                 ),
               ),
             ),
@@ -108,7 +136,8 @@ class BuildDetailsOrderPrice extends StatelessWidget {
   }
 }
 
-Widget getCopunTextField({BuildContext context, TextEditingController controller}) {
+Widget getCopunTextField(
+    {BuildContext context, TextEditingController controller}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 15),
     child: TextFormField(
@@ -122,18 +151,22 @@ Widget getCopunTextField({BuildContext context, TextEditingController controller
             if (controller.text.isEmpty) {
               Fluttertoast.showToast(msg: 'Pleas Enter coupoun code');
             } else {
-              final response =
-                  await DioHelper.postData(url: 'winCoupone', body: {
-                'code': controller.text,
-              });
-              if (!response.data['success']) {
-                Fluttertoast.showToast(
-                    msg: isArabic
-                        ? 'الكوبون غير متاح'
-                        : response.data['message']);
-              } else {
-                print(response.data);
-                print(controller.text);
+              try {
+                final response =
+                    await DioHelper.postData(url: 'winCoupone', body: {
+                  'code': controller.text,
+                });
+                if (!response.data['success']) {
+                  Fluttertoast.showToast(
+                      msg: isArabic
+                          ? 'الكوبون غير متاح'
+                          : response.data['message']);
+                } else {
+                  print(response.data);
+                  print(controller.text);
+                }
+              } catch (e) {
+                Fluttertoast.showToast(msg: getWord('Please Make sure from internet connection', context));
               }
             }
             //Navigator.pushNamed(context, CouponsScreen.routeName);

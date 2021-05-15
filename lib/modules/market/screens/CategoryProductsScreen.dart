@@ -51,18 +51,21 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   Map<String, dynamic> categoryDetails = {};
   int categoryId;
   String categorytitle;
+  bool isFirst = true;
   @override
   void didChangeDependencies() {
-    searchBloc = BlocProvider.of<SearchBloc>(context);
-    categoryDetails =
-        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
-    categoryId = categoryDetails['value'];
-    categorytitle = categoryDetails['key'];
-    productsBloc.add(FetchDataFromApi(categoryId: categoryId));
+    if (isFirst) {
+      searchBloc = BlocProvider.of<SearchBloc>(context);
+      categoryDetails =
+          ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+      categoryId = categoryDetails['value'];
+      categorytitle = categoryDetails['key'];
+      productsBloc.add(FetchDataFromApi(categoryId: categoryId));
+      isFirst = false;
+    }
     super.didChangeDependencies();
   }
 
-  GlobalKey globalKey = GlobalKey<ScaffoldState>();
   TextEditingController textEditingController = TextEditingController();
   String searchedString;
   bool isCategory;
@@ -71,7 +74,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     print('from here rebuild\n');
     isCategory = true;
     return Scaffold(
-        key: globalKey,
         appBar: AppBar(
           backgroundColor: Colors.blue[800],
 
@@ -101,7 +103,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                       onChanged: (value) async {
                         productsBloc.add(Searchedproducts(
                             categoryId: categoryId, searchedWord: value));
-                        print('Search bar products');
                       },
                     ),
                     BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
@@ -125,8 +126,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                     physics: AlwaysScrollableScrollPhysics(),
                                     child: Container(
                                       height: deviceInfo.localHeight * 0.5,
-                                      child: Text(
-                                          getWord('Please Make sure from internet connection', context)),
+                                      child: Text(getWord(
+                                          'Please Make sure from internet connection',
+                                          context)),
                                     ))));
                     })
                   ],
@@ -151,11 +153,13 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
       listener: (_, state) {
         print('Inside Category products');
         isCategoryScreen = true;
-        if (state is ErrorStateCart) {
-          if (isCategoryScreen) {
+        if (state is ErrorStateCart) 
+        {
+          if (isCategoryScreen) 
+          {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Error in your internet connecation !!'),
+                content:Text(getWord('Please Make sure from internet connection', context)),
               ),
             );
           }
@@ -305,7 +309,7 @@ class _BuildProductItemState extends State<BuildProductItem> {
 
   Widget buildProductName() {
     return Text(
-    isArabic?widget.prodcut.nameAr:  widget.prodcut.nameEn,
+      isArabic ? widget.prodcut.nameAr : widget.prodcut.nameEn,
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
     );

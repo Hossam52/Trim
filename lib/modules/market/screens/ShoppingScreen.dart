@@ -40,8 +40,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   @override
   void dispose() {
     print('Dispose shopping screen');
-    allCategoriesBloc.close();
-    cartBloc.close();
+    //allCategoriesBloc.close();
+    //cartBloc.close();
     super.dispose();
   }
 
