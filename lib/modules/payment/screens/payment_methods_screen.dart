@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import '../cubits/payment_cubit.dart';
 import '../cubits/payment_states.dart';
@@ -70,7 +71,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                   ),
                   Spacer(),
                   DefaultButton(
-                      text: 'Pay Now',
+                      text: getWord('Pay Now', context),
                       onPressed: () {
                         Navigator.pushNamed(
                             context, PaymentDetailScreen.routeName,

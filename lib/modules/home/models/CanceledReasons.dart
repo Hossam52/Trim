@@ -1,9 +1,12 @@
-List<String> canceledReasons = [
-  'Change My openion and request another salon',
-  'Services is not complete',
-  'Try The app',
-  'Wait too long',
-  'Salon is not arranged',
-  'Don\'t get copoun',
-  'Another reason'
-];
+import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
+
+List<String> getCancelReasons(BuildContext context) => [
+      getWord('Change My openion and request another salon', context),
+      getWord('Services is not complete', context),
+      getWord('Try The app', context),
+      getWord('Wait too long', context),
+      getWord('Salon is not arranged', context),
+      getWord('Don\'t get copoun', context),
+      getWord('Another reason', context)
+    ];

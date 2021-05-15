@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
@@ -72,7 +73,7 @@ class ReserveScreen extends StatelessWidget {
                               SalonsCubit.getInstance(context)
                                   .canReserveSalon();
                           return DefaultButton(
-                              text: 'Reserve now',
+                              text: getWord('Reserve now', context),
                               widget: state is LoadingMakeOrderState
                                   ? Center(child: CircularProgressIndicator())
                                   : null,

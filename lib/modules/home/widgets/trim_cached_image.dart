@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 
 class TrimCachedImage extends StatelessWidget {
   final String src;
@@ -25,7 +26,7 @@ class TrimCachedImage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.error, color: Colors.red),
-            Text('No image found'),
+            Text(getWord('No image found', context)),
           ],
         );
       },

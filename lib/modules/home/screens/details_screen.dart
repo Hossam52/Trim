@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/cubit/cities_cubit.dart';
@@ -59,34 +60,33 @@ class DetailsScreen extends StatelessWidget {
                                       ? deviceInfo.localHeight * 0.3
                                       : deviceInfo.localHeight * 0.6,
                             ),
-                            Padding(
+                            Container(
                               padding: const EdgeInsets.only(top: 18.0),
-                              child: IntrinsicHeight(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Expanded(
-                                        child: Openions(
-                                          deviceInfo: deviceInfo,
-                                          salon: salon,
-                                        ),
-                                        flex: 2),
-                                    Expanded(
-                                        child: availabilityTime(
-                                            deviceInfo, salon)),
-                                  ],
-                                ),
+                              height: MediaQuery.of(context).size.height * 0.14,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                      child: Openions(
+                                        deviceInfo: deviceInfo,
+                                        salon: salon,
+                                      ),
+                                      flex: 2),
+                                  Expanded(
+                                      child: availabilityTime(
+                                          context, deviceInfo, salon)),
+                                ],
                               ),
                             ),
-                            IntrinsicHeight(
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.16,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Expanded(
                                       child: addressWidget(
-                                          deviceInfo, salon.address),
+                                          context, deviceInfo, salon.address),
                                       flex: 3),
                                   Expanded(
                                       child:
@@ -123,7 +123,7 @@ class DetailsScreen extends StatelessWidget {
           textColor: Colors.white,
           fontSize: getFontSizeVersion2(deviceInfo),
           onPressed: () => reserveSalon(context, deviceInfo),
-          text: 'Reserve now',
+          text: getWord('Reserve now', context), //'Reserve now',
         ));
   }
 
@@ -137,7 +137,8 @@ class DetailsScreen extends StatelessWidget {
             showServiceWidget: false));
   }
 
-  Widget addressWidget(DeviceInfo deviceInfo, String address) {
+  Widget addressWidget(
+      BuildContext context, DeviceInfo deviceInfo, String address) {
     return Card(
       elevation: 10,
       child: InkWell(
@@ -152,7 +153,9 @@ class DetailsScreen extends StatelessWidget {
                 ),
               Expanded(
                   child: Text(
-                address.isEmpty ? "No Address is provided" : address,
+                address.isEmpty
+                    ? getWord("No Address is provided", context)
+                    : address,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -191,7 +194,7 @@ class DetailsScreen extends StatelessWidget {
                 ),
                 FittedBox(
                   child: Text(
-                    'Get directions',
+                    getWord('Get directions', context),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -207,53 +210,32 @@ class DetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget availabilityTime(DeviceInfo deviceInfo, Salon salon) {
+  Widget availabilityTime(
+      BuildContext context, DeviceInfo deviceInfo, Salon salon) {
     final fontSize = deviceInfo.localWidth *
         (deviceInfo.type == deviceType.mobile ? 0.14 * 0.25 : 0.11 * 0.25);
+    final openFrom = salon.openFrom == "" ? 'N/A' : salon.openFrom;
+    final openTo = salon.openTo == "" ? "N/A" : salon.openTo;
+    final to = getWord('To', context);
+
     return Card(
       elevation: 10,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Open',
-            style: TextStyle(
-              color: Colors.green,
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-            ),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(
+          getWord('Open', context),
+          style: TextStyle(
+            color: Colors.green,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
           ),
-          Expanded(
-            child: Text(
-              salon.openFrom == "" ? "N/A" : salon.openFrom,
-              style: TextStyle(
-                color: Colors.green,
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              ' To ',
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              salon.openTo == "" ? "N/A" : salon.openTo,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-                fontSize: fontSize,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+        Flexible(
+          child: Text('$openFrom $to $openTo',
+              textAlign: TextAlign.center,
+              style:
+                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+        ),
+      ]),
     );
   }
 }
@@ -286,7 +268,7 @@ class Openions extends StatelessWidget {
               ),
               Flexible(
                 child: Text(
-                  '${salon.commentsCount} openions',
+                  '${salon.commentsCount} ' + getWord('openions', context),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,

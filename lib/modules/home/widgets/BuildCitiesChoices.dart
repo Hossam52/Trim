@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
@@ -46,7 +47,7 @@ class BuildCitiesRadio extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: DefaultButton(
-                  text: 'Search now',
+                  text: getWord('Search now', context),
                   onPressed: () async {
                     if (HomeCubit.getInstance(context).state is AllSalonsState)
                       SalonsCubit.getInstance(context)

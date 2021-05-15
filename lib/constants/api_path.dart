@@ -45,3 +45,4 @@ final String cancelOrderUrl = 'cancelOrder';
 final String addToFavoriteUrl = 'addToFavorities';
 final String citiesUrl = 'cities';
 final String orderSalonServiceUrl = 'newOrderWithService';
+final String newOrderWithProductUrl = 'newOrderWithProduct';

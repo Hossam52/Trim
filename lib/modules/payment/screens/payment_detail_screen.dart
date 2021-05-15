@@ -4,6 +4,7 @@ import 'package:flutter_credit_card/credit_card_form.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
@@ -19,6 +20,7 @@ class PaymentDetailScreen extends StatefulWidget {
 
 class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
   final creditKey = GlobalKey<FormState>();
+  bool dialogIsShow = false;
   @override
   void initState() {
     super.initState();
@@ -48,12 +50,17 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
           },
           child: BlocConsumer<PaymentCubit, PaymentStates>(
             listener: (_, state) async {
-              if (state is ErrorPaymentState)
+              if (state is ErrorPaymentState) {
+                if (dialogIsShow) {
+                  dialogIsShow = false;
+                  Navigator.pop(context);
+                }
                 await Fluttertoast.showToast(
                     toastLength: Toast.LENGTH_SHORT,
                     msg: state.errorMessage,
                     backgroundColor: Colors.red,
                     gravity: ToastGravity.BOTTOM);
+              }
               if (state is LoadedTokenState) {
                 showDialog(
                   context: context,
@@ -86,7 +93,8 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                   ),
                 );
               }
-              if (state is LoadingPaymentState)
+              if (state is LoadingPaymentState) {
+                dialogIsShow = true;
                 showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
@@ -98,12 +106,14 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                     ),
                   ),
                 );
+              }
               if (state is LoadedPaymentState) {
+                dialogIsShow = false;
                 await Fluttertoast.showToast(
                     msg: 'Your Payment done successifully',
                     backgroundColor: Colors.green);
-                Navigator.popUntil(
-                    context, ModalRoute.withName(ReserveScreen.routeName));
+                int counter = 0;
+                Navigator.popUntil(context, (_) => counter++ == 3);
               }
             },
             builder: (_, state) {
@@ -137,7 +147,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                     ),
                   ),
                   DefaultButton(
-                      text: 'Validate and pay',
+                      text: getWord('Validate and pay', context),
                       widget: state is LoadingTokenState
                           ? Center(child: CircularProgressIndicator())
                           : null,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
-import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/widgets/BuildStarPersonItem.dart';
 
 class BuildStarsPersonsWidget extends StatelessWidget {

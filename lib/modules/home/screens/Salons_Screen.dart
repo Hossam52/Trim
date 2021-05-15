@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
@@ -10,7 +13,6 @@ import 'package:trim/modules/home/cubit/persons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/widgets/barber_item.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/general_widgets/choice_button.dart';
@@ -58,6 +60,7 @@ class _SalonsScreenState extends State<SalonsScreen> {
   @override
   Widget build(BuildContext context) {
     final state = HomeCubit.getInstance(context).state;
+
     return Scaffold(
       appBar: appBar(context),
       resizeToAvoidBottomInset: true,
@@ -70,50 +73,52 @@ class _SalonsScreenState extends State<SalonsScreen> {
                 buildSearchAndSettings(context),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ChoiceButton(
-                      directionRoundedRight: false,
-                      icon: hairIcon,
-                      name: 'Salons',
-                      active: displaySalons,
-                      pressed: () {
-                        final state = HomeCubit.getInstance(context).state;
-                        if (state is TrimStarState)
-                          HomeCubit.getInstance(context)
-                              .emit(MostSearchState());
-                        else if (state is AllPersonsState)
-                          HomeCubit.getInstance(context).emit(AllSalonsState());
-                        // if (!(HomeCubit.getInstance(context).state
-                        //     is AllSalonsState))
-                        //   HomeCubit.getInstance(context)
-                        //       .emit(MostSearchState());
-                        if (!displaySalons)
-                          setState(() {
-                            displaySalons = true;
-                          });
-                      },
-                    ),
-                    ChoiceButton(
-                      directionRoundedRight: true,
-                      icon: marketIcon,
-                      name: 'Persons',
-                      active: !displaySalons,
-                      pressed: () {
-                        final state = HomeCubit.getInstance(context).state;
-                        if (state is MostSearchState)
-                          HomeCubit.getInstance(context).emit(TrimStarState());
-                        else if (state is AllSalonsState)
-                          HomeCubit.getInstance(context)
-                              .emit(AllPersonsState());
-                        if (displaySalons)
-                          setState(() {
-                            displaySalons = false;
-                          });
-                      },
-                    ),
-                  ],
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ChoiceButton(
+                        directionRoundedRight: false,
+                        icon: hairIcon,
+                        name: getWord('Salons', context),
+                        active: displaySalons,
+                        pressed: () {
+                          final state = HomeCubit.getInstance(context).state;
+                          if (state is TrimStarState)
+                            HomeCubit.getInstance(context)
+                                .emit(MostSearchState());
+                          else if (state is AllPersonsState)
+                            HomeCubit.getInstance(context)
+                                .emit(AllSalonsState());
+
+                          if (!displaySalons)
+                            setState(() {
+                              displaySalons = true;
+                            });
+                        },
+                      ),
+                      ChoiceButton(
+                        directionRoundedRight: true,
+                        icon: marketIcon,
+                        name: getWord('Persons', context),
+                        active: !displaySalons,
+                        pressed: () {
+                          final state = HomeCubit.getInstance(context).state;
+                          if (state is MostSearchState)
+                            HomeCubit.getInstance(context)
+                                .emit(TrimStarState());
+                          else if (state is AllSalonsState)
+                            HomeCubit.getInstance(context)
+                                .emit(AllPersonsState());
+                          if (displaySalons)
+                            setState(() {
+                              displaySalons = false;
+                            });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -184,8 +189,8 @@ class _SalonsScreenState extends State<SalonsScreen> {
             backgroundColor: Colors.blue[800],
             title: BlocBuilder<HomeCubit, HomeStates>(
                 builder: (_, state) => state is TrimStarState
-                    ? Text('Trim Stars')
-                    : Text('Most serch salons')),
+                    ? Text(getWord('Trim stars', context))
+                    : Text(getWord('Most serch salons', context))),
             centerTitle: true,
           )
         : null;
@@ -246,7 +251,6 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
                   .showSnackBar(SnackBar(content: Text(state.error)));
           },
           builder: (_, state) {
-            print('Build salon screen');
             if (state is LoadingSalonState)
               return Center(child: CircularProgressIndicator());
             if (state is ErrorSalonState)
@@ -276,7 +280,7 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
                 if (state is NoMoreSalonState)
                   NoMoreItems(
                     deviceInfo: deviceInfo,
-                    label: 'No More Salons',
+                    label: getWord('No More Salons', context),
                   ),
                 NavigatePages(
                   nextPage: SalonsCubit.getInstance(context).getNextPage,

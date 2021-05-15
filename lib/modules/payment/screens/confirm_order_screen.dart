@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
+import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/payment/models/StepsCompleteOrder.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/payment/widgets/build_delivery_widget.dart';
@@ -17,7 +19,7 @@ class ConfirmOrderScreen extends StatefulWidget {
 
 class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   int stepNumber = 1;
-  String paymentmethod = 'online';
+  PaymentMethod paymentMethod = PaymentMethod.VisaMaster;
   Color secondaryColor = Color(0xffCBCBCD);
   bool showDetails = true;
   @override
@@ -32,10 +34,6 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                // height: deviceInfo.localHeight *
-                //     (deviceInfo.orientation == Orientation.portrait
-                //         ? 0.15
-                //         : .35),
                 color: Colors.white,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -53,7 +51,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                         icon: Icon(Icons.close),
                       ),
                       title: Text(
-                        'انهاء الطلب',
+                        getWord('Confirm order', context),
                         style: TextStyle(fontSize: fontSize),
                       ),
                     ),
@@ -70,7 +68,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                   stepNumber = 1;
                                 });
                             },
-                            label: stepsCompleteOrder[0],
+                            label: getWord('delivery', context),
                             textColor:
                                 stepNumber != 1 ? secondaryColor : Colors.white,
                             color: stepNumber == 1
@@ -82,7 +80,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                           SizedBox(width: 30),
                           BuildStepOrder(
                             onPressed: () {},
-                            label: stepsCompleteOrder[1],
+                            label: getWord('payment', context),
                             textColor:
                                 stepNumber != 2 ? secondaryColor : Colors.white,
                             color: stepNumber == 2
@@ -123,48 +121,55 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'اختيار طريقة الدفع',
+                                getWord('choice payment method', context),
                                 style: TextStyle(fontSize: fontSize),
                               ),
                               Card(
                                 child: ListTile(
-                                  leading: Radio(
-                                    value: 'online',
-                                    groupValue: paymentmethod,
+                                  leading: Radio<PaymentMethod>(
+                                    value: PaymentMethod.VisaMaster,
+                                    groupValue: paymentMethod,
                                     onChanged: (value) {
                                       setState(() {
-                                        paymentmethod = value;
+                                        paymentMethod = value;
                                       });
                                     },
                                   ),
                                   title: Text(
-                                    'الدفع عن طريق البطاقة الالكترونية',
+                                    getWord('payment from card', context),
                                     style: TextStyle(fontSize: fontSize),
                                   ),
-                                  subtitle: paymentmethod != 'online'
-                                      ? Container()
-                                      : Text('واحدة من احسن طرق الدفع حاليا'),
+                                  subtitle:
+                                      paymentMethod != PaymentMethod.VisaMaster
+                                          ? Container()
+                                          : Text(getWord(
+                                              'one of the best payment way now',
+                                              context)),
                                 ),
                               ),
                               Card(
                                 child: ListTile(
-                                  leading: Radio(
-                                    value: 'cash',
-                                    groupValue: paymentmethod,
+                                  leading: Radio<PaymentMethod>(
+                                    value: PaymentMethod.Cash,
+                                    groupValue: paymentMethod,
                                     onChanged: (value) {
                                       setState(() {
-                                        paymentmethod = value;
+                                        paymentMethod = value;
                                       });
                                     },
                                   ),
-                                  title: Text('الدفع عند الاستلام',
+                                  title: Text(
+                                      getWord(
+                                          'payment when recieving', context),
                                       style: TextStyle(fontSize: fontSize)),
-                                  subtitle: paymentmethod != 'cash'
+                                  subtitle: paymentMethod != PaymentMethod.Cash
                                       ? Container()
-                                      : Text('يتم الدفع عند الاستلام '),
+                                      : Text(getWord(
+                                          'payment when recieving', context)),
                                 ),
                               ),
                               BuildDetailsOrderPrice(
+                                  paymentMethod: paymentMethod,
                                   fontSize: fontSize,
                                   pressed: () {
                                     setState(() {
@@ -211,18 +216,5 @@ class BuildStepOrder extends StatelessWidget {
       onPressed: isActive == false ? null : onPressed,
       text: label,
     ));
-
-    return Expanded(
-      child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 5),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: fontSize - 5, color: textColor),
-        ),
-        color: color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-      ),
-    );
   }
 }

@@ -8,7 +8,10 @@ class Category {
   factory Category.fromjson(Map<String,dynamic>data) {
     return Category(id: data['id'],
     imageName: data['image'],
-    nameAr: data['name_ar']);
+    nameAr: data['name_ar'],
+    nameEn: data['name_en'],
+    );
+    
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/CanceledReasons.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
@@ -32,6 +33,7 @@ class _CancelReasonsState extends State<CancelReasons> {
   @override
   Widget build(BuildContext context) {
     double fontSize = getFontSize(widget.deviceInfo);
+    final canceledReasons = getCancelReasons(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,13 +57,14 @@ class _CancelReasonsState extends State<CancelReasons> {
           buildAnotherReasonField(context),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: buildButton(context),
+          child:
+              buildButton(context, canceledReasons[canceledReasons.length - 1]),
         ),
       ],
     );
   }
 
-  DefaultButton buildButton(BuildContext context) {
+  DefaultButton buildButton(BuildContext context, String cancelReason) {
     return DefaultButton(
         onPressed: () async {
           final reservationItem = ReservationCubit.getInstance(context)
@@ -69,10 +72,10 @@ class _CancelReasonsState extends State<CancelReasons> {
           if (selectedvalue == '') {
             Navigator.pop(context, selectedvalue);
           } else {
-            final verifyCancel = await exitConfirmationDialog(
-                context, 'Are you sure to cancel this order?');
+            final verifyCancel = await exitConfirmationDialog(context,
+                getWord('Are you sure to cancel this order?', context));
             if (verifyCancel == true) {
-              String cancelReason = canceledReasons[canceledReasons.length - 1];
+              // String cancelReason = canceledReasons[canceledReasons.length - 1];
               if (selectedvalue !=
                   cancelReason) //Not Equal to last emlent [another reason]
                 cancelReason = selectedvalue;

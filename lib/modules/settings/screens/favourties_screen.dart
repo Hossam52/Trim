@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
@@ -31,7 +32,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[900],
-        title: Text('Favorites'),
+        title: Text(getWord('my favorites', context)),
         centerTitle: true,
       ),
       body: InfoWidget(
@@ -98,7 +99,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                   if (state is NoMoreSalonState)
                                     NoMoreItems(
                                       deviceInfo: deviceInfo,
-                                      label: 'No more Favorite salons',
+                                      label: getWord('No More Salons', context),
                                     ),
                                   NavigatePages(
                                     pageNumber: pageNumber,
@@ -122,35 +123,38 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     );
   }
 
-  Row buildSalonPersonsButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ChoiceButton(
-          directionRoundedRight: false,
-          icon: hairIcon,
-          name: 'Salons',
-          active: displaySalons,
-          pressed: () {
-            if (!displaySalons)
-              setState(() {
-                displaySalons = true;
-              });
-          },
-        ),
-        ChoiceButton(
-          directionRoundedRight: true,
-          icon: marketIcon,
-          name: 'Persons',
-          active: !displaySalons,
-          pressed: () {
-            if (displaySalons)
-              setState(() {
-                displaySalons = false;
-              });
-          },
-        ),
-      ],
+  Widget buildSalonPersonsButtons() {
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ChoiceButton(
+            directionRoundedRight: false,
+            icon: hairIcon,
+            name: getWord('Salons', context),
+            active: displaySalons,
+            pressed: () {
+              if (!displaySalons)
+                setState(() {
+                  displaySalons = true;
+                });
+            },
+          ),
+          ChoiceButton(
+            directionRoundedRight: true,
+            icon: marketIcon,
+            name: getWord('Persons', context),
+            active: !displaySalons,
+            pressed: () {
+              if (displaySalons)
+                setState(() {
+                  displaySalons = false;
+                });
+            },
+          ),
+        ],
+      ),
     );
   }
 }

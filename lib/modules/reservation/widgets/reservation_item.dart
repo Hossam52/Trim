@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/models/Reservation.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
@@ -26,7 +27,7 @@ class ReservationItem extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  'Reservation no: ${reservation.id} ',
+                  '${getWord('Reservation no', context)} : ${reservation.id} ',
                   style: TextStyle(fontSize: fontSize),
                 ),
               ),
@@ -46,29 +47,31 @@ class ReservationItem extends StatelessWidget {
             children: [
               if (reservation.barberId != null)
                 reservationRowItem(
-                    key: 'Salon name',
-                    values: [reservation.barberName ?? 'Unknown'],
+                    key: getWord('Salon name', context),
+                    values: [
+                      reservation.barberName ?? getWord('Unknown', context)
+                    ],
                     fontSize: fontSize),
               reservationRowItem(
-                  key: 'Reservation time',
+                  key: getWord('Reservation time', context),
                   values: [
-                    '${reservation.reservationTime ?? "UNKNON"}',
-                    '${reservation.reservationDay ?? "UNKNON"}',
+                    '${reservation.reservationTime ?? getWord('Unknown', context)}',
+                    '${reservation.reservationDay ?? getWord('Unknown', context)}',
                   ],
                   fontSize: fontSize),
               if (!showMoreDetails)
                 reservationRowItem(
-                    key: 'Created at ',
+                    key: getWord('Created at', context),
                     values: [
-                      '${reservation.createdAt ?? "UNKNON"}',
+                      '${reservation.createdAt ?? getWord('Unknown', context)}',
                     ],
                     fontSize: fontSize),
               reservationRowItem(
-                  key: 'Address',
-                  values: [reservation.address ?? "UNKNOWN"],
+                  key: getWord('Address', context),
+                  values: [reservation.address ?? getWord('Unknown', context)],
                   fontSize: fontSize),
               reservationRowItem(
-                  key: 'Service type',
+                  key: getWord('Service type', context),
                   values: [reservation.type],
                   fontSize: fontSize),
               if (!showMoreDetails)
@@ -77,13 +80,15 @@ class ReservationItem extends StatelessWidget {
                     values: getWhatToDisplayAccordingToType(reservation),
                     fontSize: fontSize),
               reservationRowItem(
-                  key: 'Status',
-                  values: [reservation.statusEn ?? "UNKNOWN"],
+                  key: getWord('Status', context),
+                  values: [reservation.statusEn ?? getWord('Unknown', context)],
                   fontSize: fontSize),
               if (!showMoreDetails && reservation.statusId == "2")
                 reservationRowItem(
-                    key: 'Cancel reason',
-                    values: [reservation.cancelReason ?? "UNKNOWN"],
+                    key: getWord('Cancel reason', context),
+                    values: [
+                      reservation.cancelReason ?? getWord('Unknown', context)
+                    ],
                     fontSize: fontSize),
             ],
           ),
@@ -115,7 +120,7 @@ class ReservationItem extends StatelessWidget {
               arguments: reservation);
         },
         child: Text(
-          'More details',
+          getWord('More details', context),
           style: TextStyle(fontSize: fontSize, color: Colors.green),
         ),
       ),

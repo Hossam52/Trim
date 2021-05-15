@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/core/auth/login/validate.dart';
 import 'package:trim/core/auth/register/validate.dart';
 import 'package:trim/modules/auth/widgets/frame_card_auth.dart';
@@ -35,10 +36,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               if (!correctData) ErrorWarning(text: errorMessage),
               TrimTextField(
                   controller: _emailController,
-                  validator: AuthCubit.getInstance(context).validateLogin ,
-                  placeHolder: 'الايميل الالكتروني'),
+                  validator: AuthCubit.getInstance(context).validateLogin,
+                  placeHolder: getWord('Email', context)),
               DefaultButton(
-                text: 'البحث',
+                text: getWord('Search', context),
                 onPressed: () {
                   ///search for that user and getverificationCode and activate it then change password
                 },

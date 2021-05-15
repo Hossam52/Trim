@@ -8,7 +8,6 @@ import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/models/barber.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';

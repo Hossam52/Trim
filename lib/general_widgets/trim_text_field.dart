@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import '../constants/app_constant.dart';
 
 class TrimTextField extends StatelessWidget {
@@ -22,27 +23,30 @@ class TrimTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10),
-      child: TextFormField(
-        readOnly: readOnly,
-        keyboardType: textInputType,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        validator: validator,
-        obscureText: password,
-        controller: controller,
-        textAlignVertical: TextAlignVertical.center,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          isDense: true,
-          prefixIcon: prefix,
-          prefix: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: Directionality(
+        textDirection: isArabic ? TextDirection.ltr : TextDirection.rtl,
+        child: TextFormField(
+          readOnly: readOnly,
+          keyboardType: textInputType,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: validator,
+          obscureText: password,
+          controller: controller,
+          textAlignVertical: TextAlignVertical.center,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            isDense: true,
+            prefixIcon: prefix,
+            prefix: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+            ),
+            fillColor: filledColor,
+            filled: true,
+            hintText: placeHolder,
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(roundedRadius),
+                borderSide: BorderSide.none),
           ),
-          fillColor: filledColor,
-          filled: true,
-          hintText: placeHolder,
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(roundedRadius),
-              borderSide: BorderSide.none),
         ),
       ),
     );

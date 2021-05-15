@@ -3,11 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:io' show Platform;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_checkout_payment/flutter_checkout_payment.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
@@ -21,6 +23,7 @@ import 'package:trim/modules/market/cubit/categories_cubit.dart';
 import 'package:trim/modules/market/cubit/products_category_cubit.dart';
 import 'package:trim/modules/market/cubit/search_bloc.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
+import 'package:trim/modules/reservation/Bloc/products_order_bloc.dart';
 import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/services/sercure_storage_service.dart';
@@ -84,6 +87,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => ReservationCubit()),
         BlocProvider(create: (context) => CitiesCubit()),
         BlocProvider(create: (context) => PaymentCubit()),
+        BlocProvider(create: (context) => ProductsOrderBloc()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -98,7 +102,11 @@ class _MyAppState extends State<MyApp> {
             const Locale('ar', ''),
           ],
           localeResolutionCallback: (currentLocale, supportedLocales) {
-            if (currentLocale != null) print(currentLocale.languageCode);
+            if (currentLocale != null) {
+              // isArabic = currentLocale.languageCode == 'en' ? false : true;
+              print(currentLocale.languageCode);
+            }
+
             for (Locale locale in supportedLocales) {
               if (currentLocale.languageCode == locale.languageCode)
                 return currentLocale;

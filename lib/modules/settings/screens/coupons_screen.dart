@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
@@ -129,21 +131,32 @@ class CouponsScreen extends StatelessWidget {
   }
 
   Widget shareAppWidget() {
-    return Row(
-      children: [
-        Image.asset('assets/icons/team.png',
-            width: 100, height: 100, fit: BoxFit.fill),
-        SizedBox(width: 10),
-        Flexible(
-          child: InfoWidget(
-              responsiveWidget: (_, deviceInfo) => Text(
-                  'Share App with your firends and get copouns',
-                  softWrap: true,
-                  //overflow:TextOverflow.,
-                  style: TextStyle(
-                      color: Colors.white, fontSize: getFontSize(deviceInfo)))),
-        )
-      ],
+    return GestureDetector(
+      onTap: () async {
+        await Share.share('trim.style');
+        print('back again');
+        final response = await DioHelper.postData(
+          url: 'winCoupone',
+        );
+        print(response.data);
+      },
+      child: Row(
+        children: [
+          Image.asset('assets/icons/team.png',
+              width: 100, height: 100, fit: BoxFit.fill),
+          SizedBox(width: 10),
+          Flexible(
+            child: InfoWidget(
+                responsiveWidget: (_, deviceInfo) => Text(
+                    'Share App with your firends and get copouns',
+                    softWrap: true,
+                    //overflow:TextOverflow.,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getFontSize(deviceInfo)))),
+          )
+        ],
+      ),
     );
   }
 }

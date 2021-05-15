@@ -57,4 +57,24 @@ class DioHelper {
           }),
     );
   }
+  static Future<Response> postDataToImages({
+    @required String url,
+    FormData formData,
+    String accessToken,
+    Map<String, dynamic> queries = const {},
+  }) async {
+    return await dio.post(
+      url,
+      queryParameters: queries,
+      data: formData,
+      options: Options(
+          headers: accessToken == null
+              ? null
+              : {HttpHeaders.authorizationHeader: accessToken},
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          }),
+    );
+  }
 }

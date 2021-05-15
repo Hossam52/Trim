@@ -31,7 +31,8 @@ class AuthCubit extends Cubit<AuthStates> {
     if (fieldsValidateError == null) {
       //Call API
       final response = await loginUser(userName, password);
-      if (response.error) {
+      if (response.error) 
+      {
         if (response.errorMessage == _LoginErrors.notActivated)
           emit(NotActivatedAccountState());
         else

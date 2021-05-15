@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
@@ -93,36 +94,39 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (_, state) => (state is LoadingHomeState)
             ? Center(child: CircularProgressIndicator())
             : Scaffold(
-                bottomNavigationBar: CurvedNavigationBar(
-                  index: initialIndex,
-                  height: 50,
-                  color: Colors.grey[300],
-                  backgroundColor: Colors.white,
-                  items: List.generate(
-                      pagesBuilder.length,
-                      (index) => index == initialIndex
-                          ? pagesBuilder[index].selectedIcon
-                          : pagesBuilder[index].unselectedIcon),
-                  onTap: (index) {
-                    if (index == 1) {
-                      pagesBuilder[index].page = showCategories
-                          ? ShoppingScreen(
-                              setCategoryIndex: setSelectedCategoryIndex,
-                            )
-                          : CategoryProductsScreen(
-                              categoryIndex: selectedCategoryIndex,
-                              backToCategories: backToCategoires,
-                            );
-                    }
-                    if (index == 3) //All Salons set type
-                    {
-                      HomeCubit.getInstance(context).emit(AllSalonsState());
-                      // temp = Temp.All;
-                    }
-                    setState(() {
-                      initialIndex = index;
-                    });
-                  },
+                bottomNavigationBar: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: CurvedNavigationBar(
+                    index: initialIndex,
+                    height: 50,
+                    color: Colors.grey[300],
+                    backgroundColor: Colors.white,
+                    items: List.generate(
+                        pagesBuilder.length,
+                        (index) => index == initialIndex
+                            ? pagesBuilder[index].selectedIcon
+                            : pagesBuilder[index].unselectedIcon),
+                    onTap: (index) {
+                      if (index == 1) {
+                        pagesBuilder[index].page = showCategories
+                            ? ShoppingScreen(
+                                setCategoryIndex: setSelectedCategoryIndex,
+                              )
+                            : CategoryProductsScreen(
+                                categoryIndex: selectedCategoryIndex,
+                                backToCategories: backToCategoires,
+                              );
+                      }
+                      if (index == 3) //All Salons set type
+                      {
+                        HomeCubit.getInstance(context).emit(AllSalonsState());
+                        // temp = Temp.All;
+                      }
+                      setState(() {
+                        initialIndex = index;
+                      });
+                    },
+                  ),
                 ),
                 body: SafeArea(
                   child: pagesBuilder[initialIndex].page,
@@ -156,7 +160,7 @@ class BuildHomeWidget extends StatelessWidget {
                   BuildButtonView(
                     function:
                         HomeCubit.getInstance(context).navigateToMostSearch,
-                    label: 'Most search',
+                    label: getWord('Most search', context),
                     textSize: fontSize,
                   ),
                   Container(
@@ -168,7 +172,7 @@ class BuildHomeWidget extends StatelessWidget {
                   BuildButtonView(
                     function:
                         HomeCubit.getInstance(context).navigateToTrimStars,
-                    label: 'Trim stars',
+                    label: getWord('Trim stars', context),
                     textSize: fontSize,
                   ),
                   Container(

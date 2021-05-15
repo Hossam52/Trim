@@ -16,17 +16,20 @@ class NavigatePages extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () => prevPage(context)),
-        Text('$pageNumber'),
-        IconButton(
-            icon: Icon(Icons.arrow_forward_ios),
-            onPressed: () => nextPage(context)),
-      ],
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () => prevPage(context)),
+          Text('$pageNumber'),
+          IconButton(
+              icon: Icon(Icons.arrow_forward_ios),
+              onPressed: () => nextPage(context)),
+        ],
+      ),
     );
   }
 }

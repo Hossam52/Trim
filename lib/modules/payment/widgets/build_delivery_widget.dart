@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/payment/widgets/build_details_order_price.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
@@ -34,10 +36,10 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                   fontSize: widget.fontSize - 5, color: Colors.lightBlueAccent),
             )),
             onPressed: () {},
-            child: Text('غير'),
+            child: Text(getWord('change', context)),
           ),
           trailing: Text(
-            'تفاصيل العنوان',
+            getWord('address details', context),
             style: TextStyle(
                 fontSize: widget.fontSize - 5, color: widget.secondaryColor),
           ),
@@ -88,7 +90,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Text(
-            'اختيار طريقة التوصيل',
+            getWord('choice deliver method', context),
             style: TextStyle(
                 fontSize: widget.fontSize - 5, color: Color(0xffCBCBCD)),
           ),
@@ -108,7 +110,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                 onChanged: (val) {},
               ),
               title: Text(
-                'تسليم الى المنزل',
+                getWord('delivery to home', context),
                 style: TextStyle(fontSize: widget.fontSize - 3),
               ),
               subtitle: Column(
@@ -126,7 +128,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                   Row(
                     children: [
                       Text(
-                        'مصاريف الشحن :',
+                        getWord('Shipping expenses', context) + ' :',
                         style: TextStyle(
                           fontSize: widget.deviceInfo.orientation ==
                                   Orientation.portrait
@@ -154,12 +156,9 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
         SizedBox(
           height: 10,
         ),
-        BuildDetailsOrderPrice(
-          stepNumber: widget.stepNumber,
-          fontSize: widget.fontSize,
-          deviceInfo: widget.deviceInfo,
-          pressed: widget.pressed,
-        ),
+        DefaultButton(
+            text: getWord('Continue to pay', context),
+            onPressed: widget.pressed),
       ],
     );
   }

@@ -19,21 +19,13 @@ dependencies:
   google_maps_flutter:
   location:
   flutter_polyline_points: ^0.2.6
-  dio: ^4.0.0   
+  dio: ^4.0.0
   flutter_checkout_payment: ^1.0.0
   flutter_conditional_rendering: ^2.0.0
 
-
- 
-
-
-
-    
-
-
   flutter:
     sdk: flutter
-  flutter_localizations: 
+  flutter_localizations:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
@@ -53,6 +45,8 @@ dependencies:
   shared_preferences: ^2.0.5
   maps_launcher: ^2.0.0
   image_picker: ^0.7.4
+  share: ^2.0.1
+  http_parser: ^4.0.0
 
 dev_dependencies:
   change_app_package_name: ^0.1.2

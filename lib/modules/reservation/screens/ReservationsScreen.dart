@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/cubits/reservation_states.dart';
@@ -37,7 +38,7 @@ class ReservationsScreen extends StatelessWidget {
                   buildAppBar(
                       localHeight: deviceInfo.localHeight,
                       fontSize: fontSize,
-                      screenName: 'My reservations'),
+                      screenName: getWord('my reservations', context)),
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
@@ -47,11 +48,16 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     super.initState();
   }
 
+  Map<String, dynamic> categoryDetails = {};
   int categoryId;
+  String categorytitle;
   @override
   void didChangeDependencies() {
     searchBloc = BlocProvider.of<SearchBloc>(context);
-    categoryId = ModalRoute.of(context).settings.arguments as int;
+    categoryDetails =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    categoryId = categoryDetails['value'];
+    categorytitle = categoryDetails['key'];
     productsBloc.add(FetchDataFromApi(categoryId: categoryId));
     super.didChangeDependencies();
   }
@@ -82,7 +88,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
             )
           ],
           centerTitle: true,
-          title: Text('Category Products'),
+          title: Text(categorytitle),
         ),
         body: SafeArea(
           child: Padding(
@@ -107,24 +113,22 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                         return Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: buildRefershIndicatorProducts(child:buildProducts(deviceInfo),),
+                            child: buildRefershIndicatorProducts(
+                              child: buildProducts(deviceInfo),
+                            ),
                           ),
                         );
                       else if (state is ErrorStateProductsCategory)
                         return Center(
-                          child:
-                          buildRefershIndicatorProducts(child:
-                          SingleChildScrollView
-                          (
-                      physics: AlwaysScrollableScrollPhysics(),
-
-                            child:
-                          Container(
-                            height: deviceInfo.localHeight*0.5,
-                            child:
-                          Text(
-                              'Please Check from your internet connecation !!'),)))
-                        );
+                            child: buildRefershIndicatorProducts(
+                                child: SingleChildScrollView(
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    child: Container(
+                                      height: deviceInfo.localHeight * 0.5,
+                                      child: Text(getWord(
+                                          'Please Make sure from internet connection',
+                                          context)),
+                                    ))));
                     })
                   ],
                 );
@@ -135,10 +139,11 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   }
 
   Widget buildRefershIndicatorProducts({Widget child}) {
-    return RefreshIndicator(child: child, onRefresh: () async 
-    {
+    return RefreshIndicator(
+        child: child,
+        onRefresh: () async {
           productsBloc.add(FetchDataFromApi(categoryId: categoryId));
-    });
+        });
   }
 
   Widget buildProducts(DeviceInfo deviceInfo) {
@@ -301,7 +306,7 @@ class _BuildProductItemState extends State<BuildProductItem> {
 
   Widget buildProductName() {
     return Text(
-      widget.prodcut.nameAr,
+      isArabic ? widget.prodcut.nameAr : widget.prodcut.nameEn,
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/auth/repositries/register_repositry.dart';
@@ -120,7 +121,8 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                               AuthCubit.getInstance(context).selectedGender),
                     ),
                     DefaultButton(
-                      text: 'تسجيل حساب',
+                      text:
+                          getWord('Register account', context), // 'تسجيل حساب',
                       widget: state is LoadingAuthState
                           ? Center(child: CircularProgressIndicator())
                           : null,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
@@ -89,7 +90,7 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                   if (state is NoMorePersonState)
                     NoMoreItems(
                       deviceInfo: deviceInfo,
-                      label: 'No more persons',
+                      label: getWord('No More Salons', context),
                     ),
                   NavigatePages(
                     nextPage: PersonsCubit.getInstance(context).getNextPage,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/cubits/reservation_states.dart';
@@ -42,7 +43,7 @@ class ReservationDetailsScreen extends StatelessWidget {
                   buildAppBar(
                       localHeight: deviceInfo.localHeight,
                       fontSize: fontSize,
-                      screenName: 'Reservation details'),
+                      screenName: getWord('Reservation details', context)),
                   Expanded(
                     child: SingleChildScrollView(
                       child: TrimCard(
@@ -91,7 +92,7 @@ class ReservationDetailsScreen extends StatelessWidget {
             child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: DefaultButton(
-            text: 'Modify order',
+            text: getWord('Modify order', context),
             fontSize: fontSize,
             onPressed: () {},
           ),
@@ -100,7 +101,7 @@ class ReservationDetailsScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: DefaultButton(
-              text: 'Cancel order',
+              text: getWord('Cancel order', context),
               color: Colors.black,
               fontSize: fontSize,
               onPressed: () async {

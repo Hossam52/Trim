@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/cart_states.dart';
@@ -15,7 +16,8 @@ import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/BuildSearchWidget.dart';
 
-class ShoppingScreen extends StatefulWidget {
+class ShoppingScreen extends StatefulWidget 
+{
   static final routeName = 'shoppingScreen';
   final void Function(int categoryIndex) setCategoryIndex;
 
@@ -82,7 +84,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           child: Container(
                             height: deviceInfo.localHeight*0.5,
                             child: Text(
-                                  'Please Make sure from internet connection'),
+                                  getWord('Please Make sure from internet connection', context)),
                           ),
                           )));
                     }),
@@ -112,7 +114,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           Navigator.pushNamed(
             context,
             CategoryProductsScreen.routeName,
-            arguments: categoriess[index].id,
+            arguments: {'key':isArabic?categoriess[index].nameAr:categoriess[index].nameEn,'value':categoriess[index].id} ,
           );
         },
         child:
