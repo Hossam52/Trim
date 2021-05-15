@@ -351,13 +351,21 @@ class SalonsCubit extends Cubit<SalonStates> {
   List<Salon> getSalonsToDisplay(BuildContext context) {
     final state = HomeCubit.getInstance(context).state;
     if (state is AllSalonsState)
-      return _allSalons[_currentPageAllSalonsIndex - 1];
+      return _allSalons.isEmpty
+          ? []
+          : _allSalons[_currentPageAllSalonsIndex - 1];
     else if (state is MostSearchState)
-      return _mostSearchSalons[_currentPageMostSearchedSalonsIndex - 1];
+      return _mostSearchSalons.isEmpty
+          ? []
+          : _mostSearchSalons[_currentPageMostSearchedSalonsIndex - 1];
     else if (state is FavoriteState)
-      return _favoriteSalons[_currentPageFavoritesIndex - 1];
+      return _favoriteSalons.isEmpty
+          ? []
+          : _favoriteSalons[_currentPageFavoritesIndex - 1];
     else
-      return _allSalons[_currentPageAllSalonsIndex - 1];
+      return _allSalons.isEmpty
+          ? []
+          : _allSalons[_currentPageAllSalonsIndex - 1];
   }
 
   void toggelSelectedService(int serviceId) {

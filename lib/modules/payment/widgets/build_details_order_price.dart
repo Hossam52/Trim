@@ -39,8 +39,9 @@ class BuildDetailsOrderPrice extends StatefulWidget {
 
 class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
   CartBloc cartBloc;
-
+  bool correctCopon = false;
   String coupon;
+  int discountValue = 0;
 
   TextEditingController controller;
   @override
@@ -88,6 +89,11 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
               trailing: '20 ' + getWord('bound', context),
               fontSize: widget.fontSize,
             ),
+            BuildListTileCofirm(
+              leading: getWord('Discount', context),
+              trailing: discountValue.toString() + getWord('bound', context),
+              fontSize: widget.fontSize,
+            ),
             Divider(
               endIndent: 10,
               height: 4,
@@ -96,7 +102,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
             BuildListTileCofirm(
               leading: getWord('total price', context),
               trailing:
-                  '${(cartBloc.getTotalPrice() + 20).toStringAsFixed(2)} ' +
+                  '${(cartBloc.getTotalPrice() + 20 - discountValue).toStringAsFixed(2)} ' +
                       getWord('bound', context),
               fontSize: widget.fontSize,
             ),
@@ -135,23 +141,25 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
           List<CartItem> items = cartBloc.getCartList();
           ProductsOrderBloc productsOrderBloc =
               BlocProvider.of<ProductsOrderBloc>(context);
-          productsOrderBloc.add(PostDataOrderProducts(productsOrder: items));
+          productsOrderBloc.add(PostDataOrderProducts(
+              productsOrder: items, coupon: controller.text));
           if (productsOrderBloc.discount != 0 ||
               productsOrderBloc.discount != null)
             Fluttertoast.showToast(
                 msg:
                     'we will apply discount with ${productsOrderBloc.discount} when paying');
-          cartBloc.add(DeleteAllItemsInCart());
+          // cartBloc.add(DeleteAllItemsInCart());
 
-          ReservationCubit.getInstance(context).loadMyOrders(refreshPage: true);
+          await ReservationCubit.getInstance(context)
+              .loadMyOrders(refreshPage: true);
           await Navigator.pushNamed(
               context,
               ReservationsScreen
                   .routeName); //Go to reservation page to view the order
-          Navigator.pop(context); //for delivery screen
-          Navigator.pop(context); //for cart screen
-          Navigator.pop(
-              context); //for products screen and stay at categories screen
+          // Navigator.pop(context); //for delivery screen
+          // Navigator.pop(context); //for cart screen
+          // Navigator.pop(
+          //     context); //for products screen and stay at categories screen
         } catch (e) {
           Fluttertoast.showToast(
               msg: getWord(
@@ -160,61 +168,72 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
       }
     };
   }
-}
 
-Widget getCopunTextField(
-    {BuildContext context, TextEditingController controller}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15),
-    child: Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: DefaultButton(
-            onPressed: () async {
-              try {
-                FocusScope.of(context).unfocus();
-                if (controller.text.isEmpty) {
-                  Fluttertoast.showToast(
-                      msg: getWord('Pleas Enter coupoun code', context));
-                } else {
-                  final response =
-                      await DioHelper.postData(url: 'winCoupone', body: {
-                    'code': controller.text,
-                  });
-                  if (!response.data['success']) {
-                    Fluttertoast.showToast(
-                        msg: isArabic
-                            ? 'الكوبون غير متاح'
-                            : response.data['message']);
-                  } else {
-                    print(response.data);
-                    print(controller.text);
-                  }
-                }
-              } catch (e) {
-                Fluttertoast.showToast(
-                    msg: getWord(
-                        'Please Make sure from internet connection', context));
-              }
-            },
-            text: getWord('apply', context),
-            color: Color(0xff2C73A8),
+  Widget getCopunTextField(
+      {BuildContext context, TextEditingController controller}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: DefaultButton(
+              onPressed: correctCopon
+                  ? null
+                  : () async {
+                      try {
+                        FocusScope.of(context).unfocus();
+                        if (controller.text.isEmpty) {
+                          Fluttertoast.showToast(
+                              msg:
+                                  getWord('Pleas Enter coupoun code', context));
+                        } else {
+                          final response = await DioHelper.postData(
+                              url: 'winCoupone',
+                              body: {
+                                'code': controller.text,
+                              });
+                          if (!response.data['success']) {
+                            Fluttertoast.showToast(
+                                msg: isArabic
+                                    ? 'الكوبون غير متاح'
+                                    : response.data['message']);
+                          } else {
+                            setState(() {
+                              correctCopon = true;
+                              discountValue =
+                                  int.parse(response.data['data']['price']);
+                            });
+                            print(response.data);
+                            print(controller.text);
+                          }
+                        }
+                      } catch (e) {
+                        Fluttertoast.showToast(
+                            msg: getWord(
+                                'Please Make sure from internet connection',
+                                context));
+                      }
+                    },
+              text: getWord('apply', context),
+              color: Color(0xff2C73A8),
+            ),
           ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: TextFormField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: getWord('coupon code', context),
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: TextFormField(
+                enabled: !correctCopon,
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: getWord('coupon code', context),
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }

@@ -97,7 +97,9 @@ class ReserveScreen extends StatelessWidget {
   VoidCallback reserveSalonFunction(BuildContext context) {
     return () async {
       await Navigator.pushNamed(context, PaymentMethodsScreen.routeName,
-          arguments: SalonsCubit.getInstance(context).totalPrice);
+          arguments: {
+            'totalPrice': SalonsCubit.getInstance(context).totalPrice
+          });
 
       if (PaymentCubit.getInstance(context).successPayment) {
         await SalonsCubit.getInstance(context).orderSalonWithServices(context);

@@ -34,13 +34,14 @@ class ProductsOrderBloc extends Bloc<ProductsOrderEvents, ProductOrderStates> {
         });
       }
       print('dis is ${response.data['data']['discount']}');
-      discount = response.data['data']['discount'] ;
-    //  print('$discount this is discount');
+      discount = response.data['data']['discount'];
+      //  print('$discount this is discount');
 
       print('Order Response');
       print(response.data);
       yield LoadedStateProductsOrder(productsOrder);
     } catch (e) {
+      print(e.toString());
       yield ErrorStateProductsOrder();
     }
   }

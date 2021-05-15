@@ -47,7 +47,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                       PaymentCubit.getInstance(context)
                           .changeSelectedPaymentMethod(val);
                     },
-                    title: Text('Pay with cach'),
+                    title: Text(getWord('Pay with cach', context)),
                     groupValue: paymentMethod,
                     value: PaymentMethod.Cash,
                     selected: true,
@@ -62,7 +62,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                         PaymentCubit.getInstance(context)
                             .changeSelectedPaymentMethod(val);
                       },
-                      title: Text('Pay with VISA/MASTERCARD'),
+                      title: Text(getWord('Pay with VISA/MASTERCARD', context)),
                       secondary: Image.asset('assets/icons/visa.png'),
                       groupValue: paymentMethod,
                       value: PaymentMethod.VisaMaster,
