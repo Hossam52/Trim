@@ -26,6 +26,7 @@ class TrimTextField extends StatelessWidget {
       child: Directionality(
         textDirection: isArabic ? TextDirection.ltr : TextDirection.rtl,
         child: TextFormField(
+        
           readOnly: readOnly,
           keyboardType: textInputType,
           autovalidateMode: AutovalidateMode.onUserInteraction,

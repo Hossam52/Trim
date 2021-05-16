@@ -6,8 +6,6 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
-import 'package:trim/modules/home/screens/details_screen.dart';
-import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/payment/cubits/payment_states.dart';
 

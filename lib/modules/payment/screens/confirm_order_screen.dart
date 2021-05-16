@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
@@ -21,6 +22,24 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   PaymentMethod paymentMethod = PaymentMethod.VisaMaster;
   Color secondaryColor = Color(0xffCBCBCD);
   bool showDetails = true;
+  TextEditingController addressController;
+  TextEditingController phoneController;
+  SharedPreferences sharedPreferences;
+ 
+
+  @override
+  void initState() {
+        super.initState();
+
+    SharedPreferences.getInstance().then((prefs) {
+      phoneController = TextEditingController(
+          text: prefs.getString('phone') ?? '01111111111');
+      addressController =
+          TextEditingController(text: prefs.getString('address') ??getWord('address', context) );
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,6 +122,8 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                     physics: BouncingScrollPhysics(),
                     child: stepNumber == 1
                         ? DeliveryWidget(
+                            addressController: addressController,
+                            phoneController: phoneController,
                             fontSize: fontSize,
                             secondaryColor: secondaryColor,
                             stepNumber: stepNumber,
@@ -168,9 +189,12 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                 ),
                               ),
                               BuildDetailsOrderPrice(
+                                  phone: phoneController.text,
+                                  address: addressController.text,
                                   paymentMethod: paymentMethod,
                                   fontSize: fontSize,
                                   pressed: () {
+                                    print(phoneController.text);
                                     setState(() {
                                       if (stepNumber < 2) stepNumber++;
                                     });

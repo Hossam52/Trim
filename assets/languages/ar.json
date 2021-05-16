@@ -89,7 +89,12 @@
     "Yes":"نعم",
     "Customer service numbers":"أرقام خدمةالعملاء",
     "Pay with VISA/MASTERCARD":"ادفع باستخدام الفيزا او الماستركارد",
-    "Pay with cach":"الدفع كاش"
+    "Pay with cach":"الدفع كاش",
+    "save":"حفظ",
+    "address":"العنوان",
+    "Enter your address":"ادخل عنوانك",
+    "Please Enter Your Phone":"من فضلك ادخل رقم الهاتف",
+    "Please Enter Valid Number":"الرقم غير صحيح"
 
 
 
