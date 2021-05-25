@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
@@ -89,8 +90,8 @@ class DetailsScreen extends StatelessWidget {
                                           context, deviceInfo, salon.address),
                                       flex: 3),
                                   Expanded(
-                                      child:
-                                          directionWidget(context, deviceInfo))
+                                      child: directionWidget(
+                                          context, salon, deviceInfo))
                                 ],
                               ),
                             ),
@@ -174,14 +175,22 @@ class DetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget directionWidget(BuildContext context, DeviceInfo deviceInfo) {
+  Widget directionWidget(
+      BuildContext context, Salon salon, DeviceInfo deviceInfo) {
     return InkWell(
       child: Card(
         elevation: 10,
         child: InkWell(
-          onTap: () {
-            MapsLauncher.launchCoordinates(
-                37.4220041, -122.0862462, 'Google Headquarters are here');
+          onTap: () async {
+            if (salon.lat == null ||
+                salon.lat == "0" ||
+                salon.lang == null ||
+                salon.lang == "0") {
+              Fluttertoast.showToast(
+                  msg: 'Location for salon ${salon.name} is not provided');
+            } else
+              await MapsLauncher.launchCoordinates(salon.lat ?? 0,
+                  salon.lang ?? 0, 'Google Headquarters are here');
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),

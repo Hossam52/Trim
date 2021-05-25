@@ -7,6 +7,6 @@ class TokenModel {
 
   TokenModel.fromJson({@required Map<String, dynamic> json}) {
     token = json['token'];
-    loginModel = LoginModel.fromJson(json: json['user']);
+    loginModel = LoginModel.fromJson(json: json);
   }
 }

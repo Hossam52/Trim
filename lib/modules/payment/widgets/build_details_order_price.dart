@@ -19,6 +19,7 @@ import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/market/widgets/build_listTile_confirm.dart';
+import '../../../general_widgets/copoun_text_field.dart';
 
 class BuildDetailsOrderPrice extends StatefulWidget {
   final double fontSize;
@@ -77,7 +78,17 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (widget.stepNumber == 2)
-              getCopunTextField(context: context, controller: controller),
+              // getCopunTextField(context: context, controller: controller),
+              CoupounTextField(
+                controller: controller,
+                enabled: correctCopon,
+                updateUi: (bool coorectCopon, int discount) {
+                  setState(() {
+                    correctCopon = true;
+                    discountValue = discount;
+                  });
+                },
+              ),
             BuildListTileCofirm(
               leading: getWord('total', context),
               trailing: '${cartBloc.getTotalPrice().toStringAsFixed(2)} ' +

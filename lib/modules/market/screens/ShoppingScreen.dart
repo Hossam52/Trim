@@ -17,9 +17,10 @@ import 'package:trim/general_widgets/BuildSearchWidget.dart';
 
 class ShoppingScreen extends StatefulWidget {
   static final routeName = 'shoppingScreen';
-  final void Function(int categoryIndex) setCategoryIndex;
 
-  const ShoppingScreen({Key key, this.setCategoryIndex}) : super(key: key);
+  const ShoppingScreen({
+    Key key,
+  }) : super(key: key);
 
   @override
   _ShoppingScreenState createState() => _ShoppingScreenState();

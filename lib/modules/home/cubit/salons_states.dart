@@ -12,6 +12,16 @@ class ErrorSalonState extends SalonStates {
   ErrorSalonState({this.error = ""});
 }
 
+class LoadingMapSalonState extends SalonStates {}
+
+class LoadedMapSalonState extends SalonStates {}
+
+class ErrorMapSalonState extends SalonStates {
+  final String error;
+
+  ErrorMapSalonState({this.error = ""});
+}
+
 class NoMoreSalonState extends SalonStates {}
 
 class LoadingMoreSalonState extends SalonStates {}
@@ -39,3 +49,9 @@ class ToggleSelectedServiceState extends SalonStates {}
 class LoadingMakeOrderState extends SalonStates {}
 
 class LoadedMakeOrderState extends SalonStates {}
+
+class ErrorMakeOrderState extends SalonStates {
+  final String error;
+
+  ErrorMakeOrderState(this.error);
+}

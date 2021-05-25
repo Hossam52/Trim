@@ -22,9 +22,6 @@ import 'package:trim/general_widgets/BuildSearchWidget.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
   static final routeName = 'categoryProductScreen';
-  final int categoryIndex;
-  final void Function() backToCategories;
-  CategoryProductsScreen({this.categoryIndex, this.backToCategories});
 
   @override
   _CategoryProductsScreenState createState() => _CategoryProductsScreenState();
@@ -153,13 +150,12 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
       listener: (_, state) {
         print('Inside Category products');
         isCategoryScreen = true;
-        if (state is ErrorStateCart) 
-        {
-          if (isCategoryScreen) 
-          {
+        if (state is ErrorStateCart) {
+          if (isCategoryScreen) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content:Text(getWord('Please Make sure from internet connection', context)),
+                content: Text(getWord(
+                    'Please Make sure from internet connection', context)),
               ),
             );
           }

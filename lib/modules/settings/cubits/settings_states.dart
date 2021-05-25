@@ -11,3 +11,19 @@ class ErrorSettingState extends SettingsStatates {
 
   ErrorSettingState(this.error);
 }
+
+class LoadingPersonalDataState extends SettingsStatates {}
+
+class LoadedPersonalDataState extends SettingsStatates {}
+
+class LoadingNotificationState extends SettingsStatates {}
+
+class NoMoreNotificationsState extends SettingsStatates {}
+
+class LoadedNotificationState extends SettingsStatates {}
+
+class ErrorNotificationState extends SettingsStatates {
+  final String error;
+
+  ErrorNotificationState(this.error);
+}

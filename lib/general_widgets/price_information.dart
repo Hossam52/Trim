@@ -10,36 +10,13 @@ class PriceInformation extends StatelessWidget {
   final String total;
   final String discount;
   final String totalAfterDiscount;
-  final bool showCopounsField;
 
   const PriceInformation(
       {Key key,
-      this.showCopounsField = true,
       @required this.total,
       @required this.discount,
       @required this.totalAfterDiscount})
       : super(key: key);
-  Widget getCopunTextField(BuildContext context) {
-    return TrimTextField(
-      controller: TextEditingController(),
-      readOnly: true,
-      placeHolder: '#####',
-      prefix: ElevatedButton(
-        onPressed: () {
-          Navigator.pushNamed(context, CouponsScreen.routeName);
-        },
-        child: Text(getWord('Get coupon', context)),
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Color(0xff2C73A8)),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget reservationDetails(BuildContext context, DeviceInfo deviceInfo) {
     TextStyle style = TextStyle(fontSize: getFontSizeVersion2(deviceInfo));
@@ -65,7 +42,6 @@ class PriceInformation extends StatelessWidget {
       responsiveWidget: (_, deviceInfo) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (showCopounsField) getCopunTextField(context),
           reservationDetails(context, deviceInfo),
         ],
       ),

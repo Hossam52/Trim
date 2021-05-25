@@ -20,8 +20,8 @@ class Salon extends BasicData {
   double rate;
   int commentsCount;
   String address;
-  String lat;
-  String lang;
+  double lat;
+  double lang;
   LatLng latLng;
   String status;
   String openFrom;
@@ -36,8 +36,6 @@ class Salon extends BasicData {
       this.phone,
       this.governorateEn,
       this.governorateAr,
-      // this.cityEn,
-      // this.cityAr,
       this.gender,
       this.commentsCount,
       this.lat,
@@ -81,8 +79,8 @@ class Salon extends BasicData {
     this.gender = json['gender'];
     this.rate = ((json['rate'] ?? 0) as int).toDouble();
     this.commentsCount = json['commentsCount'];
-    this.lat = json['lat'];
-    this.lang = json['lang'];
+    this.lat = double.tryParse(json['lat'].toString()) ?? 0;
+    this.lang = double.tryParse(json['lang'].toString()) ?? 0;
     this.address = json['address'];
     this.status = json['status'];
     this.isFavorite = json['is_fav'];

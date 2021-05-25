@@ -13,7 +13,7 @@ class PaymentMethodsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final arguments =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
-    final showCashPayment = arguments['showCashPayment'] ?? true;
+    final showCashMethod = arguments['showCashMethod'] ?? true;
     double totalPrice = arguments['totalPrice'] ?? 0;
     return WillPopScope(
       onWillPop: () {
@@ -42,19 +42,20 @@ class PaymentMethodsScreen extends StatelessWidget {
                   PaymentCubit.getInstance(context).paymentMethod;
               return Column(
                 children: [
-                  RadioListTile<PaymentMethod>(
-                    onChanged: (val) {
-                      PaymentCubit.getInstance(context)
-                          .changeSelectedPaymentMethod(val);
-                    },
-                    title: Text(getWord('Pay with cach', context)),
-                    groupValue: paymentMethod,
-                    value: PaymentMethod.Cash,
-                    selected: true,
-                    secondary: Image.asset('assets/icons/cash.png'),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                  ),
+                  if (showCashMethod)
+                    RadioListTile<PaymentMethod>(
+                      onChanged: (val) {
+                        PaymentCubit.getInstance(context)
+                            .changeSelectedPaymentMethod(val);
+                      },
+                      title: Text(getWord('Pay with cach', context)),
+                      groupValue: paymentMethod,
+                      value: PaymentMethod.Cash,
+                      selected: true,
+                      secondary: Image.asset('assets/icons/cash.png'),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
                   Container(
                     decoration: BoxDecoration(border: Border.symmetric()),
                     child: RadioListTile<PaymentMethod>(
@@ -75,9 +76,16 @@ class PaymentMethodsScreen extends StatelessWidget {
                   DefaultButton(
                       text: getWord('Pay Now', context) + ' $totalPrice EGP',
                       onPressed: () {
-                        Navigator.pushNamed(
-                            context, PaymentDetailScreen.routeName,
-                            arguments: totalPrice);
+                        if (paymentMethod == PaymentMethod.Cash) {
+                          PaymentCubit.getInstance(context).successPayment =
+                              true;
+                          Navigator.pop(context);
+                        } else {
+                          if (paymentMethod == PaymentMethod.VisaMaster)
+                            Navigator.pushNamed(
+                                context, PaymentDetailScreen.routeName,
+                                arguments: totalPrice);
+                        }
                       })
                 ],
               );

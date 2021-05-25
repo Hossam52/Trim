@@ -1,13 +1,22 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
+import 'package:trim/modules/auth/models/login_model.dart';
 import 'package:trim/modules/auth/models/register_model.dart';
 import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/repositries/register_repositry.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/screens/registration_screen.dart';
+import 'package:trim/modules/home/cubit/app_cubit.dart';
+import 'package:trim/modules/home/screens/home_Screen.dart';
+import 'package:trim/utils/services/rest_api_service.dart';
+import 'package:trim/utils/services/sercure_storage_service.dart';
 
 enum Gender {
   Male,
@@ -23,23 +32,33 @@ class AuthCubit extends Cubit<AuthStates> {
   AuthCubit() : super(IntialAuthLoginState());
   static AuthCubit getInstance(context) => BlocProvider.of(context);
   RegisterModel registerModel;
+  LoginModel userDetailModel;
   Gender selectedGender = Gender.Male;
 //----------------------API Calls Start-------------------
-  void login(String userName, String password) async {
+  void login(BuildContext context, String userName, String password) async {
     emit(LoadingAuthState());
     String fieldsValidateError = _validateLogin(userName, password);
     if (fieldsValidateError == null) {
       //Call API
       final response = await loginUser(userName, password);
-      if (response.error) 
-      {
+      if (response.error) {
         if (response.errorMessage == _LoginErrors.notActivated)
           emit(NotActivatedAccountState());
         else
           emit(ErrorAuthState('Email or password not correct'));
       } else {
         //Use shared prefrences
-        print(response.data.token);
+        await TrimShared.storeProfileData(response.data);
+        print(await TrimShared.getDataFromShared('name'));
+        print(await TrimShared.getDataFromShared('email'));
+        print(await TrimShared.getDataFromShared('phone'));
+        print(await TrimShared.getDataFromShared('token'));
+        print(await TrimShared.getDataFromShared('image'));
+        print(await TrimShared.getDataFromShared('cover'));
+        await AppCubit.getInstance(context).intializeDio(response.data.token);
+
+        Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+
         emit(LoadedAuthState());
       }
     } else {
@@ -78,6 +97,40 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
 //---------------------API Calls End ----------------------
+  Future<void> updateUserInfo(
+      {@required BuildContext context,
+      @required GlobalKey<FormState> formKey,
+      @required String name,
+      @required String email,
+      @required String phone,
+      @required File coverImage,
+      @required File image}) async {
+    if (formKey.currentState.validate()) {
+      emit(UpdatingUserInformationState());
+      Map<String, dynamic> body = {};
+      if (name != AppCubit.getInstance(context).name) body['name'] = name;
+      if (email != AppCubit.getInstance(context).email) body['email'] = email;
+      if (phone != AppCubit.getInstance(context).phone) body['phone'] = phone;
+      if (coverImage != null)
+        body['cover'] = await MultipartFile.fromFile(coverImage.path);
+      if (image != null)
+        body['image'] = await MultipartFile.fromFile(image.path);
+      if (body.isEmpty) {
+        emit(NoUpdatingUserInformationState());
+        return;
+      }
+      var formData = FormData.fromMap(body);
+
+      final response = await updateUserInformationFromServer(formData);
+      if (response.error) {
+        emit(ErrorUpdatingUserInformationState(response.errorMessage));
+      } else {
+        AppCubit.getInstance(context).updateInfo(response.data['data']);
+        emit(SuccessUpdatingUserInformationState());
+      }
+    }
+  }
+
   void navigateToLogin(BuildContext context) {
     emit(IntialAuthLoginState());
     Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);

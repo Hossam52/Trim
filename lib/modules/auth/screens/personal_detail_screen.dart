@@ -2,10 +2,19 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/constants/api_path.dart';
 import 'package:trim/core/auth/register/validate.dart';
+import 'package:trim/modules/auth/cubits/auth_cubit.dart';
+import 'package:trim/modules/auth/cubits/auth_states.dart';
+import 'package:trim/modules/auth/models/login_model.dart';
+import 'package:trim/modules/auth/models/token_model.dart';
+import 'package:trim/modules/home/cubit/app_cubit.dart';
+import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
@@ -22,9 +31,6 @@ class PersonDetailScreen extends StatefulWidget {
 }
 
 class _PersonDetailScreenState extends State<PersonDetailScreen> {
-  String name = '';
-  String email = '';
-  String phone = '';
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _nameController;
 
@@ -39,29 +45,23 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   Future<File> getImageFromGellary() async {
     imagePicker = ImagePicker();
     final imagePicked = await imagePicker.getImage(source: ImageSource.gallery);
+    if (imagePicked == null) return null;
     return File(imagePicked.path);
-    // setState(() {
-    //   coverImage = File(imagePicked.path);
-    // });
   }
 
   @override
   void initState() {
     super.initState();
-    extractDataFromDataBase();
-    _nameController = TextEditingController(text: name);
+    _nameController =
+        TextEditingController(text: AppCubit.getInstance(context).name);
 
-    _emailController = TextEditingController(text: email);
+    _emailController =
+        TextEditingController(text: AppCubit.getInstance(context).email);
 
-    _phoneController = TextEditingController(text: phone);
+    _phoneController =
+        TextEditingController(text: AppCubit.getInstance(context).phone);
 
     _passwordController = TextEditingController(text: '############');
-  }
-
-  void extractDataFromDataBase() {
-    name = 'Hossam Hassan';
-    email = 'hossam.fcis@gmail.com';
-    phone = '01115425561';
   }
 
   double getSizeProfileStack(DeviceInfo deviceInfo) {
@@ -131,21 +131,12 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
 
   Widget _buildCoverPhoto() {
     return coverImage == null
-        ? Image.asset(
-            'assets/images/4.jpg',
-            fit: BoxFit.fill,
-            width: double.infinity,
-          )
+        ? TrimCachedImage(src: AppCubit.getInstance(context).cover)
         : Image.file(
             coverImage,
             fit: BoxFit.fill,
             width: double.infinity,
           );
-    return Image.asset(
-      'assets/images/4.jpg',
-      fit: BoxFit.fill,
-      width: double.infinity,
-    );
   }
 
   Widget _changeCoverButton() {
@@ -172,25 +163,37 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   }
 
   Widget _buildPersonPhoto(DeviceInfo deviceInfo) {
-    // double sizeImage = deviceInfo.localHeight / 4;
     return Align(
       alignment: Alignment.bottomCenter,
       child: CircleAvatar(
-        child: Align(
-          alignment: Alignment.bottomRight,
-          child: IconButton(
-            icon: Icon((Icons.add_a_photo)),
-            onPressed: () async {
-              image = await getImageFromGellary();
-              setState(() {});
-            },
-          ),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(1000),
+              child: Container(
+                child: image != null
+                    ? Image.file(
+                        image,
+                        fit: BoxFit.fill,
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                      )
+                    : TrimCachedImage(src: AppCubit.getInstance(context).image),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                icon: Icon((Icons.add_a_photo)),
+                onPressed: () async {
+                  image = await getImageFromGellary();
+                  setState(() {});
+                },
+              ),
+            ),
+          ],
         ),
         radius: deviceInfo.type == deviceType.mobile ? 50 : 65,
-        backgroundColor: Colors.red,
-        backgroundImage: image != null
-            ? FileImage(image)
-            : AssetImage('assets/images/2.jpg'),
       ),
     );
   }
@@ -216,7 +219,6 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
             controller: _phoneController,
             placeHolder: '01115425561',
             prefix: Icon(Icons.mode_edit),
-            validator: validatePhone,
           ),
           TrimTextField(
             controller: _passwordController,
@@ -230,56 +232,47 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   }
 
   Widget _buildButtons() {
-    return Row(
-      children: [
-        Expanded(
-            child: DefaultButton(
-          text: getWord('Save', context),
-          onPressed: () async {
-            if (_formKey.currentState.validate()) {
-              print('data name ${_nameController.text}');
-              // print(coverImage.path);
-              String fileName = coverImage.path.split('/').last;
-              //new
+    return BlocConsumer<AuthCubit, AuthStates>(
+      listener: (_, state) {
+        if (state is ErrorUpdatingUserInformationState)
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.error)));
+        if (state is NoUpdatingUserInformationState)
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('You don\'t modify any thing'),
+            duration: Duration(seconds: 1),
+          ));
 
-              var formData = FormData.fromMap(<String, dynamic>{
-                'name': _nameController.text,
-                'email': _emailController.text,
-                'password': _passwordController.text,
-                'password_confirmation': _passwordController.text,
-                //   'image':,
-                //    'cover': formData,
-                'phone': _phoneController.text,
-                "cover": await MultipartFile.fromFile(
-                  coverImage.path,
-                  filename: fileName,
-                  //  contentType: MediaType('image', 'jpg'),
-                ),
-              });
-
-              final response = await DioHelper.postDataToImages(
-                url: 'user/profile',
-                //body is a formData
-                formData: formData,
-              );
-              print(response.data);
-              if (response.statusCode > 400) {
-                var data = response.data['errors'];
-                print('Data of Errors\n');
-                var email = data['email'] == null ? '' : data['email'][0];
-                var phone = data['phone'] == null ? '' : data['phone'][0];
-                var c = (email == '') ? '' : ' & ' + email;
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(phone == '' ? email : phone + c)));
-                print(email);
-                print(phone);
-              }
-            }
-
-            //    _formKey.currentState.validate();
-          },
-        )),
-      ],
+        if (state is SuccessUpdatingUserInformationState)
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Modify Done'),
+            duration: Duration(seconds: 1),
+          ));
+      },
+      builder: (_, state) => Row(
+        children: [
+          Expanded(
+              child: DefaultButton(
+            text: getWord('Save', context),
+            widget: state is UpdatingUserInformationState
+                ? CircularProgressIndicator()
+                : null,
+            onPressed: state is UpdatingUserInformationState
+                ? null
+                : () async {
+                    await AuthCubit.getInstance(context).updateUserInfo(
+                      context: context,
+                      formKey: _formKey,
+                      name: _nameController.text,
+                      email: _emailController.text,
+                      phone: _phoneController.text,
+                      coverImage: coverImage,
+                      image: image,
+                    );
+                  },
+          )),
+        ],
+      ),
     );
   }
 }

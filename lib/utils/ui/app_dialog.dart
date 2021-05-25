@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/default_button.dart';
@@ -201,4 +202,77 @@ Future<void> showReasonCancelled(BuildContext context) async {
           ),
         );
       });
+}
+
+Future<bool> openLocationSetting(BuildContext context) async {
+  bool res = false;
+
+  await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+            content: Text('Location settings is disabled Open settings?'),
+            actions: [
+              TextButton(
+                  onPressed: () async {
+                    await Geolocator.openLocationSettings();
+                    res = await Geolocator.isLocationServiceEnabled();
+                    Navigator.pop(context, true);
+                  },
+                  child: Text('OK')),
+              TextButton(
+                  onPressed: () {
+                    res = false;
+                    Navigator.pop(context, true);
+                  },
+                  child: Text('NO', style: TextStyle(color: Colors.red))),
+            ],
+          ));
+  print("End of show dialog");
+  return res;
+}
+
+Future<bool> confirmReservation(BuildContext context) async {
+  return await showDialog<bool>(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text('Reserve this salon?'),
+          content: Text(
+              'You are about to reserve this salon are you sure to contiue?'),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop<bool>(context, true);
+                },
+                child: Text('Yes')),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop<bool>(context, false);
+                },
+                child: Text('No', style: TextStyle(color: Colors.red))),
+          ],
+        );
+      });
+}
+
+Future<bool> confirmLogout(BuildContext context) async {
+  return await showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text('Warning'),
+      content: Text('Are you sure to log out?'),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.pop<bool>(context, true);
+            },
+            child: Text('Yes')),
+        TextButton(
+            onPressed: () {
+              Navigator.pop<bool>(context, false);
+            },
+            child: Text('No', style: TextStyle(color: Colors.red))),
+      ],
+    ),
+  );
 }

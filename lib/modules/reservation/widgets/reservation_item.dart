@@ -66,6 +66,13 @@ class ReservationItem extends StatelessWidget {
                       '${reservation.createdAt ?? getWord('Unknown', context)}',
                     ],
                     fontSize: fontSize),
+              if (!showMoreDetails)
+                reservationRowItem(
+                    key: getWord('Payment method', context),
+                    values: [
+                      '${reservation.paymentMethod ?? getWord('Unknown', context)}',
+                    ],
+                    fontSize: fontSize),
               reservationRowItem(
                   key: getWord('Address', context),
                   values: [reservation.address ?? getWord('Unknown', context)],

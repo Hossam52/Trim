@@ -106,8 +106,12 @@ Future<APIResponse<Cities>> loadAllCitiesFromServer() async {
   return APIResponse<Cities>(data: Cities.fromJson(json: response.data));
 }
 
-Future<APIResponse> orderSalonServicesFromServer(
-    Salon salon, DateTime reservationDate, String reservationTime) async {
+Future<APIResponse<bool>> orderSalonServicesFromServer(
+    {Salon salon,
+    DateTime reservationDate,
+    String reservationTime,
+    String paymentMethod,
+    paymentCopon}) async {
   final int salonId = salon.id;
   final services =
       salon.salonServices.where((service) => service.selected).toList();
@@ -121,8 +125,26 @@ Future<APIResponse> orderSalonServicesFromServer(
     'barber_type': barberType,
     'reservation_day': reservationDay,
     'reservation_time': reservationTime,
-    'payment_method': 'CASH',
+    'payment_method': paymentMethod,
   };
+  if (paymentCopon != null) requestBody['payment_coupon'] = paymentCopon;
   final response = await callAPI(orderSalonServiceUrl,
       body: requestBody, callType: CallType.Post);
+  if (response.error)
+    return APIResponse(error: true, errorMessage: response.errorMessage);
+  else
+    return APIResponse(data: true);
+}
+
+Future<APIResponse<AllSalonsModel>> getNearestSalonsFromServer(
+    double latitude, double longtiude) async {
+  final response = await callAPI(nearestSalonsUrl,
+      body: {'lat': latitude, 'lng': longtiude}, callType: CallType.Post);
+  if (response.error) {
+    return APIResponse(error: true, errorMessage: response.errorMessage);
+  } else {
+    print(response.data);
+    return APIResponse<AllSalonsModel>(
+        data: AllSalonsModel.fromJson(json: response.data));
+  }
 }

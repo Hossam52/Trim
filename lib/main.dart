@@ -11,6 +11,8 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
+import 'package:trim/modules/home/cubit/app_cubit.dart';
+import 'package:trim/modules/home/cubit/app_states.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
@@ -40,38 +42,37 @@ import './modules/payment/cubits/payment_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await TrimShared.getDataFromShared('token');
+  final String token = await TrimShared.getDataFromShared('token');
   print('From Main${TrimShared.token}');
   Bloc.observer = MyBlocObserver();
-
-  DioHelper.init(
-      accessToken:
-          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMGFlY2Q2N2JlMmE5Y2RkZTUyMTUxYTlhYWM3NGM4MDU3ZWNjOTVkY2FjNzhiZTRlOTY0MDQzYzEwN2M1OWJhNGMxNTA4ZTZhNzMyOGZkOWIiLCJpYXQiOjE2MjEwODg2MTUsIm5iZiI6MTYyMTA4ODYxNSwiZXhwIjoxNjUyNjI0NjE1LCJzdWIiOiI0NyIsInNjb3BlcyI6W119.H9f6p4Je9JJUiWBe3AOXA1oKebL0EQRXsi7vsQaJy1joXW1jn2xuuwMalrjOeNbWyw9bNJj-EZDJ9wJc62SUUUUj7vyn8OIcSz2c6ezt-wshGtRv5U7rhEhFmTuThTfXaUorrHr4iDtA3Nq8bR9uiYmLuThOrAB-ewnrmXXnS6J9OTSUp4Z_qyfESA83j99uWlQX5s_E9TX_bkObJaHBThn1OidUqi40qBtdnUBJFF7XJki-kMFDyVC27uiK35wcBD1LttbJiXC0qV9pVd9Xu7dGDLTVhqHFe_2HQ5Dnvwd6QEAlTbkrfHeo3d9mL7lLUP9XGyf1CMgpz0Ef52wGKRKjsEeWAu8t34X7eax9nz6za2j49s5qdNrPGD-0ug6L3uL1ZOkEVOVaI_8sLKLSOwQJ9CBxy-SXU2UGWORoAsUykwE9Qr9NGmdLW_ZDSApCOLI0HFvCd6n5FyHbgEvdwpT8e3E8EXbnN1xoKSh-uEHjZUmueglorN-4HOtMImm0OF_NLmk7h99lyUn51VuuubUpBVAwGABd0faxmxjfeatnuCOUmca1-iZJYu_21ehRheNxDziw8QWZHW5ptFyf0JSyq0tnslW5DOIvRgNpeHBufJY9s6R9gp666WtVEf2Bp_SAX-ki1oIOnGI7tL5UQoqus64J7tFM8z0wCH6ujlg');
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (context) => MyApp(), // Wrap your app
+      builder: (context) => BlocProvider<AppCubit>(
+          create: (_) => AppCubit(),
+          child: BlocBuilder<AppCubit, AppStates>(
+              builder: (_, __) => MyApp(token: token))), // Wrap your app
     ),
   );
 }
 
 class MyApp extends StatefulWidget {
+  final String token;
+
+  MyApp({Key key, this.token}) : super(key: key);
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  String token;
   @override
   void initState() {
     super.initState();
+    AppCubit.getInstance(context).intializeDio(widget.token);
   }
 
   @override
   Widget build(BuildContext context) {
-    // TrimShared.saveDataToShared('token', 'hossam');
-    // TrimShared.removeFromShared('token');
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => HomeCubit()),
@@ -103,7 +104,6 @@ class _MyAppState extends State<MyApp> {
           ],
           localeResolutionCallback: (currentLocale, supportedLocales) {
             if (currentLocale != null) {
-              // isArabic = currentLocale.languageCode == 'en' ? false : true;
               print(currentLocale.languageCode);
             }
 
@@ -118,75 +118,8 @@ class _MyAppState extends State<MyApp> {
                   TextTheme(button: TextStyle(fontSize: defaultFontSize))),
           // home: SplashScreen(alpha: 100, color: Color(0xff2B73A8)),
           builder: DevicePreview.appBuilder,
-          home: HomeScreen(),
+          home: widget.token == null ? LoginScreen() : HomeScreen(),
           routes: routes),
-    );
-  }
-}
-
-class TestApi extends StatefulWidget {
-  @override
-  _TestApiState createState() => _TestApiState();
-}
-
-class _TestApiState extends State<TestApi> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () async {
-            final response = await DioHelper.postData(url: 'allSalons');
-            try {
-              (response.data['data'] as List<dynamic>).forEach((element) {
-                // print(element);
-                print('-------------------------------------------------');
-                element.forEach((key, value) {
-                  print('$key =>  $value');
-                });
-                print('-------------------------------------------------');
-                print('\n');
-              });
-            } catch (e) {
-              print(response.data);
-            }
-          }),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // BlocBuilder<OffersCubit, HomeStates>(
-          //   builder: (_, state) => Conditional.single(
-          //     context: context,
-          //     conditionBuilder: (_) {
-          //       return state is LoadingOffersState;
-          //     },
-          //     widgetBuilder: (_) => CircularProgressIndicator(),
-          //     fallbackBuilder: (_) => Container(child: Text('Offers')),
-          //   ),
-          // ),
-          // BlocBuilder<MostSearchCubit, HomeStates>(
-          //   builder: (_, state) => Conditional.single(
-          //     context: context,
-          //     conditionBuilder: (_) => state is LoadingMostSearchState,
-          //     widgetBuilder: (_) => CircularProgressIndicator(),
-          //     fallbackBuilder: (_) => Container(child: Text('MostSearch')),
-          //   ),
-          // ),
-          // BlocBuilder<TrimStarsCubit, HomeStates>(
-          //   builder: (_, state) => Conditional.single(
-          //     context: context,
-          //     conditionBuilder: (_) => state is LoadingTrimStarsState,
-          //     widgetBuilder: (_) => CircularProgressIndicator(),
-          //     fallbackBuilder: (_) => Container(child: Text('Stars')),
-          //   ),
-          // )
-        ],
-      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/personal_detail_screen.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
+import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/modules/market/screens/BadgeScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/payment/screens/confirm_order_screen.dart';
@@ -28,6 +29,7 @@ final Map<String, WidgetBuilder> routes = {
   RegistrationScreen.routeName: (_) => RegistrationScreen(),
   VerificationCodeScreen.routeName: (_) => VerificationCodeScreen(),
   ForgotPassword.routeName: (_) => ForgotPassword(),
+  HomeScreen.routeName: (_) => HomeScreen(),
   DetailsScreen.routeName: (_) => DetailsScreen(),
   RatersScreen.routeName: (_) => RatersScreen(),
   MapScreen.routeName: (_) => MapScreen(),

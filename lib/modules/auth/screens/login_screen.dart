@@ -9,6 +9,8 @@ import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/registration_screen.dart';
 import 'package:trim/modules/auth/widgets/social.dart';
+import 'package:trim/modules/home/cubit/home_cubit.dart';
+import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/utils/services/login_service.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import '../../../general_widgets/transparent_appbar.dart';
@@ -125,6 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? null
                         : () {
                             AuthCubit.getInstance(context).login(
+                                context,
                                 _userNameController.text,
                                 _passwordController.text);
                           },

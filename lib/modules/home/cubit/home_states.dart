@@ -19,3 +19,5 @@ class AllSalonsState extends HomeStates {}
 class AllPersonsState extends HomeStates {}
 
 class FavoriteState extends HomeStates {}
+
+class ChangeSelectedBottomBarItemState extends HomeStates {}

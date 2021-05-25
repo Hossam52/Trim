@@ -2,11 +2,13 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
+import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/home_model.dart';
 import 'package:trim/modules/market/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
@@ -29,52 +31,53 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final heightNavigationBar = 50;
-  int initialIndex = 4;
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool showCategories = true;
-  int selectedCategoryIndex = 0;
   final Color selectedIconColor = Colors.blue[900];
-  List<PageWidget> pagesBuilder;
+  bool launchMap = false;
+  int initialIndex = 4;
+  List<PageWidget> pagesBuilder = [];
+
   @override
   void initState() {
     super.initState();
+    print('initState Home');
+    pagesBuilder
+        .add(PageWidget(imageIcon: settingsIcon, page: SettingsScreen()));
+    pagesBuilder.add(PageWidget(imageIcon: marketIcon, page: ShoppingScreen()));
+    pagesBuilder.add(PageWidget(imageIcon: locationIcon, page: MapScreen()));
+    pagesBuilder.add(PageWidget(imageIcon: hairIcon, page: SalonsScreen()));
+    pagesBuilder.add(PageWidget(
+        imageIcon: haircutIcon,
+        page: BuildHomeWidget(
+          heightNavigationBar: 50,
+        )));
+
+    WidgetsBinding.instance.addObserver(this);
     HomeCubit.getInstance(context).loadHomeLayout(context);
-
-    pagesBuilder = [
-      PageWidget(imageIcon: settingsIcon, page: SettingsScreen()),
-      PageWidget(
-          imageIcon: marketIcon,
-          page: ShoppingScreen(setCategoryIndex: setSelectedCategoryIndex)),
-      PageWidget(imageIcon: locationIcon, page: MapScreen()),
-      PageWidget(imageIcon: hairIcon, page: SalonsScreen()),
-      PageWidget(
-          imageIcon: haircutIcon,
-          page: BuildHomeWidget(
-            heightNavigationBar: heightNavigationBar,
-          )),
-    ];
   }
 
-  void setSelectedCategoryIndex(int categoryIndex) {
-    setState(() {
-      print(categoryIndex);
-      selectedCategoryIndex = categoryIndex;
-      pagesBuilder[1].page = CategoryProductsScreen(
-        categoryIndex: categoryIndex,
-        backToCategories: backToCategoires,
-      );
-      showCategories = false;
-    });
+  Future<bool> canLoadMap() async {
+    final res = await HomeCubit.getInstance(context).canUseLocationServices();
+    print(res);
+    return res;
   }
 
-  void backToCategoires() {
-    setState(() {
-      showCategories = true;
-      pagesBuilder[1].page = ShoppingScreen(
-        setCategoryIndex: setSelectedCategoryIndex,
-      );
-    });
+  @override
+  void dispose() async {
+    print('Dispose home');
+    super.dispose();
+  }
+
+  List<Widget> bottomBarItems() {
+    List<Widget> list = [];
+    for (int i = 0; i < pagesBuilder.length; i++) {
+      if (i == initialIndex)
+        list.add(pagesBuilder[i].selectedIcon);
+      else
+        list.add(pagesBuilder[i].unselectedIcon);
+    }
+    return list;
   }
 
   @override
@@ -91,47 +94,41 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: BlocBuilder<HomeCubit, HomeStates>(
-        builder: (_, state) => (state is LoadingHomeState)
-            ? Center(child: CircularProgressIndicator())
-            : Scaffold(
-                bottomNavigationBar: Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: CurvedNavigationBar(
-                    index: initialIndex,
-                    height: 50,
-                    color: Colors.grey[300],
-                    backgroundColor: Colors.white,
-                    items: List.generate(
-                        pagesBuilder.length,
-                        (index) => index == initialIndex
-                            ? pagesBuilder[index].selectedIcon
-                            : pagesBuilder[index].unselectedIcon),
-                    onTap: (index) {
-                      if (index == 1) {
-                        pagesBuilder[index].page = showCategories
-                            ? ShoppingScreen(
-                                setCategoryIndex: setSelectedCategoryIndex,
-                              )
-                            : CategoryProductsScreen(
-                                categoryIndex: selectedCategoryIndex,
-                                backToCategories: backToCategoires,
-                              );
-                      }
-                      if (index == 3) //All Salons set type
-                      {
-                        HomeCubit.getInstance(context).emit(AllSalonsState());
-                        // temp = Temp.All;
-                      }
-                      setState(() {
-                        initialIndex = index;
-                      });
-                    },
-                  ),
-                ),
-                body: SafeArea(
-                  child: pagesBuilder[initialIndex].page,
-                ),
+        builder: (_, state) {
+          if (state is LoadingHomeState)
+            return Center(child: CircularProgressIndicator());
+          return Scaffold(
+            bottomNavigationBar: Directionality(
+              textDirection: TextDirection.ltr,
+              child: CurvedNavigationBar(
+                index: initialIndex,
+                height: 50,
+                color: Colors.grey[300],
+                backgroundColor: Colors.white,
+                items: bottomBarItems(),
+                onTap: (index) {
+                  if (index == 2) {
+                    //Map Screen
+                    // final res = await Geolocator.isLocationServiceEnabled();
+                    // if (!res) {
+                    //   await openLocationSetting(context);
+                    // }
+                    SalonsCubit.getInstance(context)
+                        .loadNearestSalons(31, 31.5);
+                  }
+                  if (index == 3) {
+                    //All Salons set type
+                    HomeCubit.getInstance(context).emit(AllSalonsState());
+                  }
+                  setState(() {
+                    initialIndex = index;
+                  });
+                },
               ),
+            ),
+            body: SafeArea(child: pagesBuilder[initialIndex].page),
+          );
+        },
       ),
     );
   }

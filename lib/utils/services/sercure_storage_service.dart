@@ -2,6 +2,8 @@
 In this file, there will be getters and setters for each and every data to be stored in platform secure storage.*/
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trim/modules/auth/models/login_model.dart';
+import 'package:trim/modules/auth/models/token_model.dart';
 
 class TrimShared {
   static String token;
@@ -22,5 +24,28 @@ class TrimShared {
       await shared.remove(key);
     }
     token = null;
+  }
+
+  static Future<void> storeProfileData(TokenModel loginModel) async {
+    final shared = await SharedPreferences.getInstance();
+    await shared.setString('token', loginModel.token);
+    await shared.setString('name', loginModel.loginModel.name);
+    await shared.setString('email', loginModel.loginModel.email);
+    await shared.setString('image', loginModel.loginModel.image);
+    await shared.setString('cover', loginModel.loginModel.cover);
+    await shared.setString('phone', loginModel.loginModel.phone);
+  }
+
+  static void removeProfileData() async {
+    final shared = await SharedPreferences.getInstance();
+    print('Name' + shared.getString('name'));
+    await shared.remove('token');
+    await shared.remove('name');
+    await shared.remove('email');
+    await shared.remove('image');
+    await shared.remove('token');
+    await shared.remove('cover');
+    await shared.remove('phone');
+    print('Removed');
   }
 }

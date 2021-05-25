@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
@@ -20,10 +21,20 @@ import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
+import '../../../general_widgets/copoun_text_field.dart';
 
-class ReserveScreen extends StatelessWidget {
+class ReserveScreen extends StatefulWidget {
   static const routeName = '/reserve-screen';
 
+  @override
+  _ReserveScreenState createState() => _ReserveScreenState();
+}
+
+class _ReserveScreenState extends State<ReserveScreen> {
+  bool correctCopon = false;
+  final controller = TextEditingController();
+  int discount = 0;
   @override
   Widget build(BuildContext context) {
     SalonDetailModel model =
@@ -37,56 +48,77 @@ class ReserveScreen extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        body: InfoWidget(
-          responsiveWidget: (context, deviceInfo) => SafeArea(
-            child: CustomScrollView(
-              physics: BouncingScrollPhysics(),
-              slivers: [
-                if (selectDateWidget != false) SelectDateSliver(),
-                SliverList(
-                  delegate: SliverChildListDelegate.fixed([
-                    if (selectDateWidget == false)
-                      Align(
-                          alignment: Alignment.centerLeft, child: BackButton()),
-                    if (availableDatesWidget != false) AvailableTimes(),
-                    if (selectDateWidget != false ||
-                        availableDatesWidget != false)
-                      Divider(),
-                    if (servicesWidget != false) buildServices(context),
-                    if (offersWidget != false) buildOffers(deviceInfo, context),
-                    BlocBuilder<SalonsCubit, SalonStates>(
-                      builder: (_, state) => PriceInformation(
-                        total: SalonsCubit.getInstance(context)
-                            .totalPrice
-                            .toString(),
-                        discount: '0',
-                        totalAfterDiscount: SalonsCubit.getInstance(context)
-                            .totalPrice
-                            .toString(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                      child: BlocBuilder<SalonsCubit, SalonStates>(
-                        builder: (_, state) {
-                          final canReserveSalon =
-                              SalonsCubit.getInstance(context)
-                                  .canReserveSalon();
-                          return DefaultButton(
-                              text: getWord('Reserve now', context),
-                              widget: state is LoadingMakeOrderState
-                                  ? Center(child: CircularProgressIndicator())
-                                  : null,
-                              onPressed: !canReserveSalon ||
-                                      state is LoadingMakeOrderState
-                                  ? null
-                                  : reserveSalonFunction(context));
+        body: BlocConsumer<SalonsCubit, SalonStates>(
+          listener: (context, state) {
+            if (state is ErrorMakeOrderState)
+              Fluttertoast.showToast(msg: state.error);
+          },
+          builder: (_, state) => InfoWidget(
+            responsiveWidget: (context, deviceInfo) => SafeArea(
+              child: CustomScrollView(
+                physics: BouncingScrollPhysics(),
+                slivers: [
+                  if (selectDateWidget != false) SelectDateSliver(),
+                  SliverList(
+                    delegate: SliverChildListDelegate.fixed([
+                      if (selectDateWidget == false)
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: BackButton()),
+                      if (availableDatesWidget != false) AvailableTimes(),
+                      if (selectDateWidget != false ||
+                          availableDatesWidget != false)
+                        Divider(),
+                      if (servicesWidget != false) buildServices(context),
+                      if (offersWidget != false)
+                        buildOffers(deviceInfo, context),
+                      CoupounTextField(
+                        controller: controller,
+                        enabled: correctCopon,
+                        updateUi: (bool isCorrectCopon, int coponDiscount) {
+                          setState(() {
+                            discount = coponDiscount;
+                            correctCopon = isCorrectCopon;
+                          });
                         },
                       ),
-                    )
-                  ]),
-                ),
-              ],
+                      BlocBuilder<SalonsCubit, SalonStates>(
+                        builder: (_, state) {
+                          double totalAfterDiscount =
+                              SalonsCubit.getInstance(context).totalPrice -
+                                  discount;
+                          return PriceInformation(
+                            total: SalonsCubit.getInstance(context)
+                                .totalPrice
+                                .toString(),
+                            discount: discount.toString(),
+                            totalAfterDiscount: totalAfterDiscount.toString(),
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                        child: BlocBuilder<SalonsCubit, SalonStates>(
+                          builder: (_, state) {
+                            final canReserveSalon =
+                                SalonsCubit.getInstance(context)
+                                    .canReserveSalon();
+                            return DefaultButton(
+                                text: getWord('Reserve now', context),
+                                widget: state is LoadingMakeOrderState
+                                    ? Center(child: CircularProgressIndicator())
+                                    : null,
+                                onPressed: !canReserveSalon ||
+                                        state is LoadingMakeOrderState
+                                    ? null
+                                    : reserveSalonFunction(context));
+                          },
+                        ),
+                      )
+                    ]),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -98,14 +130,28 @@ class ReserveScreen extends StatelessWidget {
     return () async {
       await Navigator.pushNamed(context, PaymentMethodsScreen.routeName,
           arguments: {
-            'totalPrice': SalonsCubit.getInstance(context).totalPrice
+            'totalPrice': SalonsCubit.getInstance(context).totalPrice - discount
           });
 
       if (PaymentCubit.getInstance(context).successPayment) {
-        await SalonsCubit.getInstance(context).orderSalonWithServices(context);
-        await Navigator.pushNamed(context, ReservationsScreen.routeName);
-        int counter = 0;
-        Navigator.popUntil(context, (route) => counter++ == 2);
+        String paymentMethodString =
+            PaymentCubit.getInstance(context).paymentMethod ==
+                    PaymentMethod.Cash
+                ? 'Cash'
+                : 'Visa Master card';
+        String coponCode = controller.text.isEmpty ? null : controller.text;
+        if (PaymentCubit.getInstance(context).paymentMethod ==
+            PaymentMethod.Cash) {
+          if (!await confirmReservation(context)) return;
+        }
+
+        await SalonsCubit.getInstance(context).orderSalonWithServices(context,
+            enteredCopon: coponCode, paymentMethod: paymentMethodString);
+        if (SalonsCubit.getInstance(context).state is LoadedMakeOrderState) {
+          await Navigator.pushNamed(context, ReservationsScreen.routeName);
+          int counter = 0;
+          Navigator.popUntil(context, (route) => counter++ == 2);
+        }
       }
     };
   }

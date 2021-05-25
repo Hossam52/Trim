@@ -46,3 +46,7 @@ final String addToFavoriteUrl = 'addToFavorities';
 final String citiesUrl = 'cities';
 final String orderSalonServiceUrl = 'newOrderWithService';
 final String newOrderWithProductUrl = 'newOrderWithProduct';
+final String nearestSalonsUrl = 'nearestSalons';
+final String personalProfileUrl = 'user/info';
+final String notificationsUrl = 'user/notifications';
+final String updateUserInfoUrl = 'user/profile';

@@ -38,6 +38,7 @@ class SalonsCubit extends Cubit<SalonStates> {
       []; //every Index express of a page in all salons
   List<List<Salon>> _mostSearchSalons = [];
   List<List<Salon>> _favoriteSalons = [];
+  List<Salon> nearestSalons = [];
 
   Salon salonDetail;
   DateTime reservationDate = DateTime.now();
@@ -237,12 +238,34 @@ class SalonsCubit extends Cubit<SalonStates> {
     loadFavoriteSalons(refreshPage: true); //To refresh data of favorite
   }
 
-  Future<void> orderSalonWithServices(BuildContext context) async {
+  Future<void> orderSalonWithServices(BuildContext context,
+      {String enteredCopon, String paymentMethod}) async {
     emit(LoadingMakeOrderState());
     final response = await orderSalonServicesFromServer(
-        salonDetail, reservationDate, availableDates[selectedDateIndex]);
-    ReservationCubit.getInstance(context).loadMyOrders(refreshPage: true);
-    emit(LoadedMakeOrderState());
+      salon: salonDetail,
+      reservationDate: reservationDate,
+      reservationTime: availableDates[selectedDateIndex],
+      paymentCopon: enteredCopon,
+      paymentMethod: paymentMethod,
+    );
+    if (response.error)
+      emit(ErrorMakeOrderState(response.errorMessage));
+    else {
+      ReservationCubit.getInstance(context).loadMyOrders(refreshPage: true);
+      emit(LoadedMakeOrderState());
+    }
+  }
+
+  Future<void> loadNearestSalons(double lat, double lng) async {
+    emit(LoadingMapSalonState());
+    final response = await getNearestSalonsFromServer(lat, lng);
+    if (response.error) {
+      print(response.errorMessage);
+      emit(ErrorMapSalonState(error: response.errorMessage));
+    } else {
+      nearestSalons = response.data.allSalons;
+      emit(LoadedMapSalonState());
+    }
   }
 
 //--------------API Calls End ----------------

@@ -62,7 +62,6 @@ class ReservationDetailsScreen extends StatelessWidget {
                             ),
                             if (reservationData.statusId != "2")
                               PriceInformation(
-                                showCopounsField: false,
                                 total: reservationData.cost ?? "0",
                                 discount: reservationData.discount ?? "0",
                                 totalAfterDiscount:

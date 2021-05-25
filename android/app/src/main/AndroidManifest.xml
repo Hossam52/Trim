@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.trim.app">
     <uses-permission android:name="android.permission.INTERNET" /> <!-- This Line -->
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /><!-- Added thid line For location-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /><!-- Added thid line For location-->
    <application
         android:label="trim"
         android:icon="@mipmap/ic_launcher"> 

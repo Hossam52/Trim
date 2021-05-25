@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 
@@ -15,17 +16,29 @@ enum CallType {
 }
 Future<RecievedData> callAPI(String url,
     {Map<String, dynamic> body = const {},
+    FormData formData,
     Map<String, dynamic> quiries = const {},
     String accessToken,
     @required CallType callType}) async {
   String error = "Un expected error happened";
   Map<String, dynamic> data;
   try {
-    final response = callType == CallType.Post
-        ? await DioHelper.postData(
-            url: url, accessToken: accessToken, body: body, queries: quiries)
-        : await DioHelper.getData(
-            methodUrl: url, accessToken: accessToken, queries: quiries);
+    Response response;
+    if (callType == CallType.Post) {
+      if (formData != null) {
+        response = await DioHelper.postDataToImages(
+            url: url,
+            accessToken: accessToken,
+            formData: formData,
+            queries: quiries);
+      } else {
+        response = await DioHelper.postData(
+            url: url, accessToken: accessToken, body: body, queries: quiries);
+      }
+    } else {
+      response = await DioHelper.getData(
+          methodUrl: url, accessToken: accessToken, queries: quiries);
+    }
     data = response.data;
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.data['success'] != true)
@@ -39,8 +52,18 @@ Future<RecievedData> callAPI(String url,
         }
     } else if (response.statusCode == 404)
       error = 'The requested page is not found try again!';
-    else if (response.statusCode >= 400 && response.statusCode < 500)
-      error = 'Client side error please modify it then retry.';
+    else if (response.statusCode >= 400 && response.statusCode < 500) {
+      print('Error happened ${response.data['message']}');
+      if (response.data['message'] != null)
+        error = response.data['message'];
+      else if (response.data['errors'] != null) {
+        error = (response.data['errors'] as Map<String, dynamic>)
+            .entries
+            .toList()[0]
+            .value[0];
+      } else
+        error = 'Client side error please modify it then retry.';
+    }
   } catch (e) {
     error = 'Un expected error happened';
   }
