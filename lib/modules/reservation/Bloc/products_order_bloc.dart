@@ -27,10 +27,14 @@ class ProductsOrderBloc extends Bloc<ProductsOrderEvents, ProductOrderStates> {
         response = await DioHelper.postData(url: newOrderWithProductUrl, body: {
           'products': productsOrder,
           'payment_coupon': event.coupon,
+          'address':event.address,
+          'phone':event.phone,
         });
       } else {
         response = await DioHelper.postData(url: newOrderWithProductUrl, body: {
           'products': productsOrder,
+          'address':event.address,
+          'phone':event.phone,
         });
       }
       print('dis is ${response.data['data']['discount']}');

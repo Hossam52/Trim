@@ -90,6 +90,11 @@
     "Customer service numbers":"Customer service numbers",
     "Pay with VISA/MASTERCARD":"Pay with VISA/MASTERCARD",
     "Pay with cach":"Pay with cach",
-    "Payment method":"Payment method"
+    "Payment method":"Payment method",
+    "save":"save",
+    "address":"address",
+    "Enter your address":"Enter your address",
+    "Please Enter Your Phone":"Please Enter Your Phone",
+    "Please Enter Valid Number":"Please Enter Valid Number"
 
 }

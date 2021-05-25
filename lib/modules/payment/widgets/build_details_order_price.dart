@@ -26,12 +26,17 @@ class BuildDetailsOrderPrice extends StatefulWidget {
   final DeviceInfo deviceInfo;
   final Function pressed;
   final int stepNumber;
+  final String address;
+  final String phone;
   BuildDetailsOrderPrice(
       {@required this.fontSize,
       @required this.pressed,
       @required this.deviceInfo,
       @required this.stepNumber,
-      @required this.paymentMethod});
+      @required this.paymentMethod,
+      @required this.address,
+      @required this.phone
+      });
   final PaymentMethod paymentMethod;
 
   @override
@@ -51,14 +56,12 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
       context,
     );
     controller = TextEditingController();
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void dispose() {
     controller.dispose();
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -67,7 +70,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
     print('print inside details order price');
     return Container(
       height: widget.deviceInfo.localHeight *
-          (widget.deviceInfo.orientation == Orientation.portrait ? 0.50 : 0.82),
+          (widget.deviceInfo.orientation == Orientation.portrait ? 0.6 : 0.82),
       decoration: BoxDecoration(
         border: Border.all(width: 0.5, color: Colors.white),
         color: Colors.white,
@@ -121,7 +124,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ElevatedButton(
                 onPressed: widget.stepNumber == 2
-                    ? confirmOrderFunction(context)
+                    ? confirmOrderFunction(context, discountValue)
                     : widget.pressed,
                 child: Text(
                   widget.stepNumber == 2
@@ -137,9 +140,9 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
     );
   }
 
-  VoidCallback confirmOrderFunction(BuildContext context) {
+  VoidCallback confirmOrderFunction(BuildContext context, var discountValue) {
     return () async {
-      double totalPrice = (cartBloc.getTotalPrice() + 20);
+      double totalPrice = (cartBloc.getTotalPrice() + 20 - discountValue);
       if (widget.paymentMethod == PaymentMethod.VisaMaster)
         await Navigator.pushNamed(context, PaymentMethodsScreen.routeName,
             arguments: {'totalPrice': totalPrice, 'showCashMethod': false});
@@ -153,7 +156,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
           ProductsOrderBloc productsOrderBloc =
               BlocProvider.of<ProductsOrderBloc>(context);
           productsOrderBloc.add(PostDataOrderProducts(
-              productsOrder: items, coupon: controller.text));
+              productsOrder: items, coupon: controller.text,phone:widget.phone,address: widget.address));
           if (productsOrderBloc.discount != 0 ||
               productsOrderBloc.discount != null)
             Fluttertoast.showToast(
