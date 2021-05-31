@@ -118,7 +118,6 @@ class CouponsScreen extends StatelessWidget {
                 fontSize: getFontSize(deviceInfo), color: Colors.white)));
   }
 
-//المفروض متبقاش كده اللي برا هو اللي سكرول مش اللي جوه؟؟
   Widget backgroundGradient() {
     return Container(
       decoration: BoxDecoration(
@@ -134,11 +133,9 @@ class CouponsScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         await Share.share('trim.style');
-        print('back again');
-        final response = await DioHelper.postData(
+        await DioHelper.postData(
           url: 'winCoupone',
         );
-        print(response.data);
       },
       child: Row(
         children: [
@@ -150,7 +147,6 @@ class CouponsScreen extends StatelessWidget {
                 responsiveWidget: (_, deviceInfo) => Text(
                     'Share App with your firends and get copouns',
                     softWrap: true,
-                    //overflow:TextOverflow.,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: getFontSize(deviceInfo)))),

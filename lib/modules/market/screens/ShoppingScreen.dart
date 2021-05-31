@@ -40,9 +40,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
 
   @override
   void dispose() {
-    print('Dispose shopping screen');
-    //allCategoriesBloc.close();
-    //cartBloc.close();
     super.dispose();
   }
 
@@ -145,7 +142,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           child: BuildSearchWidget(
             onChanged: (value) async {
               allCategoriesBloc.add(SearchedCategories(searchedWord: value));
-              print("search\n");
             },
           ),
         ),

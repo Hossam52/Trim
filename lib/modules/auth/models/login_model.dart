@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 class LoginModel {
-  // String token;
   int id;
   String name;
   String phone;
@@ -16,7 +15,6 @@ class LoginModel {
   String birthDate;
 
   LoginModel({
-    // @required this.token,
     this.id,
     this.name,
     this.phone,
@@ -32,9 +30,7 @@ class LoginModel {
   });
 
   LoginModel.fromJson({@required Map<String, dynamic> json}) {
-    // token = json['token'];
     final Map<String, dynamic> user = json['user'];
-    print(user);
     if (user != null) {
       id = user['id'] ?? 0;
       name = user['name'] ?? "";

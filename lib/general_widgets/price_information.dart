@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/settings/screens/coupons_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/general_widgets/trim_text_field.dart';
 
 class PriceInformation extends StatelessWidget {
   final String total;

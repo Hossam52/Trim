@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
-import 'package:trim/modules/reservation/models/Reservation.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
 import 'package:trim/modules/reservation/screens/ReservationDetailsScreen.dart';
 
@@ -106,13 +105,16 @@ class ReservationItem extends StatelessWidget {
 
   List<String> getWhatToDisplayAccordingToType(OrderModel reservation) {
     if (reservation.offers.isNotEmpty)
-      return reservation.offers.map((element) => element.nameEn).toList();
+      return reservation.offers
+          .map((element) => element.nameEn + '  X ${element.qty}')
+          .toList();
     else if (reservation.services.isNotEmpty) {
-      print(true);
       return reservation.services.map((element) => element.nameEn).toList();
     } else {
       if (reservation.products.isNotEmpty)
-        return reservation.products.map((element) => element.nameEn).toList();
+        return reservation.products
+            .map((element) => element.nameEn + '  X ${element.productQuantity}')
+            .toList();
     }
     return [];
   }

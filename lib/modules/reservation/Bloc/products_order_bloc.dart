@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
@@ -27,19 +25,18 @@ class ProductsOrderBloc extends Bloc<ProductsOrderEvents, ProductOrderStates> {
         response = await DioHelper.postData(url: newOrderWithProductUrl, body: {
           'products': productsOrder,
           'payment_coupon': event.coupon,
-          'address':event.address,
-          'phone':event.phone,
+          'address': event.address,
+          'phone': event.phone,
+          'payment_method': event.paymentMethod
         });
       } else {
         response = await DioHelper.postData(url: newOrderWithProductUrl, body: {
           'products': productsOrder,
-          'address':event.address,
-          'phone':event.phone,
+          'address': event.address,
+          'phone': event.phone,
+          'payment_method': event.paymentMethod
         });
       }
-      print('dis is ${response.data['data']['discount']}');
-      discount = response.data['data']['discount'];
-      //  print('$discount this is discount');
 
       print('Order Response');
       print(response.data);

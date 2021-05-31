@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -52,6 +51,7 @@ Future<APIResponse<String>> getTokenFromServer({
       return APIResponse(error: true, errorMessage: 'Not Not Authorized');
       break;
     default:
+      return APIResponse(error: true, errorMessage: 'Un expected error');
   }
 }
 
@@ -96,6 +96,8 @@ Future<APIResponse<PaymentModel>> makePaymentFromServer(
           error: true, errorMessage: 'Un authroized');
       break;
     default:
+      return APIResponse<PaymentModel>(
+          error: true, errorMessage: 'Un expected error happened');
   }
 }
 
@@ -132,13 +134,7 @@ Future<APIResponse<RefundModel>> makeRefund(
       return APIResponse(error: true, errorMessage: 'Bad Gateway');
       break;
     default:
+      return APIResponse(
+          error: true, errorMessage: 'UnExpected error happened');
   }
 }
-
-Future<bool> isValid({
-  @required String cardNumber,
-  @required String expiryMonth,
-  @required String expiryYear,
-  @required String name,
-  @required String cvv,
-}) async {}

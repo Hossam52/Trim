@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/widgets/navigate_pages.dart';

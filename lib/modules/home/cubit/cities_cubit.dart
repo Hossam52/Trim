@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/modules/home/cubit/cities_states.dart';
-import 'package:trim/modules/home/cubit/salons_states.dart';
-import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/repositories/salons_repo.dart';
 import '../models/cities_model.dart';
 

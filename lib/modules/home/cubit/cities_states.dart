@@ -1,5 +1,3 @@
-import 'package:trim/modules/home/models/Salon.dart';
-
 abstract class CitiesStates {}
 
 class IntialReserveState extends CitiesStates {}

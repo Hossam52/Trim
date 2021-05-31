@@ -11,7 +11,7 @@ import 'package:trim/modules/home/cubit/home_cubit.dart';
 
 class PersonsCubit extends Cubit<PersonStates> {
   PersonsCubit() : super(IntialPersonsState()) {
-    loadData();
+    // loadData();
   }
   void loadData() async {
     await _loadAllPersons(refreshPage: false);
@@ -27,7 +27,9 @@ class PersonsCubit extends Cubit<PersonStates> {
   int _currentFavoritePersons = 1;
   bool filterData = false;
   int selectedCityId;
-
+  bool loadAllPersonsForFirstTime = true;
+  bool loadTrimStarsForFirstTime = true;
+  bool loadFavoritesForFirstTime = true;
   static PersonsCubit getInstance(BuildContext context) =>
       BlocProvider.of<PersonsCubit>(context);
   List<List<Salon>> _allPersons = [];
@@ -36,12 +38,13 @@ class PersonsCubit extends Cubit<PersonStates> {
 
 //----------------API Calls Start-------------
   Future<void> _loadAllPersons({@required bool refreshPage}) async {
-    if (!refreshPage) emit(LoadingPersonsState());
+    if (!refreshPage || loadAllPersonsForFirstTime) emit(LoadingPersonsState());
     final response = await loadAllPersonsFromServer(_currentAllPersonsPage,
         body: _getAllPersonsBody());
     if (response.error) {
       emit(ErrorPersonsState(error: response.errorMessage));
     } else {
+      loadAllPersonsForFirstTime = false;
       if (_allPersons.isEmpty)
         _allPersons.add(response.data.allPersons);
       else if (refreshPage) {
@@ -56,7 +59,6 @@ class PersonsCubit extends Cubit<PersonStates> {
     final response = await loadAllPersonsFromServer(_currentAllPersonsPage + 1,
         body: _getAllPersonsBody());
     if (response.error) {
-      print(response.data.allPersons);
       emit(ErrorMorePersonState(error: response.errorMessage));
     } else {
       if (response.data.allPersons.isEmpty) {
@@ -72,12 +74,13 @@ class PersonsCubit extends Cubit<PersonStates> {
   }
 
   Future<void> _loadTrimStars({bool refreshPage}) async {
-    if (!refreshPage) emit(LoadingPersonsState());
+    if (!refreshPage || loadTrimStarsForFirstTime) emit(LoadingPersonsState());
     final response = await loadHomeFromServer(_currentStarsPage);
     if (response.error) {
       print(response.errorMessage);
       emit(ErrorPersonsState(error: response.errorMessage));
     } else {
+      loadTrimStarsForFirstTime = false;
       if (response.data.trimStars.isEmpty) {
         emit(EmptyPersonListState());
       } else {
@@ -111,12 +114,13 @@ class PersonsCubit extends Cubit<PersonStates> {
   }
 
   Future<void> loadFavoritePersons({@required bool refreshPage}) async {
-    if (!refreshPage) emit(LoadingPersonsState());
+    if (!refreshPage || loadFavoritesForFirstTime) emit(LoadingPersonsState());
     final response =
         await loadFavoritePersonsFromServer(_currentFavoritePersons);
     if (response.error) {
       emit(ErrorPersonsState(error: response.errorMessage));
     } else {
+      loadFavoritesForFirstTime = false;
       if (_favoritePersons.isEmpty)
         _favoritePersons.add(response.data.favoriteList);
       else if (refreshPage) {
@@ -215,7 +219,6 @@ class PersonsCubit extends Cubit<PersonStates> {
         await _loadMoreTrimStars();
       }
     } else if (state is FavoriteState) {
-      print('$_currentFavoritePersons');
       if (_currentFavoritePersons != _favoritePersons.length) {
         _currentFavoritePersons++;
         emit(LoadedMorePersonState());
@@ -268,5 +271,21 @@ class PersonsCubit extends Cubit<PersonStates> {
 
   Future<void> loadMorePersons(BuildContext context) async {
     getNextPage(context);
+  }
+
+  void resetData() {
+    loadAllPersonsForFirstTime = true;
+    _currentAllPersonsPage = 1;
+    _allPersons.clear();
+
+    loadTrimStarsForFirstTime = true;
+    _currentStarsPage = 1;
+    _starsPersons.clear();
+
+    loadFavoritesForFirstTime = true;
+    _currentFavoritePersons = 1;
+    _favoritePersons.clear();
+
+    filterData = false;
   }
 }

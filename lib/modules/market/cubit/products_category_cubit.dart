@@ -12,13 +12,11 @@ class ProductsCategoryCubit extends Cubit<ProductsCategoryStates> {
   void getData(int categoryId) async {
     try {
       emit(LoadingStateProductsCategory());
-      final response = await DioHelper.postData(
+      await DioHelper.postData(
           url: '$productsCategoryUrl?category_id=$categoryId', body: {});
       emit(LoadedStateProductsCategory());
-      print(response.data);
     } catch (e) {
       emit(ErrorStateProductsCategory());
-      print(e.toString());
     }
   }
 }
@@ -40,9 +38,7 @@ class ProductsCategoryBloc
         response = await DioHelper.postData(
             url: '$productsCategoryUrl?category_id=${event.categoryId}',
             body: {});
-        print('Cross to catch\n');
         yield LoadedStateProductsCategory();
-        print(response.data);
         body = response.data['data'];
         for (var product in body) products.add(Product.fromjson(product));
       } else if (event is Searchedproducts) {
@@ -52,8 +48,7 @@ class ProductsCategoryBloc
               'category_id': event.categoryId,
               'name': event.searchedWord,
             });
-         yield LoadedStateProductsCategory();
-        print('Searhc ${response.data}');
+        yield LoadedStateProductsCategory();
         body = response.data['data'];
         for (var product in body) products.add(Product.fromjson(product));
       }
@@ -61,12 +56,6 @@ class ProductsCategoryBloc
       if (e.type == DioErrorType.connectTimeout) print('Internet Connecation');
 
       yield ErrorStateProductsCategory();
-      // print('\n');
-      print(e.toString());
     }
   }
-}
-
-void updateProduct(int productId) {
-  // products.wh
 }

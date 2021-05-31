@@ -1,6 +1,5 @@
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
-import 'package:trim/modules/home/models/trim_star_model.dart';
 
 class HomeModel {
   bool success;

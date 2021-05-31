@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
-import 'package:trim/general_widgets/trim_text_field.dart';
-import 'package:trim/modules/payment/widgets/build_details_order_price.dart';
+import 'package:trim/modules/home/cubit/app_cubit.dart';
+import 'package:trim/modules/payment/cubits/address_cubit.dart';
+import 'package:trim/modules/payment/cubits/address_states.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
 
 class DeliveryWidget extends StatefulWidget {
   DeliveryWidget({
     @required this.fontSize,
     @required this.secondaryColor,
-    @required this.stepNumber,
     @required this.pressed,
     @required this.deviceInfo,
     @required this.addressController,
@@ -20,7 +22,6 @@ class DeliveryWidget extends StatefulWidget {
   final double fontSize;
   final Color secondaryColor;
   final Function pressed;
-  int stepNumber;
   final TextEditingController addressController;
   final TextEditingController phoneController;
   final DeviceInfo deviceInfo;
@@ -31,9 +32,24 @@ class DeliveryWidget extends StatefulWidget {
 
 class _DeliveryWidgetState extends State<DeliveryWidget> {
   final formKey = GlobalKey<FormState>();
+  String deliveryStartDate = '';
+  String deliveryEndDate = '';
+  @override
+  void initState() {
+    super.initState();
+    deliveryStartDate =
+        DateFormat('dd MMM').format(DateTime.now().add(Duration(days: 2)));
+    deliveryEndDate = deliveryEndDate =
+        DateFormat('dd MMM').format(DateTime.now().add(Duration(days: 5)));
+  }
+
   @override
   Widget build(BuildContext context) {
-  
+    deliveryStartDate = DateFormat('dd MMM', isArabic ? 'ar' : 'en')
+        .format(DateTime.now().add(Duration(days: 2)));
+    deliveryEndDate = deliveryEndDate =
+        DateFormat('dd MMM', isArabic ? 'ar' : 'en')
+            .format(DateTime.now().add(Duration(days: 5)));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -45,60 +61,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                   fontSize: widget.fontSize - 5, color: Colors.lightBlueAccent),
             )),
             onPressed: () async {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Form(
-                        key: formKey,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              
-                              TrimTextField(
-                                controller: widget.addressController,
-                                placeHolder: getWord('Enter your address', context),
-                                validator: (address) {
-                                  if (address.isEmpty)
-                                    return getWord('Enter your address', context);
-                                  return null;
-                                },
-                              ),
-                              TrimTextField(
-                                controller: widget.phoneController,
-                                textInputType: TextInputType.phone,
-                                placeHolder: 'Enter your phone',
-                                validator: (phone) {
-                                  if (phone.isEmpty)
-                                    return getWord('Please Enter Your Phone', context);
-                                  else if (phone.length < 11)
-                                    return getWord('Please Enter Valid Number', context);
-                                  return null;
-                                },
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  if (formKey.currentState.validate()) {
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
-                                    prefs.setString('address',
-                                        widget.addressController.text);
-                                    prefs.setString(
-                                        'phone', widget.phoneController.text);
-
-                                    Navigator.pop(
-                                        context, widget.phoneController.text);
-                                  }
-                                },
-                                child: Text(getWord('save', context)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  });
+              await changeAddress(context, formKey);
             },
             child: Text(getWord('change', context)),
           ),
@@ -111,7 +74,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
         Container(
           height: widget.deviceInfo.localHeight *
               (widget.deviceInfo.orientation == Orientation.portrait
-                  ? 0.265
+                  ? 0.285
                   : .7),
           padding: EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
@@ -119,37 +82,28 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
             color: Colors.white,
           ),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('ahmed ashraf',
-                    style: TextStyle(
-                        fontSize: widget.fontSize, color: Colors.black)),
-                Text(
-                  '${widget.addressController.text}',
-                  style: TextStyle(
-                      fontSize: widget.fontSize - 5,
-                      color: widget.secondaryColor),
-                ),
-                Text(
-                  'القليوبية',
-                  style: TextStyle(
-                      fontSize: widget.fontSize - 5,
-                      color: widget.secondaryColor),
-                ),
-                Text('شبرا الخيمة',
-                    style: TextStyle(
-                        fontSize: widget.fontSize - 5,
-                        color: widget.secondaryColor)),
-                Text(
-                  '${widget.phoneController.text}',
-                  style: TextStyle(
-                      fontSize: widget.fontSize - 5,
-                      color: widget.secondaryColor),
-                ),
-              ],
+            child: BlocBuilder<AddressCubit, AddressStates>(
+              builder: (_, state) => Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(AppCubit.getInstance(context).name,
+                      style: TextStyle(
+                          fontSize: widget.fontSize, color: Colors.black)),
+                  buildAddressRow(getWord('City', context),
+                      AddressCubit.getInstance(context).getCity(context)),
+                  Divider(),
+                  buildAddressRow(getWord('Country', context),
+                      AddressCubit.getInstance(context).getCountry(context)),
+                  Divider(),
+                  buildAddressRow(getWord('Street', context),
+                      AddressCubit.getInstance(context).getStreet(context)),
+                  Divider(),
+                  buildAddressRow(getWord('Phone', context),
+                      AddressCubit.getInstance(context).getPhone(context)),
+                ],
+              ),
             ),
           ),
         ),
@@ -185,7 +139,13 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                        '.يصل اليك بين يوم الاربعاء أبريل /28 والخميس أبريل /29 يرجى التحقق من التواريخ المحددة في صفحة متابعة الشراء',
+                        getWord('Arrive between days', context) +
+                            deliveryStartDate +
+                            getWord('and', context) +
+                            deliveryEndDate +
+                            getWord(
+                                'Please checkout dates in payment coninue page',
+                                context),
                         style: TextStyle(
                           fontSize: widget.deviceInfo.orientation ==
                                   Orientation.portrait
@@ -207,7 +167,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                           width: 10,
                         ),
                         Text(
-                          '20',
+                          AppCubit.getInstance(context).shippingFee.toString(),
                           style: TextStyle(
                               color: Colors.lightBlueAccent,
                               fontWeight: FontWeight.bold,
@@ -226,7 +186,23 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
         ),
         DefaultButton(
             text: getWord('Continue to pay', context),
-            onPressed: widget.pressed),
+            onPressed: AddressCubit.getInstance(context).validateClassData()
+                ? widget.pressed
+                : null),
+      ],
+    );
+  }
+
+  Widget buildAddressRow(String key, String value) {
+    return Row(
+      children: [
+        Text(key, style: TextStyle(fontSize: widget.fontSize - 5)),
+        Spacer(),
+        Text(
+          value,
+          style: TextStyle(
+              fontSize: widget.fontSize - 5, color: widget.secondaryColor),
+        ),
       ],
     );
   }

@@ -1,22 +1,18 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/cubit/home_cubit.dart';
+import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:intl/intl.dart';
 
 import 'package:location/location.dart' as LocationManager;
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/home/widgets/BuildSalonItemGrid.dart';
-import 'package:trim/utils/ui/app_dialog.dart';
 
 class MapScreen extends StatefulWidget {
   static const routeName = '/map-screen';
@@ -28,8 +24,6 @@ class _MapScreenState extends State<MapScreen> {
   Set<Marker> allMarkers = <Marker>{};
   GoogleMapController mapController;
   BitmapDescriptor customIcon1;
-  DateTime _selectedDate = DateTime.now();
-  String _time;
   bool correctData = true;
   bool showSalonsWidget = true;
   bool displayPage = false;
@@ -41,7 +35,6 @@ class _MapScreenState extends State<MapScreen> {
   bool loadData = true;
 
   LatLngBounds boundsFromLatLngList(Set<Marker> list) {
-    print(list);
     if (list.isEmpty) return null;
     double x0, x1, y0, y1;
     for (Marker marker in list) {
@@ -94,8 +87,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('build map screen');
-
     initMarkerIcon(context);
     List<Salon> mapSalons = [];
     return Scaffold(
@@ -104,7 +95,15 @@ class _MapScreenState extends State<MapScreen> {
                 child: CircularProgressIndicator(),
               )
             : !canLoadMap
-                ? errorWidget()
+                ? RetryWidget(
+                    text: errorMessage,
+                    onRetry: () {
+                      setState(() {
+                        loadData = true;
+                        checkPermissionsAndLocationEnabled();
+                      });
+                    },
+                  )
                 : BlocBuilder<SalonsCubit, SalonStates>(
                     builder: (_, state) {
                       if (state is LoadingMapSalonState)
@@ -185,7 +184,6 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget buildNearestSalons(
       List<Salon> mapSalons, DeviceInfo deviceInfo, List<Salon> nearestSalons) {
-    print(nearestSalons);
     return ScrollablePositionedList.builder(
       itemScrollController: itemScrollController,
       itemPositionsListener: itemPositionsListener,
@@ -231,7 +229,6 @@ class _MapScreenState extends State<MapScreen> {
         throw ('Location permissions are permanently denied, we cannot request permissions allow it then retry.');
       }
       userPoition = await Geolocator.getCurrentPosition();
-      print('Latitude ${userPoition.latitude}');
       setState(() {
         loadData = false;
         canLoadMap = true;
@@ -256,35 +253,6 @@ class _MapScreenState extends State<MapScreen> {
         afterFirstLayout();
       });
     });
-  }
-
-  Widget errorWidget() {
-    print(errorMessage);
-    return InfoWidget(
-      responsiveWidget: (_, deviceInfo) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Text(
-                errorMessage,
-                style: TextStyle(
-                  fontSize: getFontSizeVersion2(deviceInfo),
-                ),
-              ),
-            ),
-            TextButton(
-                onPressed: () {
-                  setState(() {
-                    loadData = true;
-                    checkPermissionsAndLocationEnabled();
-                  });
-                },
-                child: Text('Retry now'))
-          ],
-        ),
-      ),
-    );
   }
 
   void afterFirstLayout() async {
@@ -330,7 +298,6 @@ class _MapScreenState extends State<MapScreen> {
       BitmapDescriptor.fromAssetImage(
               configuration, 'assets/icons/map-scissor.png')
           .then((value) {
-        print(value);
         setState(() {
           customIcon1 = value;
         });
@@ -351,33 +318,5 @@ class _MapScreenState extends State<MapScreen> {
       currentLocation = null;
       return null;
     }
-  }
-
-  void datePickerDialog() async {
-    await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(
-        Duration(days: 30),
-      ),
-    ).then((value) => setState(() {
-          _selectedDate = value ?? _selectedDate;
-        }));
-  }
-
-  void timePickerDialog() async {
-    await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay(hour: 09, minute: 00),
-            initialEntryMode: TimePickerEntryMode.input)
-        .then((value) {
-      if (value != null)
-        setState(() {
-          String hours = value.hour.toString().padLeft(2, '0');
-          String minutes = value.minute.toString().padLeft(2, '0');
-          _time = hours + " : " + minutes;
-        });
-    });
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trim/general_widgets/default_button.dart';
 
 class SubmitReviewScreen extends StatefulWidget {
   @override
@@ -118,9 +117,7 @@ class _SubmitReviewScreenState extends State<SubmitReviewScreen> {
       child: Row(
         children: [
           Expanded(
-            child: _button('Submit review', Colors.blue, () {
-              print(stars);
-            }),
+            child: _button('Submit review', Colors.blue, () {}),
           ),
           SizedBox(width: 10),
           Expanded(child: _button('Not now', Colors.black, () {}))

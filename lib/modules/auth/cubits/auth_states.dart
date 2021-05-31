@@ -30,6 +30,26 @@ class InvalidFieldState extends AuthStates {
   InvalidFieldState(this.errorMessage);
 }
 
+class LoadingRegisterState extends AuthStates {}
+
+class LoadedRegisterState extends AuthStates {}
+
+class ErrorRegisterState extends AuthStates {
+  final String errorMessage;
+
+  ErrorRegisterState(this.errorMessage);
+}
+
+class ChangingPasswordState extends AuthStates {}
+
+class SuccessChangedPasswordState extends AuthStates {}
+
+class ErrorChangingPasswordState extends AuthStates {
+  final String error;
+
+  ErrorChangingPasswordState(this.error);
+}
+
 class NotActivatedAccountState extends AuthStates {}
 
 class ChangeGenderState extends AuthStates {}
@@ -44,4 +64,14 @@ class ErrorUpdatingUserInformationState extends AuthStates {
   final String error;
 
   ErrorUpdatingUserInformationState(this.error);
+}
+
+class LoadingLogoutState extends AuthStates {}
+
+class LoadedLogoutState extends AuthStates {}
+
+class ErrorLogoutState extends AuthStates {
+  final String error;
+
+  ErrorLogoutState(this.error);
 }

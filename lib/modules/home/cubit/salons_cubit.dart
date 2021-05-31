@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/repositories/home_repo.dart';
 import 'package:trim/modules/home/repositories/salons_repo.dart';
 import 'package:trim/modules/home/screens/details_screen.dart';
@@ -15,7 +13,7 @@ enum Search { Name, City, Both }
 
 class SalonsCubit extends Cubit<SalonStates> {
   SalonsCubit() : super(InitialSalonState()) {
-    loadData();
+    // loadData();
   }
   void loadData() async {
     await _loadAllSalonsForFirstTime(refreshPage: false);
@@ -45,11 +43,15 @@ class SalonsCubit extends Cubit<SalonStates> {
   List<String> availableDates = [];
   int salonIdToDisplay;
 
+  bool loadAllSalonsForFirstTime = true;
+  bool loadFavoriteSalonsForFirstTime = true;
+  bool loadMostSearchSalonsForFirstTime = true;
+
 //--------------API Calls Start--------------
 
 //At intiating the cubit will load all salons
   Future<void> _loadAllSalonsForFirstTime({@required refreshPage}) async {
-    if (!refreshPage) emit(LoadingSalonState());
+    if (!refreshPage || loadAllSalonsForFirstTime) emit(LoadingSalonState());
     final response = await loadAllSalonsFromServer(
       _currentPageAllSalonsIndex,
       body: _getAllSalonsBody(),
@@ -57,6 +59,7 @@ class SalonsCubit extends Cubit<SalonStates> {
     if (response.error)
       emit(ErrorSalonState(error: response.errorMessage));
     else {
+      loadAllSalonsForFirstTime = false;
       if (_allSalons.isEmpty)
         _allSalons.add(response.data.allSalons);
       else if (refreshPage) {
@@ -74,7 +77,6 @@ class SalonsCubit extends Cubit<SalonStates> {
         _currentPageAllSalonsIndex + 1,
         body: _getAllSalonsBody());
     if (response.error) {
-      print(response.data.allSalons);
       emit(ErrorSalonState(error: response.errorMessage));
     } else {
       if (response.data.allSalons.isEmpty) {
@@ -93,12 +95,14 @@ class SalonsCubit extends Cubit<SalonStates> {
 //At intialing the cutbit will load most searched items from api
   Future<void> _loadMostSearchedSalonsForFirstTime(
       {@required refreshPage}) async {
-    if (!refreshPage) emit(LoadingSalonState());
+    if (!refreshPage || loadMostSearchSalonsForFirstTime)
+      emit(LoadingSalonState());
     final response =
         await loadHomeFromServer(_currentPageMostSearchedSalonsIndex);
     if (response.error)
       emit(ErrorSalonState(error: response.errorMessage));
     else {
+      loadMostSearchSalonsForFirstTime = false;
       if (_mostSearchSalons.isEmpty)
         _mostSearchSalons.add(response.data.mostSearchedSalons);
       else if (refreshPage) {
@@ -159,7 +163,6 @@ class SalonsCubit extends Cubit<SalonStates> {
       emit(ErrorSalonState(error: response.errorMessage));
     else {
       salonDetail = response.data.salon;
-      print('length is ${salonDetail.salonServices.length}');
       totalPrice = 0;
       await getAvilableDates(DateTime.now());
       emit(LoadedSalonState());
@@ -168,13 +171,11 @@ class SalonsCubit extends Cubit<SalonStates> {
 
   Future<void> getAvilableDates(DateTime date) async {
     reservationDate = date;
-    print(DateFormat('y/MM/dd').format(reservationDate));
     emit(LoadingAvilableDatesState());
     final response =
         await getAvailableDatesFromServer(id: salonDetail.id, date: date);
     if (!response.error) {
       availableDates = response.data.avilableDates;
-      print(availableDates);
       changeSelectedReserveDate(0);
       if (availableDates.isEmpty)
         emit(EmptyAvialbleDatesState());
@@ -185,12 +186,14 @@ class SalonsCubit extends Cubit<SalonStates> {
   }
 
   Future<void> loadFavoriteSalons({@required bool refreshPage}) async {
-    if (!refreshPage) emit(LoadingSalonState());
+    if (!refreshPage || loadFavoriteSalonsForFirstTime)
+      emit(LoadingSalonState());
     final response =
         await loadFavoriteSalonsFromServer(_currentPageAllSalonsIndex);
     if (response.error) {
       emit(ErrorSalonState(error: response.errorMessage));
     } else {
+      loadFavoriteSalonsForFirstTime = false;
       if (_favoriteSalons.isEmpty)
         _favoriteSalons.add(response.data.favoriteList);
       else if (refreshPage) {
@@ -402,7 +405,6 @@ class SalonsCubit extends Cubit<SalonStates> {
         totalPrice -= servicePrice ?? 0;
       else
         totalPrice += servicePrice ?? 0;
-      print(totalPrice);
       salonDetail.salonServices[index].selected =
           !salonDetail.salonServices[index].selected;
       emit(ToggleSelectedServiceState());
@@ -416,5 +418,29 @@ class SalonsCubit extends Cubit<SalonStates> {
       return true;
     }
     return false;
+  }
+
+  void resetData() {
+    loadAllSalonsForFirstTime = true;
+    _currentPageAllSalonsIndex = 1;
+    _allSalons.clear();
+
+    loadMostSearchSalonsForFirstTime = true;
+    _currentPageMostSearchedSalonsIndex = 1;
+    _mostSearchSalons.clear();
+
+    loadFavoriteSalonsForFirstTime = true;
+    _currentPageFavoritesIndex = 1;
+    _favoriteSalons.clear();
+
+    nearestSalons.clear();
+
+    totalPrice = 0;
+    searchName = '';
+    filterData = false;
+    selectedDateIndex = 0;
+
+    salonDetail = null;
+    availableDates = [];
   }
 }

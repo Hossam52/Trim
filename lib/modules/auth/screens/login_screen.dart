@@ -1,24 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_conditional_rendering/conditional.dart';
-import 'package:flutter_conditional_rendering/conditional_switch.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
-import 'package:trim/api_reponse.dart';
 import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
-import 'package:trim/modules/auth/screens/registration_screen.dart';
-import 'package:trim/modules/auth/widgets/social.dart';
-import 'package:trim/modules/home/cubit/home_cubit.dart';
-import 'package:trim/modules/home/screens/home_Screen.dart';
-import 'package:trim/utils/services/login_service.dart';
+import 'package:trim/modules/auth/screens/not_acitvate_account_screen.dart';
 import 'package:trim/general_widgets/default_button.dart';
-import '../../../general_widgets/transparent_appbar.dart';
 import '../widgets/frame_card_auth.dart';
 import '../../../general_widgets/trim_text_field.dart';
-import '../../../core/auth/login/validate.dart';
 import '../widgets/not_correct_input.dart';
-import '../../../constants/app_constant.dart';
 import '../cubits/auth_cubit.dart';
 import '../cubits/auth_states.dart';
 
@@ -35,6 +25,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _userNameController = new TextEditingController();
 
   final TextEditingController _passwordController = new TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    AuthCubit.getInstance(context).emit(IntialAuthLoginState());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +40,12 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           TrimTextField(
             controller: _userNameController,
-            placeHolder: 'الايميل او الهاتف',
+            placeHolder: getWord('Email or phone', context),
             validator: null,
           ),
           TrimTextField(
               controller: _passwordController,
-              placeHolder: 'كلمة المرور',
+              placeHolder: getWord('Password', context),
               password: true,
               validator: null),
         ],
@@ -66,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushNamed(context, ForgotPassword.routeName);
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: Text('هل نسيت الرقم السري؟',
+      child: Text(getWord('Forgot password', context),
           style: TextStyle(color: Colors.grey, fontSize: 20)),
     );
 
@@ -78,20 +73,28 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () =>
           AuthCubit.getInstance(context).navigateToRegister(context),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: Text('انشاء حساب',
+      child: Text(getWord('Create account', context),
           style: TextStyle(color: Colors.grey, fontSize: 18)),
     );
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: TransparentAppBar(),
       body: Center(
         child: Container(
-          height: ResponsiveFlutter.of(context).scale(460),
           child: BlocConsumer<AuthCubit, AuthStates>(
-            listener: (_, state) {
+            listener: (_, state) async {
+              FocusScope.of(context).unfocus();
+              if (state is InvalidFieldState)
+                Fluttertoast.showToast(
+                    msg: state.errorMessage, backgroundColor: Colors.red);
               if (state is NotActivatedAccountState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Not Activated account')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(getWord('Account not activated', context))));
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ActivateAccountScreen(
+                              emailOrPhone: _userNameController.text,
+                            )));
               }
               if (state is ErrorAuthState) {
                 ScaffoldMessenger.of(context)
@@ -101,42 +104,36 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (_, state) {
               return CardLayout(
                 children: [
-                  if (state is InvalidFieldState)
-                    ErrorWarning(text: state.errorMessage),
+                  // if (state is InvalidFieldState)
+                  //   ErrorWarning(text: state.errorMessage),
                   if (state is ErrorAuthState)
                     ErrorWarning(
                       text: state.errorMessage,
                     ),
-                  if (state is NotActivatedAccountState)
-                    ErrorWarning(
-                      text: 'Activate Account Now',
-                      widget: TextButton(
-                        child: FittedBox(
-                            child: Text('Activate',
-                                style: TextStyle(color: Colors.black))),
-                        onPressed: () {},
-                      ),
-                    ),
                   formFields,
-                  DefaultButton(
-                    widget: state is LoadingAuthState
-                        ? Center(child: CircularProgressIndicator())
-                        : null,
-                    text: getWord("Login", context), //'تسجيل الدخول',
-                    onPressed: state is LoadingAuthState
-                        ? null
-                        : () {
-                            AuthCubit.getInstance(context).login(
-                                context,
-                                _userNameController.text,
-                                _passwordController.text);
-                          },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DefaultButton(
+                      widget: state is LoadingAuthState
+                          ? Center(child: CircularProgressIndicator())
+                          : null,
+                      text: getWord("Login", context),
+                      onPressed: state is LoadingAuthState
+                          ? null
+                          : () {
+                              FocusScope.of(context).unfocus();
+                              AuthCubit.getInstance(context).login(
+                                  context,
+                                  _userNameController.text,
+                                  _passwordController.text);
+                            },
+                    ),
                   ),
                   forgotPassword,
                   createAccount,
-                  Divider(),
-                  Text('أو يمكنك التسجيل من خلال'),
-                  SocialAuth(),
+                  // Divider(),
+                  // Text('أو يمكنك التسجيل من خلال'),
+                  // SocialAuth(),
                 ],
               );
             },

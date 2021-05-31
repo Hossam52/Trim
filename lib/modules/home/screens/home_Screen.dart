@@ -1,20 +1,16 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_conditional_rendering/conditional.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
-import 'package:trim/modules/home/models/home_model.dart';
-import 'package:trim/modules/market/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/map_screen.dart';
 import 'package:trim/modules/settings/screens/settings_screen.dart';
-import 'package:trim/modules/home/screens/raters_screen.dart';
 import 'package:trim/modules/home/widgets/BuildButtonViewHome.dart';
 import 'package:trim/modules/home/widgets/BuildListOffers.dart';
 import 'package:trim/modules/home/widgets/BuildMostSearchedSalons.dart';
@@ -41,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    print('initState Home');
     pagesBuilder
         .add(PageWidget(imageIcon: settingsIcon, page: SettingsScreen()));
     pagesBuilder.add(PageWidget(imageIcon: marketIcon, page: ShoppingScreen()));
@@ -59,13 +54,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   Future<bool> canLoadMap() async {
     final res = await HomeCubit.getInstance(context).canUseLocationServices();
-    print(res);
     return res;
   }
 
   @override
   void dispose() async {
-    print('Dispose home');
     super.dispose();
   }
 
@@ -97,6 +90,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         builder: (_, state) {
           if (state is LoadingHomeState)
             return Center(child: CircularProgressIndicator());
+          if (state is ErrorHomeState)
+            return Material(
+                child: RetryWidget(
+                    text: state.error,
+                    onRetry: () async {
+                      HomeCubit.getInstance(context).loadHomeLayout(context);
+                    }));
           return Scaffold(
             bottomNavigationBar: Directionality(
               textDirection: TextDirection.ltr,
@@ -108,11 +108,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 items: bottomBarItems(),
                 onTap: (index) {
                   if (index == 2) {
-                    //Map Screen
-                    // final res = await Geolocator.isLocationServiceEnabled();
-                    // if (!res) {
-                    //   await openLocationSetting(context);
-                    // }
                     SalonsCubit.getInstance(context)
                         .loadNearestSalons(31, 31.5);
                   }

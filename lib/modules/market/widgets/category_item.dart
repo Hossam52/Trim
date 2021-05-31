@@ -32,7 +32,6 @@ class CategoryItem extends StatelessWidget {
   }
 
   Text buildCategoryName() {
-    print('English ${category.nameEn}');
     return Text(
       isArabic ? category.nameAr : category.nameEn,
       textAlign: TextAlign.center,
@@ -58,26 +57,14 @@ class CategoryItem extends StatelessWidget {
         else
           return 60;
       }
-      // deviceInfo.type == deviceType.mobile
-      //     ? deviceInfo.orientation == Orientation.portrait
-      //         ? 50
-      //         : 55
-      //     : deviceInfo.orientation == Orientation.portrait
-      //         ? 55
-      //         : 65;
     }
 
     return CircleAvatar(
-      child: Image.network(
+      backgroundImage: CachedNetworkImageProvider(
         category.imageName,
-        fit: BoxFit.scaleDown,
       ),
-      // backgroundImage: NetworkImage(category.imageName,
-
-      // ),
-      //  child:
       radius: calculateRadius(),
-      backgroundColor: Colors.cyanAccent[100],
+      backgroundColor: Colors.transparent,
     );
   }
 }

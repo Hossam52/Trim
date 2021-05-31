@@ -118,7 +118,6 @@ class _ProductItemState extends State<ProductItem> {
   @override
   void initState() {
     cartBloc = BlocProvider.of<CartBloc>(context);
-    // TODO: implement initState
     super.initState();
   }
 
@@ -189,7 +188,6 @@ class _ProductItemState extends State<ProductItem> {
 
   Widget buildActionButtons(DeviceInfo deviceInfo) {
     bool isEnabled = widget.cartItem.quantity == '10';
-    print('qty ${widget.cartItem.quantity}');
     return Row(
       children: [
         BuildRawMaterialButton(
@@ -260,11 +258,6 @@ class _ProductItemState extends State<ProductItem> {
       child: TrimCachedImage(
         src: widget.cartItem.imageName,
       ),
-      // child: Image.asset(
-      //   'assets/images/shampoo1.jpg',
-      //   height: double.infinity,
-      //   fit: BoxFit.fill,
-      // ),
     );
   }
 }

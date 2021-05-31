@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
+import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
+import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/person_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
 import 'package:trim/modules/home/widgets/barber_item.dart';
@@ -26,6 +26,22 @@ class _PersonsGridViewState extends State<PersonsGridView> {
   @override
   void initState() {
     super.initState();
+
+    final homeState = HomeCubit.getInstance(context).state;
+    if (homeState is AllPersonsState) {
+      if (PersonsCubit.getInstance(context).loadAllPersonsForFirstTime)
+        PersonsCubit.getInstance(context)
+            .loadAllPersons(context, refreshPage: true);
+    } else if (homeState is TrimStarState) {
+      if (PersonsCubit.getInstance(context).loadTrimStarsForFirstTime)
+        PersonsCubit.getInstance(context)
+            .loadAllPersons(context, refreshPage: true);
+    } else if (homeState is FavoriteState) {
+      if (PersonsCubit.getInstance(context).loadFavoritesForFirstTime)
+        PersonsCubit.getInstance(context)
+            .loadAllPersons(context, refreshPage: true);
+    }
+
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
@@ -57,7 +73,22 @@ class _PersonsGridViewState extends State<PersonsGridView> {
               );
             if (state is EmptyPersonListState)
               return Center(child: Text('No Salons available'));
-            else {
+            if (state is ErrorMorePersonState) {
+              return RetryWidget(
+                  text: state.error,
+                  onRetry: () async {
+                    await PersonsCubit.getInstance(context)
+                        .loadAllPersons(context, refreshPage: false);
+                  });
+            }
+            if (state is ErrorPersonsState) {
+              return RetryWidget(
+                  text: state.error,
+                  onRetry: () async {
+                    await PersonsCubit.getInstance(context)
+                        .loadAllPersons(context, refreshPage: false);
+                  });
+            } else {
               var trimStarList =
                   PersonsCubit.getInstance(context).getPersonToDisplay(context);
               int pageNumber =

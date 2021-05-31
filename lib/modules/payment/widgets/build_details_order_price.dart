@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/constants/api_path.dart';
 import 'package:trim/general_widgets/default_button.dart';
-import 'package:trim/general_widgets/trim_text_field.dart';
+import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
+import 'package:trim/modules/payment/cubits/address_cubit.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
-import 'package:trim/modules/payment/screens/payment_detail_screen.dart';
 import 'package:trim/modules/payment/screens/payment_methods_screen.dart';
+import 'package:trim/modules/reservation/Bloc/order_cubit.dart';
+import 'package:trim/modules/reservation/Bloc/order_states.dart';
 import 'package:trim/modules/reservation/Bloc/products_order_bloc.dart';
-import 'package:trim/modules/reservation/Bloc/products_order_events.dart';
-import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
-import 'package:trim/modules/reservation/screens/ReservationDetailsScreen.dart';
 import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -35,8 +33,7 @@ class BuildDetailsOrderPrice extends StatefulWidget {
       @required this.stepNumber,
       @required this.paymentMethod,
       @required this.address,
-      @required this.phone
-      });
+      @required this.phone});
   final PaymentMethod paymentMethod;
 
   @override
@@ -56,8 +53,11 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
       context,
     );
     controller = TextEditingController();
+    shippingFee = AppCubit.getInstance(context).shippingFee ?? 10;
     super.initState();
   }
+
+  int shippingFee;
 
   @override
   void dispose() {
@@ -67,7 +67,6 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
 
   @override
   Widget build(BuildContext context) {
-    print('print inside details order price');
     return Container(
       height: widget.deviceInfo.localHeight *
           (widget.deviceInfo.orientation == Orientation.portrait ? 0.6 : 0.82),
@@ -81,7 +80,6 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (widget.stepNumber == 2)
-              // getCopunTextField(context: context, controller: controller),
               CoupounTextField(
                 controller: controller,
                 enabled: correctCopon,
@@ -100,7 +98,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
             ),
             BuildListTileCofirm(
               leading: getWord('shipping', context),
-              trailing: '20 ' + getWord('bound', context),
+              trailing: '$shippingFee ' + getWord('bound', context),
               fontSize: widget.fontSize,
             ),
             BuildListTileCofirm(
@@ -116,71 +114,94 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
             BuildListTileCofirm(
               leading: getWord('total price', context),
               trailing:
-                  '${(cartBloc.getTotalPrice() + 20 - discountValue).toStringAsFixed(2)} ' +
+                  '${(cartBloc.getTotalPrice() + shippingFee - discountValue).toStringAsFixed(2)} ' +
                       getWord('bound', context),
               fontSize: widget.fontSize,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ElevatedButton(
-                onPressed: widget.stepNumber == 2
-                    ? confirmOrderFunction(context, discountValue)
-                    : widget.pressed,
-                child: Text(
-                  widget.stepNumber == 2
+              child: BlocConsumer<OrderCubit, OrderStates>(
+                listener: (_, state) {
+                  if (state is ErrorOrderState)
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(state.error)));
+                },
+                builder: (_, state) => DefaultButton(
+                  onPressed: state is LoadingOrderState
+                      ? null
+                      : () async {
+                          widget.stepNumber == 2
+                              ? await confirmOrderFunction(
+                                  context, discountValue)
+                              : widget.pressed();
+                        },
+                  text: widget.stepNumber == 2
                       ? getWord('Confirm order', context)
                       : getWord('continue to pay', context),
-                  style: TextStyle(fontSize: widget.fontSize),
+                  widget: state is LoadingOrderState
+                      ? Center(child: CircularProgressIndicator())
+                      : null,
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
     );
   }
 
-  VoidCallback confirmOrderFunction(BuildContext context, var discountValue) {
-    return () async {
-      double totalPrice = (cartBloc.getTotalPrice() + 20 - discountValue);
-      if (widget.paymentMethod == PaymentMethod.VisaMaster)
-        await Navigator.pushNamed(context, PaymentMethodsScreen.routeName,
-            arguments: {'totalPrice': totalPrice, 'showCashMethod': false});
-      if (widget.paymentMethod == PaymentMethod.Cash ||
-          (PaymentCubit.getInstance(context).successPayment &&
-              PaymentCubit.getInstance(context).paymentMethod !=
-                  PaymentMethod.Cash)) {
-        try {
-          CartBloc cartBloc = BlocProvider.of<CartBloc>(context);
-          List<CartItem> items = cartBloc.getCartList();
-          ProductsOrderBloc productsOrderBloc =
-              BlocProvider.of<ProductsOrderBloc>(context);
-          productsOrderBloc.add(PostDataOrderProducts(
-              productsOrder: items, coupon: controller.text,phone:widget.phone,address: widget.address));
-          if (productsOrderBloc.discount != 0 ||
-              productsOrderBloc.discount != null)
-            Fluttertoast.showToast(
-                msg:
-                    'we will apply discount with ${productsOrderBloc.discount} when paying');
-          // cartBloc.add(DeleteAllItemsInCart());
+  Future<void> confirmOrderFunction(
+      BuildContext context, var discountValue) async {
+    final deliveryInfo = AddressCubit.getInstance(context);
+    final address = deliveryInfo.getStreet(context) +
+        ' ' +
+        deliveryInfo.getCity(context) +
+        ' ' +
+        deliveryInfo.getCountry(context);
+    double totalPrice =
+        (cartBloc.getTotalPrice() + shippingFee - discountValue);
+    if (widget.paymentMethod == PaymentMethod.VisaMaster)
+      await Navigator.pushNamed(context, PaymentMethodsScreen.routeName,
+          arguments: {'totalPrice': totalPrice, 'showCashMethod': false});
+    if (widget.paymentMethod == PaymentMethod.Cash ||
+        (PaymentCubit.getInstance(context).successPayment &&
+            PaymentCubit.getInstance(context).paymentMethod !=
+                PaymentMethod.Cash)) {
+      try {
+        final cartBloc = BlocProvider.of<CartBloc>(context);
+        List<CartItem> items = cartBloc.getCartList();
+        final productsOrderBloc = BlocProvider.of<ProductsOrderBloc>(context);
 
-          await ReservationCubit.getInstance(context)
-              .loadMyOrders(refreshPage: true);
+        await OrderCubit.getInstance(context).makeOrderProducts(
+            cartItems: items,
+            coupon: controller.text,
+            phone: deliveryInfo.phone,
+            address: address,
+            paymentMethod: widget.paymentMethod == PaymentMethod.Cash
+                ? 'Cash'
+                : 'VisaMatercard');
+        if (productsOrderBloc.discount != 0 ||
+            productsOrderBloc.discount != null)
+          Fluttertoast.showToast(
+              msg:
+                  'we will apply discount with ${productsOrderBloc.discount} when paying');
+
+        if (OrderCubit.getInstance(context).state is! ErrorOrderState) {
+          cartBloc.add(DeleteAllItemsInCart());
+
           await Navigator.pushNamed(
               context,
               ReservationsScreen
                   .routeName); //Go to reservation page to view the order
-          // Navigator.pop(context); //for delivery screen
-          // Navigator.pop(context); //for cart screen
-          // Navigator.pop(
-          //     context); //for products screen and stay at categories screen
-        } catch (e) {
-          Fluttertoast.showToast(
-              msg: getWord(
-                  'Please Make sure from internet connection', context));
+          Navigator.pop(context); //for delivery screen
+          Navigator.pop(context); //for cart screen
+
         }
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: getWord('Please Make sure from internet connection', context));
       }
-    };
+    }
   }
 
   Widget getCopunTextField(
@@ -218,8 +239,6 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                               discountValue =
                                   int.parse(response.data['data']['price']);
                             });
-                            print(response.data);
-                            print(controller.text);
                           }
                         }
                       } catch (e) {

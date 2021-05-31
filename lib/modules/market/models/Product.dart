@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:trim/modules/market/models/Category.dart';
 
 class Product {
   final String nameAr;

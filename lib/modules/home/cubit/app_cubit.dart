@@ -1,9 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/modules/auth/models/login_model.dart';
 import 'package:trim/modules/auth/models/token_model.dart';
 import 'package:trim/modules/home/cubit/app_states.dart';
-import 'package:trim/modules/home/cubit/home_cubit.dart';
-import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/services/sercure_storage_service.dart';
 
@@ -14,7 +11,7 @@ class AppCubit extends Cubit<AppStates> {
   String image = '';
   String cover = '';
   String phone = '';
-
+  int shippingFee = 30;
   static AppCubit getInstance(context) => BlocProvider.of<AppCubit>(context);
   Future<void> intializeDio(String token) async {
     if (token != null) {
@@ -33,10 +30,6 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   Future<void> reloadData(context) async {
-    if (HomeCubit.getInstance(context) != null)
-      await HomeCubit.getInstance(context).close();
-    if (SalonsCubit.getInstance(context) != null)
-      await SalonsCubit.getInstance(context).close();
     emit(ReloadDataState());
   }
 

@@ -1,24 +1,19 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:io' show Platform;
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_checkout_payment/flutter_checkout_payment.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/modules/auth/cubits/activate_cubit.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/modules/home/cubit/app_states.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
-import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
-import 'package:trim/modules/home/cubit/cities_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
-import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
@@ -27,7 +22,6 @@ import 'package:trim/modules/market/cubit/search_bloc.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/Bloc/products_order_bloc.dart';
 import 'package:trim/modules/settings/cubits/settings_cubit.dart';
-import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/services/sercure_storage_service.dart';
 import './constants/app_constant.dart';
 import './config/routes/routes_builder.dart';
@@ -36,14 +30,12 @@ import 'dart:async';
 import 'appLocale/appLocale.dart';
 import 'bloc_observer.dart';
 import './modules/auth/cubits/auth_cubit.dart';
-import './modules/home/cubit/cities_cubit.dart';
-import './modules/payment/screens/payment_methods_screen.dart';
 import './modules/payment/cubits/payment_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final String token = await TrimShared.getDataFromShared('token');
-  print('From Main${TrimShared.token}');
+  print('From Main ${TrimShared.token}');
   Bloc.observer = MyBlocObserver();
   runApp(
     DevicePreview(
@@ -51,7 +43,7 @@ Future<void> main() async {
       builder: (context) => BlocProvider<AppCubit>(
           create: (_) => AppCubit(),
           child: BlocBuilder<AppCubit, AppStates>(
-              builder: (_, __) => MyApp(token: token))), // Wrap your app
+              builder: (_, __) => MyApp(token: token))),
     ),
   );
 }
@@ -65,10 +57,35 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _connectivity = Connectivity();
   @override
   void initState() {
     super.initState();
+    initializeConnectivity();
     AppCubit.getInstance(context).intializeDio(widget.token);
+  }
+
+  Future<void> initializeConnectivity() async {
+    ConnectivityResult result = ConnectivityResult.none;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {}
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    switch (result) {
+      case ConnectivityResult.wifi:
+      case ConnectivityResult.mobile:
+      case ConnectivityResult.none:
+        break;
+      default:
+        break;
+    }
   }
 
   @override
@@ -86,9 +103,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => SettingCubit()),
         BlocProvider(create: (context) => AuthCubit()),
         BlocProvider(create: (context) => ReservationCubit()),
-        BlocProvider(create: (context) => CitiesCubit()),
         BlocProvider(create: (context) => PaymentCubit()),
         BlocProvider(create: (context) => ProductsOrderBloc()),
+        BlocProvider<ActivateCubit>(create: (_) => ActivateCubit())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -116,7 +133,6 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
               textTheme:
                   TextTheme(button: TextStyle(fontSize: defaultFontSize))),
-          // home: SplashScreen(alpha: 100, color: Color(0xff2B73A8)),
           builder: DevicePreview.appBuilder,
           home: widget.token == null ? LoginScreen() : HomeScreen(),
           routes: routes),

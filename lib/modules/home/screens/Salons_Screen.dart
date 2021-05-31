@@ -1,22 +1,17 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/constants/app_constant.dart';
-import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
+import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/widgets/barber_item.dart';
-import 'package:trim/modules/home/widgets/build_stars.dart';
-import 'package:trim/general_widgets/choice_button.dart';
 import 'package:trim/modules/home/widgets/persons_grid_view.dart';
+import 'package:trim/modules/home/widgets/salons_persons_widget.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/general_widgets/BuildAlertDialog.dart';
 import 'package:trim/modules/home/widgets/BuildCitiesChoices.dart';
@@ -41,7 +36,10 @@ class _SalonsScreenState extends State<SalonsScreen> {
         context: context,
         builder: (context) {
           return BuildAlertDialog(
-            child: BuildCitiesRadio(),
+            child: BlocProvider(
+              create: (_) => CitiesCubit(),
+              child: BuildCitiesRadio(),
+            ),
           );
         });
   }
@@ -75,49 +73,20 @@ class _SalonsScreenState extends State<SalonsScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Directionality(
                   textDirection: TextDirection.ltr,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ChoiceButton(
-                        directionRoundedRight: false,
-                        icon: hairIcon,
-                        name: getWord('Salons', context),
-                        active: displaySalons,
-                        pressed: () {
-                          final state = HomeCubit.getInstance(context).state;
-                          if (state is TrimStarState)
-                            HomeCubit.getInstance(context)
-                                .emit(MostSearchState());
-                          else if (state is AllPersonsState)
-                            HomeCubit.getInstance(context)
-                                .emit(AllSalonsState());
-
-                          if (!displaySalons)
-                            setState(() {
-                              displaySalons = true;
-                            });
-                        },
-                      ),
-                      ChoiceButton(
-                        directionRoundedRight: true,
-                        icon: marketIcon,
-                        name: getWord('Persons', context),
-                        active: !displaySalons,
-                        pressed: () {
-                          final state = HomeCubit.getInstance(context).state;
-                          if (state is MostSearchState)
-                            HomeCubit.getInstance(context)
-                                .emit(TrimStarState());
-                          else if (state is AllSalonsState)
-                            HomeCubit.getInstance(context)
-                                .emit(AllPersonsState());
-                          if (displaySalons)
-                            setState(() {
-                              displaySalons = false;
-                            });
-                        },
-                      ),
-                    ],
+                  child: SalonsPersonsWidget(
+                    displaySalons: displaySalons,
+                    salonsPressed: () {
+                      if (!displaySalons)
+                        setState(() {
+                          displaySalons = true;
+                        });
+                    },
+                    personsPressed: () {
+                      if (displaySalons)
+                        setState(() {
+                          displaySalons = false;
+                        });
+                    },
                   ),
                 ),
               ),
@@ -209,6 +178,21 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
   @override
   void initState() {
     super.initState();
+    final homeState = HomeCubit.getInstance(context).state;
+    if (homeState is AllSalonsState) {
+      if (SalonsCubit.getInstance(context).loadAllSalonsForFirstTime)
+        SalonsCubit.getInstance(context)
+            .loadSalons(refreshPage: true, context: context);
+    } else if (homeState is MostSearchState) {
+      if (SalonsCubit.getInstance(context).loadMostSearchSalonsForFirstTime)
+        SalonsCubit.getInstance(context)
+            .loadSalons(refreshPage: true, context: context);
+    } else if (homeState is FavoriteState) {
+      if (SalonsCubit.getInstance(context).loadFavoriteSalonsForFirstTime)
+        SalonsCubit.getInstance(context)
+            .loadSalons(refreshPage: true, context: context);
+    }
+
     gridViewController.addListener(() {
       if (gridViewController.position.pixels ==
           gridViewController.position.maxScrollExtent) {
@@ -254,7 +238,12 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
             if (state is LoadingSalonState)
               return Center(child: CircularProgressIndicator());
             if (state is ErrorSalonState)
-              return Center(child: Text(state.error));
+              return RetryWidget(
+                  text: state.error,
+                  onRetry: () {
+                    SalonsCubit.getInstance(context)
+                        .loadSalons(refreshPage: false, context: context);
+                  });
             final list =
                 SalonsCubit.getInstance(context).getSalonsToDisplay(context);
             final pageNumber =

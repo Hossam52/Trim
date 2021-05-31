@@ -14,8 +14,6 @@ class Salon extends BasicData {
   String image;
   String governorateEn;
   String governorateAr;
-  // String cityEn;
-  // String cityAr;
   String gender;
   double rate;
   int commentsCount;

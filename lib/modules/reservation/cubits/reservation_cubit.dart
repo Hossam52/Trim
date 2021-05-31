@@ -5,20 +5,19 @@ import 'package:trim/modules/reservation/models/order_model.dart';
 import 'package:trim/modules/reservation/repositries/reservation_repo.dart';
 
 class ReservationCubit extends Cubit<ReservationStates> {
-  ReservationCubit() : super(IntialReservationState()) {
-    loadMyOrders(refreshPage: false);
-  }
-
+  ReservationCubit() : super(IntialReservationState());
+  bool loadDataForFirstTime = true;
   static ReservationCubit getInstance(BuildContext context) =>
       BlocProvider.of<ReservationCubit>(context);
   List<OrderModel> reservations = [];
   OrderModel _selectedReservationItem;
   Future<void> loadMyOrders({@required bool refreshPage}) async {
-    if (!refreshPage) emit(LoadingReservationState());
+    if (!refreshPage || loadDataForFirstTime) emit(LoadingReservationState());
     final response = await loadMyOrdersFromServer();
     if (response.error) {
       emit(ErrorReservationState(response.errorMessage));
     } else {
+      loadDataForFirstTime = false;
       reservations = response.data.myReservations;
       emit(LoadedReservationStates());
     }
@@ -27,9 +26,9 @@ class ReservationCubit extends Cubit<ReservationStates> {
   Future<void> cancelOrder(
       {@required int orderId, @required String cancelReason}) async {
     emit(LoadingCancelReservationState());
-    final response = await cancelOrderFromServer(
-        orderId: orderId, cancelReason: cancelReason);
+    await cancelOrderFromServer(orderId: orderId, cancelReason: cancelReason);
     loadMyOrders(refreshPage: true);
+
     emit(LoadedCancedReservationState());
   }
 
@@ -39,5 +38,11 @@ class ReservationCubit extends Cubit<ReservationStates> {
 
   OrderModel getSelectedReservationItem() {
     return _selectedReservationItem;
+  }
+
+  void resetData() {
+    reservations.clear();
+    _selectedReservationItem = null;
+    loadDataForFirstTime = true;
   }
 }

@@ -21,16 +21,11 @@ class _DirectionMapScreenState extends State<DirectionMapScreen> {
   BitmapDescriptor marketLocationIcon;
   Set<Marker> markers = {};
   Directions info;
-  Set<Polyline> _polyLines = {};
   List<LatLng> polyLineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //afterFirstLayout();
-    });
   }
 
   @override
@@ -67,11 +62,9 @@ class _DirectionMapScreenState extends State<DirectionMapScreen> {
               initialCameraPosition: CameraPosition(
                   target: LatLng(30.136685, 31.27448000000001), zoom: 15),
               onMapCreated: (controller) async {
-                print('wait');
                 _controller = controller;
                 await afterFirstLayout();
                 setPolyLines();
-                print('done');
               },
               zoomControlsEnabled: false,
               markers: markers,
@@ -80,23 +73,13 @@ class _DirectionMapScreenState extends State<DirectionMapScreen> {
     );
   }
 
-  void setPolyLines() async {
-    PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
-      'AIzaSyC3QZTLUUQAxlik3D9MtzsxaHJG5Y75B8M',
-      PointLatLng(markers.elementAt(0).position.latitude,
-          markers.elementAt(0).position.longitude),
-      PointLatLng(markers.elementAt(1).position.latitude,
-          markers.elementAt(1).position.longitude),
-    );
-    print(result.status);
-  }
+  void setPolyLines() async {}
 
   Future<void> afterFirstLayout() async {
     await getBitmapDesciptiorFromAssetBytes('assets/icons/shop.png', 130)
         .then((value) => marketLocationIcon = value);
     await getBitmapDesciptiorFromAssetBytes('assets/icons/pin.png', 130)
         .then((value) => userLocationIcon = value);
-    // await initMarkerIcon(context);
     await getUserLocation().then((value) => setState(() {
           markers.add(Marker(
               markerId: MarkerId('1'),
@@ -110,37 +93,11 @@ class _DirectionMapScreenState extends State<DirectionMapScreen> {
       position: LatLng(30.142117352402693, 31.267987713217735),
       visible: true,
     ));
-    // fitCameraPosition(
-    //     markers.elementAt(0).position, markers.elementAt(1).position);
-    // final directions = await DirectionRepositry().getDirections(
-    //     origin: markers.elementAt(0).position,
-    //     dest: markers.elementAt(1).position);
-    // setState(() {
-    //   info = directions;
-    // });
   }
 
   void fitCameraPosition(
       LatLng startCoordinates, LatLng destinationCoordinates) {
     LatLng _northeastCoordinates, _southwestCoordinates;
-    // if (user.latitude <= salon.latitude) {
-    //   _northestCoordinates = salon;
-    //   _southestCoordinates = user;
-    // } else {
-    //   _northestCoordinates = user;
-    //   _southestCoordinates = salon;
-    // }
-    // _controller.animateCamera(
-    //   CameraUpdate.newLatLngBounds(
-    //     LatLngBounds(
-    //       southwest: _southestCoordinates,
-    //       northeast: _northestCoordinates,
-    //     ),
-    //     100,
-    //   ),
-    // );
-    //
-
     if (startCoordinates.latitude <= destinationCoordinates.latitude) {
       _southwestCoordinates = startCoordinates;
       _northeastCoordinates = destinationCoordinates;

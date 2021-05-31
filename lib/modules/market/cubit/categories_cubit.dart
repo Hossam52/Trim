@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/market/cubit/categories_events.dart';
 import 'package:trim/modules/market/cubit/categories_states.dart';
@@ -38,19 +36,7 @@ class AllCategoriesBloc extends Bloc<CategoriesEvents, CategoriesStates> {
         yield LoadedState(categories);
       }
     } catch (e) {
-      print('Error Appear in Categories');
       yield ErrorStateCategories();
     }
-  }
-}
-
-Future<void> getData({String searchWord}) async {
-  final response = await DioHelper.postData(url: allCategoriesUrl, body: {
-    'name': searchWord ?? '',
-  });
-  var body = response.data['data'];
-  print('lenght\n');
-  for (var category in body) {
-    categories.add(Category.fromjson(category));
   }
 }

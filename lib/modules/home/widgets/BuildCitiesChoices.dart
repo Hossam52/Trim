@@ -1,6 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
@@ -14,12 +14,17 @@ class BuildCitiesRadio extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CitiesCubit, CitiesStates>(
-      listener: (_, states) {},
+      listener: (_, state) {
+        if (state is ErrorCitiesState)
+          Fluttertoast.showToast(msg: state.errorMessage);
+      },
       builder: (_, state) {
         if (state is LoadingCitiesState)
           return Center(child: CircularProgressIndicator());
         if (state is EmptyCitiesState)
           return Center(child: Text(getWord('No Cities Found', context)));
+        if (state is ErrorCitiesState)
+          return Center(child: Text('Error : ${state.errorMessage}.'));
         final cities = CitiesCubit.getInstance(context).cities;
         int selectedId = CitiesCubit.getInstance(context).selectedCity.id;
         return Column(

@@ -50,13 +50,14 @@ class DioHelper {
       options: Options(
           headers: accessToken == null
               ? null
-              : {HttpHeaders.authorizationHeader: accessToken},
+              : {HttpHeaders.authorizationHeader: 'Bearer $accessToken'},
           followRedirects: false,
           validateStatus: (status) {
             return status < 500;
           }),
     );
   }
+
   static Future<Response> postDataToImages({
     @required String url,
     FormData formData,

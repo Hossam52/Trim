@@ -1,173 +1,151 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_verification_code/flutter_verification_code.dart';
-import 'package:trim/modules/auth/screens/login_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/retry_widget.dart';
+import 'package:trim/general_widgets/trim_text_field.dart';
+import 'package:trim/modules/auth/cubits/activate_cubit.dart';
+import 'package:trim/modules/auth/cubits/activate_states.dart';
 import 'package:trim/modules/auth/widgets/not_correct_input.dart';
-import 'package:trim/utils/services/verification_code_service.dart';
-import 'package:trim/general_widgets/transparent_appbar.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
 
 class VerificationCodeScreen extends StatefulWidget {
   static const routeName = '/verification-code';
-  // final String verificationCode; //The code that come from api
-  // final String token;
-
   const VerificationCodeScreen({
     Key key,
-    // @required this.verificationCode, @required this.token
   }) : super(key: key);
   @override
   _VerificationCodeScreenState createState() => _VerificationCodeScreenState();
 }
 
 class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
-  final List<TextEditingController> _controllers = List.generate(
-    5,
-    (index) => TextEditingController(),
-  );
-  String errorMessage = 'Enter  valid numbers';
-  bool correctData = true;
-
-  Widget digitTextField(int index, FocusScopeNode node,
-          [bool lastDigit = false]) =>
-      Expanded(
-        child: Container(
-          margin: const EdgeInsets.all(7.0),
-          child: TextField(
-            controller: _controllers[index],
-            maxLength: 1,
-            autofocus: index == 0 ? true : false,
-            textAlign: TextAlign.center,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            onEditingComplete: !lastDigit ? () => node.nextFocus() : null,
-            onSubmitted: (_) => lastDigit ? node.unfocus() : null,
-            onChanged: (String value) {
-              if (value.length == 1) {
-                node.nextFocus();
-              } else if (value.length == 0) {
-                node.previousFocus();
-              }
-            },
-            textInputAction:
-                !lastDigit ? TextInputAction.next : TextInputAction.done,
-            decoration: InputDecoration(
-              filled: true,
-              counterText: "",
-            ),
-          ),
-        ),
-      );
-
-  Widget digits(FocusNode node) {
-    return Container(
-      margin: const EdgeInsets.all(15),
-      child: Row(
-        children: [
-          digitTextField(0, node),
-          digitTextField(1, node),
-          digitTextField(2, node),
-          digitTextField(3, node),
-          digitTextField(4, node, true),
-        ],
-      ),
-    );
-  }
-
-  Widget button({String text, VoidCallback onPressed}) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ElevatedButton(
-          onPressed: () {
-            if (!correctData)
-              setState(() {
-                correctData = true;
-              });
-            onPressed();
-          },
-          child: Text(text),
-        ),
-      ),
-    );
+  final controller = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final int maxDigits = 5;
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final node = FocusScope.of(context);
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
+    String accessToken = ModalRoute.of(context).settings.arguments as String;
+    return WillPopScope(
+      onWillPop: () async {
+        final res = await confirmBack(context);
+        if (res != null && res) return Future.value(true);
+
+        return Future.value(false);
       },
-      child: Scaffold(
-          appBar: TransparentAppBar(),
-          body: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/logo.png'),
-                  radius: 70,
-                ),
-                if (!correctData)
-                  Container(
-                      margin: const EdgeInsets.all(15.0),
-                      child: ErrorWarning(text: errorMessage)),
-                Text('Enter verification code',
-                    style: Theme.of(context).textTheme.button),
-                // digits(node),
-                VerificationCode(
-                  textStyle: TextStyle(fontSize: 20.0, color: Colors.red[900]),
-                  keyboardType: TextInputType.number,
-                  underlineColor: Colors.amber,
-                  length: 5,
-                  onCompleted: (String value) {
-                    print('value is $value');
-                  },
-                  onEditing: (bool value) {},
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Row(
-                    children: [
-                      button(
-                          text: 'Submit',
-                          onPressed: () {
-                            // String userEnteredVerificationCode = "";
-                            // for (var controller in _controllers) {
-                            //   if (controller.text.isEmpty) {
-                            //     setState(() {
-                            //       correctData = false;
-                            //     });
-                            //     return;
-                            //   }
-                            //   userEnteredVerificationCode += controller.text;
-                            // }
-                            // {
-                            //   setState(() {
-                            //     errorMessage = "Your code not correct";
-                            //     correctData = false;
-                            //   });
-                            // }
-                          }),
-                      button(
-                          text: 'Reset',
-                          onPressed: () {
-                            setState(() {
-                              for (TextEditingController controller
-                                  in _controllers) {
-                                controller.text = "";
-                              }
-                              FocusScope.of(context).unfocus();
-                            });
-                          }),
-                    ],
-                  ),
-                ),
-              ],
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(getWord('Verify account', context)),
+              centerTitle: true,
             ),
-          )),
+            body: BlocConsumer<ActivateCubit, ActivateStates>(
+              listener: (_, state) {
+                if (state is RequestingNewActivatationCodeState)
+                  accessToken = 'null';
+                if (state is ValidActivateCodeStates)
+                  Navigator.pop(context, true);
+              },
+              builder: (_, state) {
+                if (state is RequestingNewActivatationCodeState)
+                  return Center(child: CircularProgressIndicator());
+                if (state is ErrorRequestActivationCodeState)
+                  return RetryWidget(text: state.error, onRetry: () {});
+                bool checking = state is CheckingActivateCodeState;
+                return Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: AssetImage('assets/images/logo.png'),
+                          radius: 70,
+                        ),
+                        if (state is ErrorActivateStates)
+                          Container(
+                              margin: const EdgeInsets.all(15.0),
+                              child: ErrorWarning(text: state.error)),
+                        Text(getWord('Enter verification code', context),
+                            style: Theme.of(context).textTheme.button),
+                        buildCodeField(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: buildActionButtons(
+                              checking, context, accessToken),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            )),
+      ),
+    );
+  }
+
+  Row buildActionButtons(
+      bool checking, BuildContext context, String accessToken) {
+    return Row(
+      children: [
+        Expanded(
+          child: DefaultButton(
+            text: getWord('Submit', context),
+            onPressed: checking
+                ? null
+                : () {
+                    if (formKey.currentState.validate())
+                      ActivateCubit.getInstance(context)
+                          .checkActivateCode(controller.text);
+                  },
+            widget:
+                checking ? Center(child: CircularProgressIndicator()) : null,
+          ),
+        ),
+        SizedBox(width: 20),
+        Expanded(
+          child: DefaultButton(
+            text: getWord('Reset', context),
+            onPressed: checking
+                ? null
+                : () {
+                    controller.text = '';
+                    FocusScope.of(context).unfocus();
+                  },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Form buildCodeField() {
+    return Form(
+      key: formKey,
+      child: TrimTextField(
+        controller: controller,
+        placeHolder: getWord('Recieved code', context),
+        maxLength: maxDigits,
+        inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+        textInputType:
+            TextInputType.numberWithOptions(signed: false, decimal: false),
+        validator: (val) {
+          if (val.isEmpty)
+            return getWord('Recieved code can not be empty', context);
+          if (val.length != maxDigits)
+            return getWord('Code should be', context) + maxDigits.toString();
+          return null;
+        },
+      ),
     );
   }
 }

@@ -1,12 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:trim/basic_data_model.dart';
 
 class SalonService extends BasicData {
   int id;
   String priceType;
   String price;
-  // String titleEn;
-  // String titleAr;
   bool selected;
   String descriptionEn;
   String descriptionAr;
@@ -14,8 +11,6 @@ class SalonService extends BasicData {
       {this.id,
       this.priceType,
       this.price,
-      // this.titleEn,
-      // this.titleAr,
       this.descriptionEn,
       this.descriptionAr,
       this.selected = false});

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:trim/modules/home/widgets/available_times.dart';
 
 class AvilableDatesModel {
   List<String> avilableDates = [];

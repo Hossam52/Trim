@@ -1,5 +1,3 @@
-import 'package:trim/modules/reservation/models/Reservation.dart';
-
 abstract class ReservationStates {}
 
 class IntialReservationState extends ReservationStates {}

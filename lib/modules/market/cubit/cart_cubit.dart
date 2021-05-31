@@ -60,7 +60,6 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
         qty = int.parse((items[index].quantity)) <= 1
             ? 0
             : int.parse(items[index].quantity) - 1;
-        print('Decrease');
         if (qty == 0) {
           items.remove(index);
           deleteItemFromCart(rowId);
@@ -85,11 +84,9 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
   }
 
   Future<void> removeItem({int rowId, int id}) async {
-    print('Third');
     try {
       await deleteItemFromCart(rowId);
       items.remove(id);
-      print('End');
     } catch (e) {
       throw e;
     }
@@ -102,10 +99,7 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
       var cartItems = response.data['data'];
       for (var cartItem in cartItems)
         items.putIfAbsent(cartItem['id'], () => CartItem.fromjson(cartItem));
-      print(cartItems);
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
   }
 
   Future<void> addItem(CartItem cartItem) async {
@@ -115,7 +109,6 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
         int qty = int.parse((items[cartItem.id].quantity)) + 1;
         updateItemToCart(quantity: qty.toString(), rowId: rowIdd);
         items.update(cartItem.id, (value) {
-          print('value of row id : ${value.rowId}');
           return CartItem(
             id: value.id,
             imageName: value.imageName,
@@ -126,7 +119,6 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
             nameEn: value.nameEn,
           );
         });
-        print('Row Id ${rowIdd}\n');
         //Error Here
       } else {
         int rowId = await addItemToCart(cartItem);
@@ -144,21 +136,17 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
         );
       }
     } catch (e) {
-      print('Enter Inside Exception');
       throw Exception;
     }
   }
 
   Future<int> addItemToCart(CartItem cartItem) async {
     try {
-      print('First');
-      print(cartItem.quantity);
       final response = await DioHelper.postData(url: addToCartUrl, body: {
         'item_id': cartItem.id,
         'quantity': cartItem.quantity == '0' ? '1' : cartItem.quantity,
         'type': 'product',
       });
-      print('insideAddToCart : ${response.data['data']['row_id']}');
       return response.data['data']['row_id'];
     } catch (e) {
       throw Exception;
@@ -166,26 +154,16 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
   }
 
   Future<void> updateItemToCart({int rowId, String quantity}) async {
-    try {
-      print('Second');
-      final response = await DioHelper.postData(url: updateCartItemUrl, body: {
-        'row_id': rowId,
-        'quantity': quantity,
-      });
-      print('update\n');
-      print(response.data);
-    } catch (e) {
+    try {} catch (e) {
       throw Exception;
     }
   }
 
   Future<void> deleteItemFromCart(int rowId) async {
     try {
-      final response = await DioHelper.postData(url: deleteCartItemUrl, body: {
+      await DioHelper.postData(url: deleteCartItemUrl, body: {
         'row_id': rowId,
       });
-      print('Delete\n');
-      print(response.data);
     } catch (e) {
       throw Exception;
     }
@@ -193,9 +171,7 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
 
   Future<void> deleteAllitemsFromCart() async {
     try {
-      final response =
-          await DioHelper.postData(url: deleteAllCartItemsUrl, body: {});
-      print(response.data);
+      await DioHelper.postData(url: deleteAllCartItemsUrl, body: {});
       items.clear();
     } catch (e) {
       throw Exception;
@@ -215,5 +191,9 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
           price: price.toStringAsFixed(2),
         );
       });
+  }
+
+  void resetData() {
+    items.clear();
   }
 }

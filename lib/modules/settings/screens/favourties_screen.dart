@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
-import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/general_widgets/choice_button.dart';
+import 'package:trim/modules/home/widgets/salons_persons_widget.dart';
 import 'package:trim/modules/settings/widgets/favorite_item.dart';
 import 'package:trim/modules/home/widgets/persons_grid_view.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
@@ -25,6 +23,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   @override
   void initState() {
     super.initState();
+    SalonsCubit.getInstance(context)
+        .loadSalons(refreshPage: false, context: context);
   }
 
   @override
@@ -46,7 +46,21 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                     horizontal: 8.0,
                     vertical: 10,
                   ),
-                  child: buildSalonPersonsButtons(),
+                  child: SalonsPersonsWidget(
+                    displaySalons: displaySalons,
+                    personsPressed: () {
+                      if (displaySalons)
+                        setState(() {
+                          displaySalons = false;
+                        });
+                    },
+                    salonsPressed: () {
+                      if (!displaySalons)
+                        setState(() {
+                          displaySalons = true;
+                        });
+                    },
+                  ),
                 ),
                 Expanded(
                     child: displaySalons
@@ -119,41 +133,6 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget buildSalonPersonsButtons() {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ChoiceButton(
-            directionRoundedRight: false,
-            icon: hairIcon,
-            name: getWord('Salons', context),
-            active: displaySalons,
-            pressed: () {
-              if (!displaySalons)
-                setState(() {
-                  displaySalons = true;
-                });
-            },
-          ),
-          ChoiceButton(
-            directionRoundedRight: true,
-            icon: marketIcon,
-            name: getWord('Persons', context),
-            active: !displaySalons,
-            pressed: () {
-              if (displaySalons)
-                setState(() {
-                  displaySalons = false;
-                });
-            },
-          ),
-        ],
       ),
     );
   }

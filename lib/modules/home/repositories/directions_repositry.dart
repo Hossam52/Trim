@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
 
 class DirectionRepositry {
   static const _baseUrl =
@@ -15,12 +12,6 @@ class DirectionRepositry {
   DirectionRepositry({Dio dio}) : _dio = dio ?? Dio();
   Future<Directions> getDirections(
       {@required LatLng origin, @required LatLng dest}) async {
-    final uri = Uri.http('maps.googleapis.com', ' /maps/api/directions/json', {
-      'origin': '${origin.latitude},${origin.longitude}',
-      'destination': '${dest.latitude},${dest.longitude}',
-      'key': 'AIzaSyC3QZTLUUQAxlik3D9MtzsxaHJG5Y75B8M'
-    });
-
     final response = await _dio.get(_baseUrl, queryParameters: {
       'origin': '${origin.latitude},${origin.longitude}',
       'destination': '${dest.latitude},${dest.longitude}',

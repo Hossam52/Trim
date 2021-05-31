@@ -14,8 +14,6 @@ class Cities {
 
 class CityModel extends BasicData {
   int id;
-  // String nameEn;
-  // String nameAr;
   CityModel({this.id, String nameArabic, String nameEnglish}) {
     nameAr = nameArabic;
     nameEn = nameEnglish;

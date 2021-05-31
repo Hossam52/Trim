@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/constants/api_path.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/auth/models/login_model.dart';
 import 'package:trim/modules/auth/models/register_model.dart';
@@ -15,7 +15,6 @@ import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/screens/registration_screen.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
-import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/services/sercure_storage_service.dart';
 
 enum Gender {
@@ -37,7 +36,7 @@ class AuthCubit extends Cubit<AuthStates> {
 //----------------------API Calls Start-------------------
   void login(BuildContext context, String userName, String password) async {
     emit(LoadingAuthState());
-    String fieldsValidateError = _validateLogin(userName, password);
+    String fieldsValidateError = _validateLogin(userName, password, context);
     if (fieldsValidateError == null) {
       //Call API
       final response = await loginUser(userName, password);
@@ -45,16 +44,11 @@ class AuthCubit extends Cubit<AuthStates> {
         if (response.errorMessage == _LoginErrors.notActivated)
           emit(NotActivatedAccountState());
         else
-          emit(ErrorAuthState('Email or password not correct'));
+          emit(ErrorAuthState(
+              getWord('Email or password not correct', context)));
       } else {
         //Use shared prefrences
         await TrimShared.storeProfileData(response.data);
-        print(await TrimShared.getDataFromShared('name'));
-        print(await TrimShared.getDataFromShared('email'));
-        print(await TrimShared.getDataFromShared('phone'));
-        print(await TrimShared.getDataFromShared('token'));
-        print(await TrimShared.getDataFromShared('image'));
-        print(await TrimShared.getDataFromShared('cover'));
         await AppCubit.getInstance(context).intializeDio(response.data.token);
 
         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
@@ -66,18 +60,22 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-  void register({
-    @required String name,
-    @required String email,
-    @required String password,
-    @required String phone,
-  }) async {
+  void register(
+      {@required String name,
+      @required String email,
+      @required String password,
+      @required String phone,
+      @required BuildContext context}) async {
     String _validateRegisterStatus = _validateRegister(
-        name: name, email: email, password: password, phone: phone);
+        context: context,
+        name: name,
+        email: email,
+        password: password,
+        phone: phone);
     if (_validateRegisterStatus != null) {
       emit(InvalidFieldState(_validateRegisterStatus));
     } else {
-      emit(LoadingAuthState());
+      emit(LoadingRegisterState());
       final response = await registerUser(body: {
         'name': name,
         'email': email,
@@ -87,12 +85,36 @@ class AuthCubit extends Cubit<AuthStates> {
         'gender': selectedGender == Gender.Male ? 'male' : 'female',
       });
       if (response.error) {
-        emit(ErrorAuthState(response.errorMessage));
+        emit(ErrorRegisterState(response.errorMessage));
       } else {
         registerModel = response.data;
         print(response.data.accessToken);
         emit(NotActivatedAccountState());
       }
+    }
+  }
+
+  Future<void> logout() async {
+    emit(LoadingLogoutState());
+    final response = await logoutUserFromServer();
+    if (response.error) {
+      emit(ErrorLogoutState(response.errorMessage));
+    } else {
+      emit(LoadedLogoutState());
+    }
+  }
+
+  Future<void> changePassword(String newPassword, String token) async {
+    try {
+      emit(ChangingPasswordState());
+      final response = await changeUserPasswordFromServer(newPassword, token);
+      if (response.error) {
+        emit(ErrorChangingPasswordState(response.errorMessage));
+      } else {
+        emit(SuccessChangedPasswordState());
+      }
+    } catch (e) {
+      emit(ErrorChangingPasswordState(e.toString()));
     }
   }
 
@@ -147,33 +169,34 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   String _validateRegister({
+    @required BuildContext context,
     @required String name,
     @required String email,
     @required String password,
     @required String phone,
   }) {
-    String validateEamilStatus = _validateEmail(email);
-    String validatePhoneStatus = validatePhone(phone);
-    String validatePasswordStatus = validatePassword(password);
-    String validateNameStatus = validateName(name);
+    String validateEamilStatus = _validateEmail(email, context);
+    String validatePhoneStatus = validatePhone(phone, context);
+    String validatePasswordStatus = validatePassword(password, context);
+    String validateNameStatus = validateName(name, context);
     if (validateNameStatus != null) return validateNameStatus;
     if (validateEamilStatus != null && validateEamilStatus.isNotEmpty)
       return validateEamilStatus;
     if (validateEamilStatus != null && validateEamilStatus.isEmpty) {
-      print('hello');
-      return 'Email entered is not correct';
+      return getWord('Email entered is not correct', context);
     }
     if (validatePhoneStatus != null) return validatePhoneStatus;
     if (validatePasswordStatus != null) return validatePasswordStatus;
     return null;
   }
 
-  String _validateLogin(String userName, String password) {
-    String validateUserNameStatus = validateLogin(userName);
+  String _validateLogin(
+      String userName, String password, BuildContext context) {
+    String validateUserNameStatus = validateLogin(userName, context);
     if (validateUserNameStatus != null)
       return validateUserNameStatus;
     else {
-      String validatePasswordStatus = validatePassword(password);
+      String validatePasswordStatus = validatePassword(password, context);
       if (validatePasswordStatus != null)
         return validatePasswordStatus;
       else
@@ -181,8 +204,9 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-  String _validateEmail(String email) {
-    if (email == null || email.isEmpty) return 'Email field can\'t be empty';
+  String _validateEmail(String email, BuildContext context) {
+    if (email == null || email.isEmpty)
+      return getWord("Email field can not be empty", context);
     String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
         "\\@" +
         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
@@ -193,36 +217,38 @@ class AuthCubit extends Cubit<AuthStates> {
     RegExp regExp = new RegExp(p);
 
     if (regExp.hasMatch(email)) {
-      // So, the email is valid
       return null;
     } else
       return '';
   }
 
-  String validateLogin(String login) {
-    String emailValidation = _validateEmail(login);
+  String validateLogin(String login, BuildContext context) {
+    String emailValidation = _validateEmail(login, context);
     if (emailValidation == null || emailValidation != '')
       return emailValidation;
-    if (validatePhone(login) != null)
-      return 'Email or phone is not on correct format';
+    if (validatePhone(login, context) != null)
+      return getWord('Email or phone is not on correct format', context);
     return null;
   }
 
-  String validatePhone(String phone) {
-    if (phone == null || phone.isEmpty) return 'Phone shouldn\'t be  empty';
-    if (phone.length != 11) return 'Please enter valid phone';
-
-    return null;
+  String validatePhone(String phone, BuildContext context) {
+    String p = '^(01)(1|0|2)[0-9]{8}\$';
+    RegExp regExp = RegExp(p);
+    if (regExp.hasMatch(phone))
+      return null;
+    else
+      return getWord('Phone not correct', context);
   }
 
-  String validatePassword(String password) {
+  String validatePassword(String password, BuildContext context) {
     if (password == null || password.isEmpty)
-      return 'Password field can\'t be empty';
+      return getWord("Password field can not be empty", context);
     return null;
   }
 
-  String validateName(String name) {
-    if (name == null || name.isEmpty) return 'Name field can\'t be empty';
+  String validateName(String name, BuildContext context) {
+    if (name == null || name.isEmpty)
+      return getWord("Name field can not be empty", context);
     return null;
   }
 }

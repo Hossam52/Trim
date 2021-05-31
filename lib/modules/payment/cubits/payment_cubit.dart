@@ -2,8 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_credit_card/credit_card_model.dart';
-import 'package:trim/modules/market/models/Product.dart';
-import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/payment/repositires/payment_repo.dart';
 import './payment_states.dart';
 
@@ -30,11 +28,11 @@ class PaymentCubit extends Cubit<PaymentStates> {
         cvv: card.cvvCode);
     if (response.error) {
       emit(ErrorPaymentState(response.errorMessage));
-      print('Error ${response.errorMessage}');
+      print('Payment Error ${response.errorMessage}');
     } else {
       token = response.data;
       emit(LoadedTokenState());
-      print('Token is ${response.data}');
+      print('User Token is ${response.data}');
     }
   }
 
@@ -49,7 +47,7 @@ class PaymentCubit extends Cubit<PaymentStates> {
     } else {
       successPayment = true;
       emit(LoadedPaymentState());
-      print('Payment OK ${response.data.id}');
+      print('Payment Token ${response.data.id}');
     }
   }
 

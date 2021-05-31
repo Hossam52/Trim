@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/modules/auth/cubits/activate_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
-import 'package:trim/modules/auth/repositries/register_repositry.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
-import 'package:trim/modules/auth/widgets/social.dart';
-import 'package:trim/utils/services/register_service.dart';
-import 'package:trim/utils/services/verification_code_service.dart';
 
-import '../../../general_widgets/transparent_appbar.dart';
-import '../../../constants/app_constant.dart';
 import '../widgets/frame_card_auth.dart';
 import '../../../general_widgets/trim_text_field.dart';
-import '../../../core/auth/register/validate.dart';
 import '../widgets/gender_selection.dart';
 import '../../../general_widgets/default_button.dart';
 import '../widgets/not_correct_input.dart';
@@ -32,10 +25,18 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _emailController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
 
+  @override
+  void dispose() {
+    super.dispose();
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
+
   void onRegisteration(BuildContext context) async {
-    Navigator.of(context).pushNamed(VerificationCodeScreen.routeName);
-    return;
     AuthCubit.getInstance(context).register(
+      context: context,
       name: _nameController.text,
       email: _emailController.text,
       password: _passwordController.text,
@@ -47,97 +48,103 @@ class RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget _alreadyHasAccount = TextButton(
-      onPressed: () => AuthCubit.getInstance(context).navigateToLogin(context),
-      child: Text(
-        'هل لديك حساب بالفعل؟',
-        style: TextStyle(color: Colors.grey, fontSize: 20),
-      ),
-    );
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          margin: const EdgeInsets.symmetric(vertical: 20),
+          child: BlocConsumer<AuthCubit, AuthStates>(
+            buildWhen: (old, newState) {
+              return newState is! ChangeGenderState;
+            },
+            listener: (_, state) async {
+              if (state is NotActivatedAccountState) {
+                ActivateCubit.getInstance(context).accessToken =
+                    AuthCubit.getInstance(context).registerModel.accessToken;
+                await Navigator.of(context).pushNamed(
+                    VerificationCodeScreen.routeName,
+                    arguments: AuthCubit.getInstance(context)
+                        .registerModel
+                        .accessToken);
+                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+              }
+            },
+            builder: (_, state) {
+              return CardLayout(
+                children: [
+                  if (state is InvalidFieldState)
+                    ErrorWarning(text: state.errorMessage),
+                  if (state is ErrorRegisterState)
+                    ErrorWarning(text: state.errorMessage),
+                  buildFormFields(),
+                  BlocBuilder<AuthCubit, AuthStates>(
+                    buildWhen: (oldState, newState) {
+                      return newState is ChangeGenderState;
+                    },
+                    builder: (_, state) => GenderSelectionWidget(
+                        changeGender:
+                            AuthCubit.getInstance(context).changeGender,
+                        selectedGender:
+                            AuthCubit.getInstance(context).selectedGender),
+                  ),
+                  DefaultButton(
+                    text: getWord('Register account', context),
+                    widget: state is LoadingRegisterState
+                        ? Center(child: CircularProgressIndicator())
+                        : null,
+                    onPressed: state is LoadingRegisterState
+                        ? null
+                        : () => onRegisteration(context),
+                  ),
+                  buildAlreadyHasAccount(),
+                  // Text('أو يمكنك التسجيل من خلال'),
+                  // SocialAuth(),
+                ],
+              );
+            },
+          ),
+        ));
+  }
 
-    final Widget formFields = Form(
+  Widget buildFormFields() {
+    return Form(
       key: _formKey,
       child: Column(
         children: [
           TrimTextField(
             controller: _nameController,
-            placeHolder: 'الاسم',
+            placeHolder: getWord('Name', context),
             validator: null,
           ),
           TrimTextField(
             controller: _emailController,
-            placeHolder: 'الايميل',
+            placeHolder: getWord('Email', context),
             validator: null,
             textInputType: TextInputType.emailAddress,
           ),
           TrimTextField(
             controller: _phoneController,
-            placeHolder: 'رقم التليفون',
+            placeHolder: getWord('Phone', context),
             validator: null,
             textInputType: TextInputType.phone,
           ),
           TrimTextField(
             controller: _passwordController,
-            placeHolder: 'كلمة المرور',
+            placeHolder: getWord('Password', context),
             validator: null,
             password: true,
           ),
         ],
       ),
     );
+  }
 
-    AuthCubit.getInstance(context).emit(LoadedAuthState());
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: TransparentAppBar(),
-        body: Center(
-          child: Container(
-            height: ResponsiveFlutter.of(context).scale(620),
-            child: BlocConsumer<AuthCubit, AuthStates>(
-              buildWhen: (old, newState) {
-                return newState is! ChangeGenderState;
-              },
-              listener: (_, state) {
-                if (state is NotActivatedAccountState)
-                  Navigator.of(context)
-                      .pushNamed(VerificationCodeScreen.routeName);
-              },
-              builder: (_, state) {
-                return CardLayout(
-                  children: [
-                    if (state is InvalidFieldState)
-                      ErrorWarning(text: state.errorMessage),
-                    if (state is ErrorAuthState)
-                      ErrorWarning(text: state.errorMessage),
-                    formFields,
-                    BlocBuilder<AuthCubit, AuthStates>(
-                      buildWhen: (oldState, newState) {
-                        return newState is ChangeGenderState;
-                      },
-                      builder: (_, state) => GenderSelectionWidget(
-                          changeGender:
-                              AuthCubit.getInstance(context).changeGender,
-                          selectedGender:
-                              AuthCubit.getInstance(context).selectedGender),
-                    ),
-                    DefaultButton(
-                      text:
-                          getWord('Register account', context), // 'تسجيل حساب',
-                      widget: state is LoadingAuthState
-                          ? Center(child: CircularProgressIndicator())
-                          : null,
-                      onPressed: state is LoadingAuthState
-                          ? null
-                          : () => onRegisteration(context),
-                    ),
-                    _alreadyHasAccount,
-                    Text('أو يمكنك التسجيل من خلال'),
-                    SocialAuth(),
-                  ],
-                );
-              },
-            ),
-          ),
-        ));
+  Widget buildAlreadyHasAccount() {
+    return TextButton(
+      onPressed: () => AuthCubit.getInstance(context).navigateToLogin(context),
+      child: Text(
+        getWord('Already has account?', context),
+        style: TextStyle(color: Colors.grey, fontSize: 20),
+      ),
+    );
   }
 }

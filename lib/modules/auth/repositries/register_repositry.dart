@@ -12,7 +12,7 @@ Future<APIResponse<RegisterModel>> registerUser(
         await callAPI(registerUrl, body: body, callType: CallType.Post);
     if (response.error) {
       return APIResponse<RegisterModel>(
-          error: true, errorMessage: _getErrorMessage(response.data['errors']));
+          error: true, errorMessage: response.errorMessage);
     } else {
       return APIResponse<RegisterModel>(
           data: RegisterModel.fromJson(json: response.data['data']));
@@ -20,31 +20,4 @@ Future<APIResponse<RegisterModel>> registerUser(
   } catch (e) {
     return APIResponse(error: true, errorMessage: 'Unknown error happens');
   }
-}
-
-Future<APIResponse<TokenModel>> activateAccount(String accessToken) async {
-  final response = await callAPI(activateAccountUrl,
-      accessToken: accessToken, callType: CallType.Post);
-  try {
-    if (response.error) {
-      if (response.data['message'] != null)
-        return APIResponse(
-            error: true, errorMessage: (response.data['message']));
-      return APIResponse(
-          error: true, errorMessage: response.data['errors']['sms_token'][0]);
-    } else {
-      return APIResponse(data: response.data['data']);
-    }
-  } catch (e) {
-    return APIResponse(error: true, errorMessage: 'Unknown error happened.');
-  }
-}
-
-String _getErrorMessage(Map<String, dynamic> jsonErrors) {
-  if (jsonErrors['email'] != null) return jsonErrors['email'][0];
-  if (jsonErrors['phone'] != null) return jsonErrors['phone'][0];
-  if (jsonErrors['password'] != null) return jsonErrors['password'][0];
-  if (jsonErrors['gender'] != null) return jsonErrors['gender'][0];
-  if (jsonErrors['name'] != null) return jsonErrors['name'][0];
-  return 'Unknown error Happens';
 }

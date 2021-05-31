@@ -4,7 +4,6 @@ import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
-import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class SalonServices extends StatelessWidget {
@@ -15,10 +14,22 @@ class SalonServices extends StatelessWidget {
   SalonServices({Key key, this.child, this.deviceInfo, @required this.services})
       : super(key: key);
 
-  double fontSize;
+  @override
+  Widget build(BuildContext context) {
+    final salonServicesWidget = allServices(context);
+    return Card(
+      elevation: 10,
+      child: Conditional.single(
+        context: context,
+        conditionBuilder: (_) => salonServicesWidget.isNotEmpty,
+        widgetBuilder: (_) => foundServices(salonServicesWidget),
+        fallbackBuilder: (_) => noServicesContainer(),
+      ),
+    );
+  }
 
   Widget serviceDiscription(SalonService service) {
-    fontSize = getFontSizeVersion2(deviceInfo);
+    double fontSize = getFontSizeVersion2(deviceInfo);
     if (service.descriptionEn == null && service.descriptionAr == null)
       return null;
     else
@@ -35,7 +46,7 @@ class SalonServices extends StatelessWidget {
 
   List<Widget> allServices(BuildContext context) {
     final List<Widget> returnedServices = [];
-    fontSize = getFontSizeVersion2(deviceInfo);
+    double fontSize = getFontSizeVersion2(deviceInfo);
     final ktextStyle =
         TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
 
@@ -61,28 +72,12 @@ class SalonServices extends StatelessWidget {
             onChanged: (bool value) {
               SalonsCubit.getInstance(context)
                   .toggelSelectedService(services[i].id);
-              print(SalonsCubit.getInstance(context).totalPrice);
             },
             value: services[i].selected,
           ),
         ),
       );
-    print(returnedServices.length);
     return returnedServices;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final salonServicesWidget = allServices(context);
-    return Card(
-      elevation: 10,
-      child: Conditional.single(
-        context: context,
-        conditionBuilder: (_) => salonServicesWidget.isNotEmpty,
-        widgetBuilder: (_) => foundServices(salonServicesWidget),
-        fallbackBuilder: (_) => noServicesContainer(),
-      ),
-    );
   }
 
   Column foundServices(List<Widget> salonServicesWidget) {
@@ -95,6 +90,8 @@ class SalonServices extends StatelessWidget {
   }
 
   Container noServicesContainer() {
+    double fontSize = getFontSizeVersion2(deviceInfo);
+
     return Container(
       padding: const EdgeInsets.all(10),
       width: double.infinity,

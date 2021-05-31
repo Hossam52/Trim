@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/modules/home/cubit/home_cubit.dart';
-import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';

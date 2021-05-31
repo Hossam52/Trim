@@ -4,7 +4,6 @@ import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/cubits/reservation_states.dart';
-import 'package:trim/modules/reservation/models/Reservation.dart';
 import 'package:trim/general_widgets/price_information.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
@@ -92,7 +91,6 @@ class ReservationDetailsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: DefaultButton(
             text: getWord('Modify order', context),
-            fontSize: fontSize,
             onPressed: () {},
           ),
         )),
@@ -102,7 +100,6 @@ class ReservationDetailsScreen extends StatelessWidget {
             child: DefaultButton(
               text: getWord('Cancel order', context),
               color: Colors.black,
-              fontSize: fontSize,
               onPressed: () async {
                 await showReasonCancelled(context);
               },

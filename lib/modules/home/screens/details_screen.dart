@@ -5,12 +5,9 @@ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
-import 'package:trim/modules/home/cubit/cities_cubit.dart';
-import 'package:trim/modules/home/cubit/cities_states.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/screens/direction_map_screen.dart';
 import 'package:trim/modules/home/screens/raters_screen.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
@@ -31,85 +28,84 @@ class DetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            BlocConsumer<SalonsCubit, SalonStates>(
-              listener: (_, state) {},
-              builder: (_, state) {
-                if (state is LoadingSalonDetailState)
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                if (state is ErrorSalonState)
-                  return Center(child: Text('Error happened ${state.error}'));
-                Salon salon = SalonsCubit.getInstance(context).salonDetail;
-                return InfoWidget(
-                  responsiveWidget: (context, deviceInfo) {
-                    return SingleChildScrollView(
-                      physics: BouncingScrollPhysics(),
-                      child: Container(
-                        margin: const EdgeInsets.all(25),
-                        child: Column(
-                          children: [
-                            SalonLogo(
-                              showBottomName: true,
-                              salon: salon,
-                              deviceInfo: deviceInfo,
-                              height:
-                                  deviceInfo.orientation == Orientation.portrait
-                                      ? deviceInfo.localHeight * 0.3
-                                      : deviceInfo.localHeight * 0.6,
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 18.0),
-                              height: MediaQuery.of(context).size.height * 0.14,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Expanded(
-                                      child: Openions(
-                                        deviceInfo: deviceInfo,
-                                        salon: salon,
-                                      ),
-                                      flex: 2),
-                                  Expanded(
-                                      child: availabilityTime(
-                                          context, deviceInfo, salon)),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.16,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Expanded(
-                                      child: addressWidget(
-                                          context, deviceInfo, salon.address),
-                                      flex: 3),
-                                  Expanded(
-                                      child: directionWidget(
-                                          context, salon, deviceInfo))
-                                ],
-                              ),
-                            ),
-                            SalonServices(
-                                services: salon.salonServices,
-                                child: reserveButton(context, deviceInfo),
-                                deviceInfo: deviceInfo),
-                            SalonOffers(deviceInfo, salon.salonOffers),
-                          ],
+        child: BlocConsumer<SalonsCubit, SalonStates>(
+          listener: (_, state) {},
+          builder: (_, state) {
+            if (state is LoadingSalonDetailState)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            if (state is ErrorSalonState)
+              return Center(child: Text('Error happened ${state.error}'));
+            Salon salon = SalonsCubit.getInstance(context).salonDetail;
+            return InfoWidget(
+              responsiveWidget: (context, deviceInfo) {
+                return SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Container(
+                    margin: const EdgeInsets.all(25),
+                    child: Column(
+                      children: [
+                        SalonLogo(
+                          showBottomName: true,
+                          salon: salon,
+                          deviceInfo: deviceInfo,
+                          height: deviceInfo.orientation == Orientation.portrait
+                              ? deviceInfo.localHeight * 0.3
+                              : deviceInfo.localHeight * 0.6,
                         ),
-                      ),
-                    );
-                  },
+                        Container(
+                          padding: const EdgeInsets.only(top: 18.0),
+                          height: MediaQuery.of(context).size.height * 0.14,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                  child: Openions(
+                                    deviceInfo: deviceInfo,
+                                    salon: salon,
+                                  ),
+                                  flex: 2),
+                              Expanded(
+                                  child: availabilityTime(
+                                      context, deviceInfo, salon)),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.16,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                  child: addressWidget(
+                                      context, deviceInfo, salon.address),
+                                  flex: 3),
+                              Expanded(
+                                  child: directionWidget(
+                                      context, salon, deviceInfo))
+                            ],
+                          ),
+                        ),
+                        SalonServices(
+                            services: salon.salonServices,
+                            child: reserveButton(context, deviceInfo),
+                            deviceInfo: deviceInfo),
+                        SalonOffers(deviceInfo, salon.salonOffers),
+                      ],
+                    ),
+                  ),
                 );
               },
-            ),
-            TrimAppBar(),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -122,7 +118,6 @@ class DetailsScreen extends StatelessWidget {
         child: DefaultButton(
           color: Colors.black,
           textColor: Colors.white,
-          fontSize: getFontSizeVersion2(deviceInfo),
           onPressed: () => reserveSalon(context, deviceInfo),
           text: getWord('Reserve now', context), //'Reserve now',
         ));
@@ -183,9 +178,9 @@ class DetailsScreen extends StatelessWidget {
         child: InkWell(
           onTap: () async {
             if (salon.lat == null ||
-                salon.lat == "0" ||
+                salon.lat == 0 ||
                 salon.lang == null ||
-                salon.lang == "0") {
+                salon.lang == 0) {
               Fluttertoast.showToast(
                   msg: 'Location for salon ${salon.name} is not provided');
             } else

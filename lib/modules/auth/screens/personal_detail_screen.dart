@@ -1,21 +1,14 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/constants/api_path.dart';
 import 'package:trim/core/auth/register/validate.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
-import 'package:trim/modules/auth/models/login_model.dart';
-import 'package:trim/modules/auth/models/token_model.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
-import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';

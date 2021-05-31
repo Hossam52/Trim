@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
-import 'package:trim/modules/home/screens/details_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
@@ -11,7 +10,6 @@ class BuildMostSearchedSalons extends StatelessWidget {
     final mostSearcedList = HomeCubit.getInstance(context).mostSearchedSalons;
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
-        print(deviceInfo.localHeight);
         return GridView.builder(
           physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.all(2),
@@ -20,10 +18,6 @@ class BuildMostSearchedSalons extends StatelessWidget {
               SalonsCubit.getInstance(context).navigateToSalonDetailScreen(
                   context, mostSearcedList[index].id);
               return;
-              SalonsCubit.getInstance(context)
-                  .getSalonDetails(id: mostSearcedList[index].id);
-              Navigator.pushNamed(context, DetailsScreen.routeName,
-                  arguments: mostSearcedList[index]);
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),

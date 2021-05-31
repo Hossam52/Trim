@@ -50,3 +50,7 @@ final String nearestSalonsUrl = 'nearestSalons';
 final String personalProfileUrl = 'user/info';
 final String notificationsUrl = 'user/notifications';
 final String updateUserInfoUrl = 'user/profile';
+final String couponeUrl = 'coupone';
+final String logoutUrl = 'logout';
+final String resetPasswordUrl = 'resetPassword';
+final String changePasswordUrl = 'user/change-password';

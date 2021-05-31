@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/Salon.dart';
@@ -9,19 +7,13 @@ import 'package:trim/modules/home/widgets/trim_cached_image.dart';
 
 class SalonLogo extends StatefulWidget {
   final double height;
-  //final String imagePath;
-  //final bool isFavorite;
   final DeviceInfo deviceInfo;
-  //final String salonName;
   final Salon salon;
   final bool showBottomName;
   const SalonLogo(
       {Key key,
       @required this.height,
-      // @required this.imagePath,
-      // @required this.isFavorite,
       @required this.deviceInfo,
-      // @required this.salonName,
       @required this.salon,
       @required this.showBottomName})
       : super(key: key);
@@ -34,7 +26,6 @@ class _SalonLogoState extends State<SalonLogo> {
   bool isPortrait;
   @override
   Widget build(BuildContext context) {
-    print(widget.deviceInfo.localWidth);
     isPortrait =
         widget.deviceInfo.orientation == Orientation.portrait ? true : false;
     return ClipRRect(

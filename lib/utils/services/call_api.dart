@@ -41,7 +41,10 @@ Future<RecievedData> callAPI(String url,
     }
     data = response.data;
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      if (response.data['success'] != true)
+      if ((response.data['success'] != null &&
+              response.data['success'] != true) ||
+          (response.data['status'] != null &&
+              response.data['status'] != 'success'))
         error = response.data['message'];
       else
         try {
@@ -53,7 +56,6 @@ Future<RecievedData> callAPI(String url,
     } else if (response.statusCode == 404)
       error = 'The requested page is not found try again!';
     else if (response.statusCode >= 400 && response.statusCode < 500) {
-      print('Error happened ${response.data['message']}');
       if (response.data['message'] != null)
         error = response.data['message'];
       else if (response.data['errors'] != null) {

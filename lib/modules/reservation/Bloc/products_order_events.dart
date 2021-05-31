@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
 
 abstract class ProductsOrderEvents {
@@ -5,11 +6,17 @@ abstract class ProductsOrderEvents {
   final String coupon;
   final String address;
   final String phone;
-
-  ProductsOrderEvents(this.productsOrder, this.coupon,this.address,this.phone);
+  final String paymentMethod;
+  ProductsOrderEvents(this.productsOrder, this.coupon, this.address, this.phone,
+      this.paymentMethod);
 }
 
 class PostDataOrderProducts extends ProductsOrderEvents {
-  PostDataOrderProducts({List<CartItem> productsOrder, String coupon,String address,String phone})
-      : super(productsOrder, coupon,address,phone);
+  PostDataOrderProducts(
+      {@required List<CartItem> productsOrder,
+      @required String coupon,
+      @required String address,
+      @required String phone,
+      @required String paymentMethod})
+      : super(productsOrder, coupon, address, phone, paymentMethod);
 }

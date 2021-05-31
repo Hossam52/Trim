@@ -10,8 +10,6 @@ import 'package:trim/modules/market/cubit/procucts_category_states.dart';
 import 'package:trim/modules/market/cubit/products_category_cubit.dart';
 import 'package:trim/modules/market/cubit/products_category_events.dart';
 import 'package:trim/modules/market/cubit/search_bloc.dart';
-import 'package:trim/modules/market/cubit/search_events.dart';
-import 'package:trim/modules/market/cubit/search_states.dart';
 import 'package:trim/modules/market/models/Product.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/market/widgets/cart.dart';
@@ -35,7 +33,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   @override
   void dispose() {
     super.dispose();
-    print('Dispose categoryProductScreen');
   }
 
   @override
@@ -68,18 +65,10 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   bool isCategory;
   @override
   Widget build(BuildContext context) {
-    print('from here rebuild\n');
     isCategory = true;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue[800],
-
-          // leading: BackButton(
-          //   onPressed: ()
-          // {
-          //     widget.backToCategories();
-          //   },
-          // ),
           actions: [
             Padding(
               padding: const EdgeInsets.all(12.0),
@@ -107,15 +96,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                       if (state is InitialState ||
                           state is LoadingStateProductsCategory)
                         return Center(child: CircularProgressIndicator());
-                      else if (state is LoadedStateProductsCategory)
-                        return Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: buildRefershIndicatorProducts(
-                              child: buildProducts(deviceInfo),
-                            ),
-                          ),
-                        );
                       else if (state is ErrorStateProductsCategory)
                         return Center(
                             child: buildRefershIndicatorProducts(
@@ -127,6 +107,14 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                           'Please Make sure from internet connection',
                                           context)),
                                     ))));
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: buildRefershIndicatorProducts(
+                            child: buildProducts(deviceInfo),
+                          ),
+                        ),
+                      );
                     })
                   ],
                 );
@@ -148,7 +136,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     bool isSearch = searchBloc.searchedProducts.isEmpty;
     return BlocConsumer<CartBloc, CartStates>(
       listener: (_, state) {
-        print('Inside Category products');
         isCategoryScreen = true;
         if (state is ErrorStateCart) {
           if (isCategoryScreen) {
@@ -198,7 +185,6 @@ class _BuildProductItemState extends State<BuildProductItem> {
   bool inCategory;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -206,8 +192,6 @@ class _BuildProductItemState extends State<BuildProductItem> {
   Widget build(BuildContext context) {
     fontSize = getFontSizeVersion2(widget.deviceInfo);
     cartCubit = BlocProvider.of<CartBloc>(context);
-    print(cartCubit.items.length);
-    print('From start build\n');
     return Container(
       padding: const EdgeInsets.only(bottom: 5),
       decoration: BoxDecoration(
@@ -277,10 +261,6 @@ class _BuildProductItemState extends State<BuildProductItem> {
         ),
       ],
     );
-
-    // return BlocBuilder<CartBloc, CartStates>(builder: (context, state) {
-    //   return
-    // });
   }
 
   Widget buildProductPrice() {
@@ -291,7 +271,6 @@ class _BuildProductItemState extends State<BuildProductItem> {
   }
 
   Widget buildProductImage() {
-    print(widget.prodcut.productImage);
     return ClipRRect(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(25),

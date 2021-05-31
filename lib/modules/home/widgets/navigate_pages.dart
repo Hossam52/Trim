@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/modules/home/cubit/salons_cubit.dart';
-import 'package:trim/modules/home/cubit/salons_states.dart';
 
 class NavigatePages extends StatelessWidget {
   final void Function(BuildContext) nextPage;

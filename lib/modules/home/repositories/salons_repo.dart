@@ -1,11 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
-import 'package:trim/modules/home/models/home_model.dart';
-import 'package:trim/modules/home/widgets/salon_services.dart';
-import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/modules/home/models/all_salons_model.dart';
 import 'package:trim/api_reponse.dart';
 import '../models/all_persons_model.dart';
@@ -67,7 +63,6 @@ Future<APIResponse<FavoritesModel>> loadFavoriteSalonsFromServer(
     int pageCount) async {
   final recievedData = await callAPI(favoriteSalonsUrl,
       quiries: {'page': pageCount}, callType: CallType.Get);
-  print(recievedData.data);
   if (recievedData.error)
     return APIResponse<FavoritesModel>(
         error: true, errorMessage: recievedData.errorMessage);
@@ -143,7 +138,6 @@ Future<APIResponse<AllSalonsModel>> getNearestSalonsFromServer(
   if (response.error) {
     return APIResponse(error: true, errorMessage: response.errorMessage);
   } else {
-    print(response.data);
     return APIResponse<AllSalonsModel>(
         data: AllSalonsModel.fromJson(json: response.data));
   }

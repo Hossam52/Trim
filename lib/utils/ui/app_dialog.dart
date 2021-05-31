@@ -1,12 +1,14 @@
 //for Custom app dialogs
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_text_field.dart';
+import 'package:trim/modules/auth/cubits/auth_cubit.dart';
+import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
@@ -14,6 +16,7 @@ import 'package:trim/modules/home/models/salon_detail_model.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/modules/payment/cubits/address_cubit.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/general_widgets/cancel_reasons.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -103,11 +106,6 @@ void personDetailsDialog(
                     elevatedButton(
                       text: getWord('Reserve appointment', context),
                       onPressed: () async {
-                        // await SalonsCubit.getInstance(context)
-                        //     .getSalonDetails(id: salon.id);
-                        print(SalonsCubit.getInstance(context)
-                            .salonDetail
-                            .salonServices);
                         Navigator.pop(context);
                         Navigator.pushNamed(context, ReserveScreen.routeName,
                             arguments: SalonDetailModel(
@@ -132,7 +130,7 @@ Future<bool> exitConfirmationDialog(
   return await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-            title: Text('Alert'),
+            title: Text(getWord('Alert', context)),
             actions: [
               TextButton(
                   onPressed: () {
@@ -210,7 +208,8 @@ Future<bool> openLocationSetting(BuildContext context) async {
   await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-            content: Text('Location settings is disabled Open settings?'),
+            content: Text(getWord(
+                'Location settings is disabled Open settings?', context)),
             actions: [
               TextButton(
                   onPressed: () async {
@@ -218,16 +217,16 @@ Future<bool> openLocationSetting(BuildContext context) async {
                     res = await Geolocator.isLocationServiceEnabled();
                     Navigator.pop(context, true);
                   },
-                  child: Text('OK')),
+                  child: Text(getWord('OK', context))),
               TextButton(
                   onPressed: () {
                     res = false;
                     Navigator.pop(context, true);
                   },
-                  child: Text('NO', style: TextStyle(color: Colors.red))),
+                  child: Text(getWord('NO', context),
+                      style: TextStyle(color: Colors.red))),
             ],
           ));
-  print("End of show dialog");
   return res;
 }
 
@@ -236,20 +235,22 @@ Future<bool> confirmReservation(BuildContext context) async {
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: Text('Reserve this salon?'),
-          content: Text(
-              'You are about to reserve this salon are you sure to contiue?'),
+          title: Text(getWord('Reserve this salon?', context)),
+          content: Text(getWord(
+              'You are about to reserve this salon are you sure to contiue?',
+              context)),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.pop<bool>(context, true);
                 },
-                child: Text('Yes')),
+                child: Text(getWord('Yes', context))),
             TextButton(
                 onPressed: () {
                   Navigator.pop<bool>(context, false);
                 },
-                child: Text('No', style: TextStyle(color: Colors.red))),
+                child: Text(getWord('No', context),
+                    style: TextStyle(color: Colors.red))),
           ],
         );
       });
@@ -259,20 +260,173 @@ Future<bool> confirmLogout(BuildContext context) async {
   return await showDialog(
     context: context,
     builder: (_) => AlertDialog(
-      title: Text('Warning'),
-      content: Text('Are you sure to log out?'),
+      title: Text(getWord('Warning', context)),
+      content: Text(getWord('Are you sure to log out?', context)),
       actions: [
         TextButton(
             onPressed: () {
               Navigator.pop<bool>(context, true);
             },
-            child: Text('Yes')),
+            child: Text(getWord('Yes', context))),
         TextButton(
             onPressed: () {
               Navigator.pop<bool>(context, false);
             },
-            child: Text('No', style: TextStyle(color: Colors.red))),
+            child: Text(getWord('NO', context),
+                style: TextStyle(color: Colors.red))),
       ],
     ),
   );
+}
+
+Future<void> changeAddress(
+    BuildContext context, GlobalKey<FormState> formKey) async {
+  final cityController =
+      TextEditingController(text: AddressCubit.getInstance(context).city);
+  final streetController =
+      TextEditingController(text: AddressCubit.getInstance(context).street);
+  final countryController =
+      TextEditingController(text: AddressCubit.getInstance(context).country);
+  final phoneController =
+      TextEditingController(text: AddressCubit.getInstance(context).phone);
+  Scaffold.of(context).showBottomSheet(
+      (_) => Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TrimTextField(
+                    controller: cityController,
+                    placeHolder: getWord('City', context),
+                    validator: (address) {
+                      if (address.isEmpty)
+                        return getWord('Enter your address', context);
+                      return null;
+                    },
+                  ),
+                  TrimTextField(
+                    controller: streetController,
+                    placeHolder: getWord('Sreet', context),
+                    validator: (address) {
+                      if (address.isEmpty)
+                        return getWord('Enter your address', context);
+                      return null;
+                    },
+                  ),
+                  TrimTextField(
+                    controller: countryController,
+                    placeHolder: getWord('Country', context),
+                    validator: (address) {
+                      if (address.isEmpty)
+                        return getWord('Enter your address', context);
+                      return null;
+                    },
+                  ),
+                  TrimTextField(
+                    controller: phoneController,
+                    textInputType: TextInputType.phone,
+                    placeHolder: getWord('Enter your phone', context),
+                    validator: (phone) {
+                      return AuthCubit.getInstance(context)
+                          .validatePhone(phone, context);
+                    },
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DefaultButton(
+                          color: Colors.black,
+                          text: getWord('Cancel', context),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: DefaultButton(
+                          text: getWord('save', context),
+                          onPressed: () async {
+                            if (formKey.currentState.validate()) {
+                              await AddressCubit.getInstance(context)
+                                  .changeDeliveryData(
+                                      enteredCity: cityController.text,
+                                      enteredPhone: phoneController.text,
+                                      enteredCountry: countryController.text,
+                                      enteredStreet: streetController.text);
+                              Navigator.pop(
+                                context,
+                              );
+                            }
+                          },
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
+}
+
+Future<void> loadingLogoutDialog(BuildContext context) async {
+  await showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (_) => WillPopScope(
+      onWillPop: () {
+        return Future.value(false);
+      },
+      child: Dialog(
+        child: BlocConsumer<AuthCubit, AuthStates>(
+          listener: (_, state) {
+            if (state is LoadedLogoutState || state is ErrorLogoutState)
+              Navigator.pop(context);
+            if (state is LoadedLogoutState)
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(getWord('Logged out successifully', context))));
+          },
+          builder: (_, state) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Future<bool> confirmBack(BuildContext context) async {
+  return await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+            content: Text(getWord(
+                'You will lose current modifications are you sure to back ?',
+                context)),
+            actions: [
+              TextButton(
+                child: Text(getWord('Yes', context)),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+              ),
+              TextButton(
+                child: Text(getWord('NO', context)),
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+              )
+            ],
+          ));
 }

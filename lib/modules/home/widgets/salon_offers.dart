@@ -8,25 +8,8 @@ class SalonOffers extends StatelessWidget {
   final DeviceInfo deviceInfo;
   final List<SalonOffer> salonOffers;
   SalonOffers(this.deviceInfo, this.salonOffers);
-
-  final temp = {
-    "id": 1,
-    "name_en": "friends offers",
-    "name_ar": "عرض الصحاب",
-    "description_ar": "وصف عرض الصحاب",
-    "description_en": "friends offers desc",
-    "price": "30.00",
-    "image": "https://trim.style/public/files/709116193286826084feaa023c2.png",
-    "salon": "Salon Mohamed",
-    "is_sponsored": "0",
-    "category_ar": "خصم 25%",
-    "category_en": "25 % discount",
-    "qty": ""
-  };
-
   @override
   Widget build(BuildContext context) {
-    // salonOffers = [SalonOffer.fromJson(json: temp)];
     return Container(
       height: salonOffers.isEmpty
           ? 0
