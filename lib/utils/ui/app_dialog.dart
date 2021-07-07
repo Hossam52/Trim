@@ -27,10 +27,14 @@ void personDetailsDialog(
     DeviceInfo deviceInfo, BuildContext context, Salon salon) async {
   Widget elevatedButton(
       {String text, VoidCallback onPressed, Color color = Colors.blue}) {
-    return DefaultButton(
-      text: text,
-      onPressed: onPressed,
-      color: color,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 70,
+      child: DefaultButton(
+        text: text,
+        onPressed: onPressed,
+        color: color,
+      ),
     );
   }
 
@@ -249,7 +253,7 @@ Future<bool> confirmReservation(BuildContext context) async {
                 onPressed: () {
                   Navigator.pop<bool>(context, false);
                 },
-                child: Text(getWord('No', context),
+                child: Text(getWord('NO', context),
                     style: TextStyle(color: Colors.red))),
           ],
         );

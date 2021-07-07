@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trim/constants/app_constant.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class ChoiceButton extends StatelessWidget {
   final VoidCallback pressed;
@@ -15,7 +17,7 @@ class ChoiceButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color activeColor = Colors.white;
-    Color backgroundColor = Colors.blue[900];
+    Color backgroundColor = Theme.of(context).primaryColor;
     Radius radius = Radius.circular(25);
     return Expanded(
       child: TextButton.icon(
@@ -43,7 +45,10 @@ class ChoiceButton extends StatelessWidget {
           height: 25,
           width: 25,
         ),
-        label: Text(name),
+        label: InfoWidget(
+            responsiveWidget: (_, deviceInfo) => Text(name,
+                style: TextStyle(
+                    fontSize: getFontSizeVersion2(deviceInfo) * 0.8))),
       ),
     );
   }

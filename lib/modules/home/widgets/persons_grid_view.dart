@@ -72,7 +72,8 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                 child: CircularProgressIndicator(),
               );
             if (state is EmptyPersonListState)
-              return Center(child: Text('No Salons available'));
+              return Center(
+                  child: Text(getWord('No Salons available', context)));
             if (state is ErrorMorePersonState) {
               return RetryWidget(
                   text: state.error,

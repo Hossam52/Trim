@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
@@ -116,7 +117,8 @@ class _MapScreenState extends State<MapScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text('Error happens : ${state.error}'),
+                              Text(getWord('Error happened', context) +
+                                  ': ${state.error}'),
                               TextButton(
                                   onPressed: () {
                                     SalonsCubit.getInstance(context)

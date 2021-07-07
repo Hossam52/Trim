@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 
 class RecievedData {
@@ -51,10 +52,14 @@ Future<RecievedData> callAPI(String url,
           return RecievedData(
               data: response.data, error: false, errorMessage: "");
         } catch (e) {
-          error = 'Error:${e.toString()} occured.';
+          error = isArabic
+              ? 'الخطأ ${e.toString} حدث '
+              : 'Error:${e.toString()} occured.';
         }
     } else if (response.statusCode == 404)
-      error = 'The requested page is not found try again!';
+      error = isArabic
+          ? 'الصفحة المطلوبة غير موجودة حاول مجددا'
+          : 'The requested page is not found try again!';
     else if (response.statusCode >= 400 && response.statusCode < 500) {
       if (response.data['message'] != null)
         error = response.data['message'];
@@ -64,10 +69,14 @@ Future<RecievedData> callAPI(String url,
             .toList()[0]
             .value[0];
       } else
-        error = 'Client side error please modify it then retry.';
+        error = isArabic
+            ? 'حدثت مشكلة قم بالتعديل وحاول مجددا'
+            : 'Client side error please modify it then retry.';
     }
   } catch (e) {
-    error = 'Un expected error happened';
+    error = isArabic
+        ? 'لقد حدث خطأ يرجي المحاولة مجددا'
+        : 'Un expected error happened';
   }
   return RecievedData(data: data, error: true, errorMessage: error);
 }

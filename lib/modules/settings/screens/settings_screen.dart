@@ -108,11 +108,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               context, LoginScreen.routeName);
                         }
                       },
-                      leading: Icon(Icons.logout, color: Colors.blue[900]),
+                      leading: Icon(Icons.logout, color: Colors.red),
                       title: Text(
                         getWord("log out", context),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
+                            color: Colors.red,
                             fontSize: getFontSizeVersion2(deviceInfo)),
                       ),
                     );

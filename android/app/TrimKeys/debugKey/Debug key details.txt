@@ -1,0 +1,3 @@
+alias: androiddebugkey
+storefile: debugkey.jks
+keystore password:style.trim

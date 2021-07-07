@@ -28,7 +28,7 @@ class PaymentMethodsScreen extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          title: Text('Select Payment Methods'),
+          title: Text(getWord('Select Payment Methods', context)),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),

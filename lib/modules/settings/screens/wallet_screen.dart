@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
@@ -8,7 +9,8 @@ class WalletScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('My wallet', style: TextStyle(color: Colors.black)),
+          title: Text(getWord('My wallet', context),
+              style: TextStyle(color: Colors.black)),
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: BackButton(color: Colors.black),
@@ -55,7 +57,9 @@ class WalletScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 FittedBox(
-                                    child: Text('Total amount in your wallet',
+                                    child: Text(
+                                        getWord('Total amount in your wallet',
+                                            context),
                                         style: TextStyle(
                                             fontSize:
                                                 getFontSize(deviceInfo)))),

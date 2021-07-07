@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
@@ -22,7 +23,7 @@ class RetryWidget extends StatelessWidget {
               ),
             ),
             TextButton(
-              child: Text('Retry now'),
+              child: Text(getWord('Retry now', context)),
               onPressed: onRetry,
             ),
           ],

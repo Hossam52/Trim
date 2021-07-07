@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/constants/app_constant.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class BuildSearchWidget extends StatelessWidget {
   final Future Function(String value) onChanged;
@@ -14,20 +16,25 @@ class BuildSearchWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 7),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 7),
-        child: TextFormField(
-          controller: controller,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            hintText: getWord('Search for', context),
-            prefixIcon: Icon(
-              Icons.search,
-              color: Colors.lightBlue,
-            ),
-            fillColor: Colors.grey[200],
-            filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(25),
-              borderSide: BorderSide.none,
+        child: InfoWidget(
+          responsiveWidget: (_, deviceInfo) => TextFormField(
+            controller: controller,
+            onChanged: onChanged,
+            decoration: InputDecoration(
+              hintStyle: TextStyle(fontSize: getFontSizeVersion2(deviceInfo)),
+              contentPadding: const EdgeInsets.all(0),
+              hintText: getWord('Search for', context),
+              prefixIcon: Icon(
+                Icons.search,
+                color: Theme.of(context).primaryColor,
+                size: getFontSizeVersion2(deviceInfo),
+              ),
+              fillColor: Colors.grey[200],
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
         ),

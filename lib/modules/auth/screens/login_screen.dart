@@ -6,6 +6,7 @@ import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/not_acitvate_account_screen.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/modules/auth/widgets/social.dart';
 import '../widgets/frame_card_auth.dart';
 import '../../../general_widgets/trim_text_field.dart';
 import '../widgets/not_correct_input.dart';
@@ -104,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (_, state) {
               return CardLayout(
                 children: [
-                  // if (state is InvalidFieldState)
-                  //   ErrorWarning(text: state.errorMessage),
+                  if (state is InvalidFieldState)
+                    ErrorWarning(text: state.errorMessage),
                   if (state is ErrorAuthState)
                     ErrorWarning(
                       text: state.errorMessage,
@@ -131,9 +132,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   forgotPassword,
                   createAccount,
-                  // Divider(),
-                  // Text('أو يمكنك التسجيل من خلال'),
-                  // SocialAuth(),
+                  Divider(),
+                  Text(getWord('Or Register using',context)),
+                  SocialAuth(),
                 ],
               );
             },

@@ -147,7 +147,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.camera_alt, color: Colors.white),
-                Text('Change cover photo',
+                Text(getWord('Change cover photo',context),
                     style: TextStyle(color: Colors.white)),
               ],
             )),
@@ -232,13 +232,13 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
               .showSnackBar(SnackBar(content: Text(state.error)));
         if (state is NoUpdatingUserInformationState)
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('You don\'t modify any thing'),
+            content: Text(getWord('You dont modify any thing',context)),
             duration: Duration(seconds: 1),
           ));
 
         if (state is SuccessUpdatingUserInformationState)
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Modify Done'),
+            content: Text(getWord('Modify Done',context)),
             duration: Duration(seconds: 1),
           ));
       },

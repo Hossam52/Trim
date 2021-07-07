@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/widgets/BuildStarPersonItem.dart';
 
@@ -34,7 +35,10 @@ class BuildStarsPersonsWidget extends StatelessWidget {
       child: Container(
         height: double.infinity,
         child: Row(
-          children: [Text('More'), Icon(Icons.navigate_next_sharp)],
+          children: [
+            Text(getWord('More', context)),
+            Icon(Icons.navigate_next_sharp)
+          ],
         ),
       ),
       onPressed: () =>

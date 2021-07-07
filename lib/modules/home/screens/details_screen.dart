@@ -42,7 +42,9 @@ class DetailsScreen extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             if (state is ErrorSalonState)
-              return Center(child: Text('Error happened ${state.error}'));
+              return Center(
+                  child:
+                      Text(getWord('Error happened', context) + state.error));
             Salon salon = SalonsCubit.getInstance(context).salonDetail;
             return InfoWidget(
               responsiveWidget: (context, deviceInfo) {

@@ -46,7 +46,7 @@ class RaterItem extends StatelessWidget {
                           Text(
                             rater.user,
                             style: TextStyle(
-                                color: Colors.cyan,
+                                color: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: getFontSizeVersion2(deviceInfo)),
                           ),

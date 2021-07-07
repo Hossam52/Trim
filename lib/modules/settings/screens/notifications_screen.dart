@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/widgets/navigate_pages.dart';
@@ -14,7 +15,8 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications', style: TextStyle(color: Colors.black)),
+        title: Text(getWord('notifications', context),
+            style: TextStyle(color: Colors.black)),
         leading: BackButton(color: Colors.black),
         elevation: 0,
         backgroundColor: Colors.transparent,

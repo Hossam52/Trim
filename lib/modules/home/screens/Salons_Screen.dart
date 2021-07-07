@@ -123,13 +123,15 @@ class _SalonsScreenState extends State<SalonsScreen> {
             'assets/icons/settings-icon.png',
             height: 25,
             width: 25,
+            color: Theme.of(context).primaryColor,
           ),
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.white),
             shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
-                  side: BorderSide(color: Colors.cyan, width: 1)),
+                  side: BorderSide(
+                      color: Theme.of(context).primaryColor, width: 1)),
             ),
           ),
         ),
@@ -258,7 +260,7 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
                       itemCount: list.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.84,
+                          childAspectRatio: 0.72,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10),
                       itemBuilder: (context, index) => BuildSalonItemGrid(

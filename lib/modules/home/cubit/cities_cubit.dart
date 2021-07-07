@@ -25,6 +25,7 @@ class CitiesCubit extends Cubit<CitiesStates> {
         cities.add(CityModel(id: null, nameEnglish: 'All', nameArabic: 'الكل'));
 
         response.data.cities.forEach((city) {
+          print('${city.id}  ${city.nameEn}');
           cities.add(city);
         });
         selectedCity = cities[0];

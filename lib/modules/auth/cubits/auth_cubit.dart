@@ -5,10 +5,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:trim/api_reponse.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
+import 'package:trim/modules/auth/models/facebook_auth_model.dart';
 import 'package:trim/modules/auth/models/login_model.dart';
 import 'package:trim/modules/auth/models/register_model.dart';
+import 'package:trim/modules/auth/models/token_model.dart';
 import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/repositries/register_repositry.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
@@ -48,16 +52,21 @@ class AuthCubit extends Cubit<AuthStates> {
               getWord('Email or password not correct', context)));
       } else {
         //Use shared prefrences
-        await TrimShared.storeProfileData(response.data);
-        await AppCubit.getInstance(context).intializeDio(response.data.token);
-
-        Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+        successLogin(response, context);
 
         emit(LoadedAuthState());
       }
     } else {
       emit(InvalidFieldState(fieldsValidateError));
     }
+  }
+
+  Future successLogin(
+      APIResponse<TokenModel> response, BuildContext context) async {
+    await TrimShared.storeProfileData(response.data);
+    await AppCubit.getInstance(context).intializeDio(response.data.token);
+
+    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
   }
 
   void register(
@@ -115,6 +124,23 @@ class AuthCubit extends Cubit<AuthStates> {
       }
     } catch (e) {
       emit(ErrorChangingPasswordState(e.toString()));
+    }
+  }
+
+  Future<void> loginFacebook(BuildContext context) async {
+    final facebookProfile = await getFacebookAccount();
+    if (facebookProfile == null) {
+      emit(ErrorAuthState('Auth Failed'));
+    } else {
+      emit(LoadingAuthState());
+      final response = await socialRegisterFromServer(facebookProfile.toJson());
+      if (response.error) {
+        print(response.errorMessage);
+        emit(ErrorAuthState(response.errorMessage));
+      } else {
+        successLogin(response, context);
+        emit(LoadedAuthState());
+      }
     }
   }
 
@@ -226,8 +252,10 @@ class AuthCubit extends Cubit<AuthStates> {
     String emailValidation = _validateEmail(login, context);
     if (emailValidation == null || emailValidation != '')
       return emailValidation;
-    if (validatePhone(login, context) != null)
+    if (validatePhone(login, context) != null) {
+      print(true);
       return getWord('Email or phone is not on correct format', context);
+    }
     return null;
   }
 
@@ -250,5 +278,32 @@ class AuthCubit extends Cubit<AuthStates> {
     if (name == null || name.isEmpty)
       return getWord("Name field can not be empty", context);
     return null;
+  }
+
+  Future<FacebookAuthModel> getFacebookAccount() async {
+    final loginRes = await FacebookAuth.instance.login(permissions: ['email']);
+    switch (loginRes.status) {
+      case LoginStatus.success:
+        final profile = await FacebookAuth.instance.getUserData();
+        print("AccessToken is ${loginRes.accessToken.token}");
+        print(profile);
+        return FacebookAuthModel.fromJson(loginRes.accessToken.token,
+            json: profile);
+        break;
+      case LoginStatus.failed:
+        print('Faild');
+        return null;
+        break;
+      case LoginStatus.cancelled:
+        print('Cancelled');
+        return null;
+        break;
+      case LoginStatus.operationInProgress:
+        print('InProgress');
+        return null;
+        break;
+      default:
+        return null;
+    }
   }
 }

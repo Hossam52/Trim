@@ -83,7 +83,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           });
           return false;
         } else {
-          return await exitConfirmationDialog(context, 'Are you sure to exit?');
+          return await exitConfirmationDialog(
+              context, getWord('Are you sure to exit?', context));
         }
       },
       child: BlocBuilder<HomeCubit, HomeStates>(

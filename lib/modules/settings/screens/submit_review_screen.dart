@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trim/appLocale/getWord.dart';
 
 class SubmitReviewScreen extends StatefulWidget {
   @override
@@ -40,7 +41,9 @@ class _SubmitReviewScreenState extends State<SubmitReviewScreen> {
   Widget _buildText() {
     return Container(
       margin: const EdgeInsets.all(15.0),
-      child: Text('Please tell us your review for enhance the service.',
+      child: Text(
+          getWord(
+              'Please tell us your review for enhance the service', context),
           style: Theme.of(context).textTheme.headline5),
     );
   }

@@ -24,50 +24,53 @@ class BuildCitiesRadio extends StatelessWidget {
         if (state is EmptyCitiesState)
           return Center(child: Text(getWord('No Cities Found', context)));
         if (state is ErrorCitiesState)
-          return Center(child: Text('Error : ${state.errorMessage}.'));
+          return Center(
+              child: Text(getWord('Error happened', context) +
+                  ': ${state.errorMessage}.'));
         final cities = CitiesCubit.getInstance(context).cities;
         int selectedId = CitiesCubit.getInstance(context).selectedCity.id;
+        final city = CitiesCubit.getInstance(context).cities[0];
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ...cities
-                .map((city) => ListTile(
-                      contentPadding: const EdgeInsets.all(0),
-                      onTap: () {
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ...cities.map((city) => ListTile(
+                    contentPadding: const EdgeInsets.all(0),
+                    onTap: () {
+                      CitiesCubit.getInstance(context).changeSelecteCity(city);
+                    },
+                    leading: Radio<int>(
+                      value: city.id,
+                      groupValue: selectedId,
+                      onChanged: (value) {
                         CitiesCubit.getInstance(context)
                             .changeSelecteCity(city);
                       },
-                      leading: Radio<int>(
-                        value: city.id,
-                        groupValue: selectedId,
-                        onChanged: (value) {
-                          CitiesCubit.getInstance(context)
-                              .changeSelecteCity(city);
-                        },
-                      ),
-                      title: Text(getTranslatedName(city)),
-                    ))
-                .toList(),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: DefaultButton(
-                  text: getWord('Search now', context),
-                  onPressed: () async {
-                    if (HomeCubit.getInstance(context).state is AllSalonsState)
-                      SalonsCubit.getInstance(context)
-                          .searchForSalon(cityId: selectedId);
-                    else if (HomeCubit.getInstance(context).state
-                        is AllPersonsState)
-                      PersonsCubit.getInstance(context)
-                          .searchForPerson(cityId: selectedId);
+                    ),
+                    title: Text(getTranslatedName(city)),
+                  )),
+              SizedBox(
+                width: double.infinity,
+                height: 70,
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: DefaultButton(
+                      text: getWord('Search now', context),
+                      onPressed: () async {
+                        if (HomeCubit.getInstance(context).state
+                            is AllSalonsState)
+                          SalonsCubit.getInstance(context)
+                              .searchForSalon(cityId: selectedId);
+                        else if (HomeCubit.getInstance(context).state
+                            is AllPersonsState)
+                          PersonsCubit.getInstance(context)
+                              .searchForPerson(cityId: selectedId);
 
-                    Navigator.pop(context);
-                  },
-                  color: Colors.black,
-                )),
-          ],
-        );
+                        Navigator.pop(context);
+                      },
+                      color: Colors.black,
+                    )),
+              ),
+            ]);
       },
     );
   }

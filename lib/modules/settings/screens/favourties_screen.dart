@@ -74,7 +74,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                               else if (state is ErrorSalonState)
                                 return Center(
                                     child:
-                                        Text('Error ${state.error} happened'));
+                                        Text(getWord('Error happened',context)+state.error));
 
                               final favoriteList =
                                   SalonsCubit.getInstance(context)

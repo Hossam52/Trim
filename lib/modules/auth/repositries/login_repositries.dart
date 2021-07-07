@@ -45,3 +45,14 @@ Future<APIResponse<void>> changeUserPasswordFromServer(
     return APIResponse(error: true, errorMessage: response.errorMessage);
   return APIResponse();
 }
+
+Future<APIResponse<TokenModel>> socialRegisterFromServer(
+    Map<String, dynamic> body) async {
+  final response =
+      await callAPI(socialRegisterUrl, body: body, callType: CallType.Post);
+  if (response.error)
+    return APIResponse(error: true, errorMessage: response.errorMessage);
+  else
+    return APIResponse<TokenModel>(
+        data: TokenModel.fromJson(json: response.data['data']));
+}

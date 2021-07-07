@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
@@ -11,7 +12,8 @@ class CouponsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Coupons', style: TextStyle(color: Colors.black)),
+        title: Text(getWord('Coupons', context),
+            style: TextStyle(color: Colors.black)),
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: BackButton(color: Colors.black),
@@ -75,7 +77,8 @@ class CouponsScreen extends StatelessWidget {
             fit: BoxFit.fitWidth,
           ),
           InfoWidget(
-            responsiveWidget: (_, deviceInfo) => Text('Dicount code',
+            responsiveWidget: (_, deviceInfo) => Text(
+                getWord('Discount code', context),
                 style: TextStyle(
                     fontSize: getFontSize(deviceInfo), color: Colors.white)),
           ),

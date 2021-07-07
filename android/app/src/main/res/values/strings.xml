@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Trim</string>
+  <string name="facebook_app_id">1189795588188855</string>
+  <string name="fb_login_protocol_scheme">fb1189795588188855</string>
+</resources>

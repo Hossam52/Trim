@@ -54,3 +54,4 @@ final String couponeUrl = 'coupone';
 final String logoutUrl = 'logout';
 final String resetPasswordUrl = 'resetPassword';
 final String changePasswordUrl = 'user/change-password';
+final String socialRegisterUrl = 'socialRegister';

@@ -41,7 +41,6 @@ class BuildSalonItemGrid extends StatelessWidget {
                         child: Text(
                           salon.name,
                           style: TextStyle(
-                              color: Colors.cyan,
                               fontSize:
                                   ResponsiveFlutter.of(context).fontSize(1.9),
                               fontWeight: FontWeight.bold),

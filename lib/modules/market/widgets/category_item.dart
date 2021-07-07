@@ -38,8 +38,8 @@ class CategoryItem extends StatelessWidget {
       style: TextStyle(
           fontSize: deviceInfo.type == deviceType.mobile &&
                   deviceInfo.screenWidth >= 530
-              ? getFontSize(deviceInfo) + 4
-              : getFontSize(deviceInfo)),
+              ? getFontSizeVersion2(deviceInfo) + 4
+              : getFontSizeVersion2(deviceInfo)),
     );
   }
 
