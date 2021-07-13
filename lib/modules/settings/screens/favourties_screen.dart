@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
@@ -9,6 +10,7 @@ import 'package:trim/modules/home/widgets/salons_persons_widget.dart';
 import 'package:trim/modules/settings/widgets/favorite_item.dart';
 import 'package:trim/modules/home/widgets/persons_grid_view.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import '../../home/widgets/navigate_pages.dart';
 
 class FavouritesScreen extends StatefulWidget {
@@ -63,77 +65,80 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                   ),
                 ),
                 Expanded(
-                    child: displaySalons
-                        ? BlocConsumer<SalonsCubit, SalonStates>(
-                            listener: (oldState, newState) {},
-                            builder: (_, state) {
-                              if (state is LoadingSalonState)
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              else if (state is ErrorSalonState)
-                                return Center(
-                                    child:
-                                        Text(getWord('Error happened',context)+state.error));
-
-                              final favoriteList =
-                                  SalonsCubit.getInstance(context)
-                                      .getSalonsToDisplay(context);
-                              final pageNumber =
-                                  SalonsCubit.getInstance(context)
-                                      .getCurrentPage(context);
-                              return Column(
-                                children: [
-                                  Expanded(
-                                    child: RefreshIndicator(
-                                      onRefresh: () async {
-                                        await SalonsCubit.getInstance(context)
-                                            .loadSalons(
-                                                refreshPage: true,
-                                                context: context);
-                                      },
-                                      child: ListView.builder(
-                                          physics: BouncingScrollPhysics(),
-                                          itemCount: favoriteList.length,
-                                          itemBuilder: (_, index) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: FavoriteItem(
-                                                  favoriteSalon:
-                                                      favoriteList[index],
-                                                  deviceInfo: deviceInfo,
-                                                  width: width),
-                                            );
-                                          }),
-                                    ),
-                                  ),
-                                  if (state is LoadingMoreSalonState)
-                                    LoadingMoreItemsIndicator(),
-                                  if (state is NoMoreSalonState)
-                                    NoMoreItems(
-                                      deviceInfo: deviceInfo,
-                                      label: getWord('No More Salons', context),
-                                    ),
-                                  NavigatePages(
-                                    pageNumber: pageNumber,
-                                    nextPage: SalonsCubit.getInstance(context)
-                                        .getNextPage,
-                                    prevPage: SalonsCubit.getInstance(context)
-                                        .getPreviousPage,
-                                  )
-                                ],
+                  child: displaySalons
+                      ? BlocConsumer<SalonsCubit, SalonStates>(
+                          listener: (oldState, newState) {},
+                          builder: (_, state) {
+                            if (state is LoadingSalonState)
+                              return Center(
+                                child: CircularProgressIndicator(),
                               );
-                            },
-                          )
-                        : PersonsGridView(
-                            showFavoriteContainer: true,
-                          )),
+                            else if (state is ErrorSalonState)
+                              return Center(
+                                  child: Text(
+                                      getWord('Error happened', context) +
+                                          state.error));
+
+                            final favoriteList =
+                                SalonsCubit.getInstance(context)
+                                    .getSalonsToDisplay(context);
+                            final pageNumber = SalonsCubit.getInstance(context)
+                                .getCurrentPage(context);
+                            return RefreshIndicator(
+                              onRefresh: () async {
+                                await SalonsCubit.getInstance(context)
+                                    .loadSalons(
+                                        refreshPage: true, context: context);
+                              },
+                              child: displayFavorites(favoriteList, state,
+                                  pageNumber, deviceInfo, width),
+                            );
+                          },
+                        )
+                      : PersonsGridView(
+                          showFavoriteContainer: true,
+                        ),
+                ),
               ],
             ),
           );
         },
       ),
     );
+  }
+
+  Widget displayFavorites(List favoriteList, SalonStates state, int pageNumber,
+      DeviceInfo deviceInfo, double width) {
+    return StaggeredGridView.countBuilder(
+        crossAxisCount: 1,
+        mainAxisSpacing: 10,
+        itemCount: favoriteList.length + 1,
+        itemBuilder: (_, index) {
+          if (index == favoriteList.length) {
+            if (state is LoadingMoreSalonState)
+              return LoadingMoreItemsIndicator();
+            if (state is NoMoreSalonState)
+              return NoMoreItems(
+                deviceInfo: deviceInfo,
+                label: getWord('No More Salons', context),
+              );
+            return NavigatePages(
+              pageNumber: pageNumber,
+              nextPage: SalonsCubit.getInstance(context).getNextPage,
+              prevPage: SalonsCubit.getInstance(context).getPreviousPage,
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FavoriteItem(
+                favoriteSalon: favoriteList[index],
+                deviceInfo: deviceInfo,
+                width: width),
+          );
+        },
+        staggeredTileBuilder: (index) {
+          if (index == favoriteList.length) return StaggeredTile.fit(1);
+          return StaggeredTile.count(1, 0.45);
+        });
   }
 }

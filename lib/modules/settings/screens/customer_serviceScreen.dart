@@ -9,6 +9,7 @@ class CustomerServiceScreen extends StatelessWidget {
   static const routeName = '/customer-service';
   @override
   Widget build(BuildContext context) {
+    print('Customer');
     return Scaffold(
       appBar: AppBar(
         title: Text(getWord('customer service', context),

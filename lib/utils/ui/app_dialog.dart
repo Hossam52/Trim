@@ -96,11 +96,14 @@ void personDetailsDialog(
                     elevatedButton(
                       text: getWord('Reserve now', context),
                       onPressed: () async {
+                        print(
+                            SalonsCubit.getInstance(context).salonDetail.name);
                         // await SalonsCubit.getInstance(context)
                         //     .getSalonDetails(id: salon.id);
                         Navigator.pop(context);
                         Navigator.pushNamed(context, ReserveScreen.routeName,
                             arguments: SalonDetailModel(
+                                showCopounWidget: true,
                                 showDateWidget: false,
                                 showAvailableTimes: true,
                                 showServiceWidget: true,
@@ -113,6 +116,7 @@ void personDetailsDialog(
                         Navigator.pop(context);
                         Navigator.pushNamed(context, ReserveScreen.routeName,
                             arguments: SalonDetailModel(
+                                showCopounWidget: true,
                                 showDateWidget: true,
                                 showAvailableTimes: true,
                                 showServiceWidget: true,
@@ -162,6 +166,8 @@ Future<void> showReasonCancelled(BuildContext context) async {
       builder: (context) {
         return InfoWidget(
           responsiveWidget: (context, deviceInfo) => Dialog(
+            insetPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             backgroundColor: Colors.transparent,
             elevation: 0,
             child: SingleChildScrollView(

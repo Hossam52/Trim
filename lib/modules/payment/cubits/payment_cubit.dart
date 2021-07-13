@@ -6,6 +6,14 @@ import 'package:trim/modules/payment/repositires/payment_repo.dart';
 import './payment_states.dart';
 
 enum PaymentMethod { Cash, VisaMaster }
+String getPaymentMethodString(PaymentMethod paymentMethod) {
+  if (paymentMethod == PaymentMethod.Cash)
+    return 'Cash';
+  else if (paymentMethod == PaymentMethod.VisaMaster)
+    return 'Credit Card';
+  else
+    return 'Unknown';
+}
 
 class PaymentCubit extends Cubit<PaymentStates> {
   PaymentCubit() : super(IntialPaymentState()) {

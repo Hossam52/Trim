@@ -7,9 +7,9 @@ import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/widgets/available_times.dart';
 import 'package:trim/general_widgets/price_information.dart';
+import 'package:trim/modules/home/widgets/date_builder.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
-import 'package:trim/modules/home/widgets/select_date_sliver.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/payment/screens/payment_methods_screen.dart';
 import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
@@ -39,6 +39,7 @@ class _ReserveScreenState extends State<ReserveScreen> {
     final availableDatesWidget = model.showAvailableTimes;
     final servicesWidget = model.showServiceWidget;
     final offersWidget = model.showOffersWidget;
+    final copounWidget = model.showCopounWidget;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -54,7 +55,12 @@ class _ReserveScreenState extends State<ReserveScreen> {
               child: CustomScrollView(
                 physics: BouncingScrollPhysics(),
                 slivers: [
-                  if (selectDateWidget != false) SelectDateSliver(),
+                  if (selectDateWidget != false)
+                    DateBuilder(
+                        onChangeDate:
+                            SalonsCubit.getInstance(context).getAvilableDates,
+                        initialSelectedDate:
+                            SalonsCubit.getInstance(context).reservationDate),
                   SliverList(
                     delegate: SliverChildListDelegate.fixed([
                       if (selectDateWidget == false)
@@ -68,16 +74,17 @@ class _ReserveScreenState extends State<ReserveScreen> {
                       if (servicesWidget != false) buildServices(context),
                       if (offersWidget != false)
                         buildOffers(deviceInfo, context),
-                      CoupounTextField(
-                        controller: controller,
-                        enabled: correctCopon,
-                        updateUi: (bool isCorrectCopon, int coponDiscount) {
-                          setState(() {
-                            discount = coponDiscount;
-                            correctCopon = isCorrectCopon;
-                          });
-                        },
-                      ),
+                      if (!copounWidget)
+                        CoupounTextField(
+                          controller: controller,
+                          enabled: correctCopon,
+                          updateUi: (bool isCorrectCopon, int coponDiscount) {
+                            setState(() {
+                              discount = coponDiscount;
+                              correctCopon = isCorrectCopon;
+                            });
+                          },
+                        ),
                       BlocBuilder<SalonsCubit, SalonStates>(
                         builder: (_, state) {
                           double totalAfterDiscount =
@@ -168,6 +175,8 @@ class _ReserveScreenState extends State<ReserveScreen> {
         child: BlocBuilder<SalonsCubit, SalonStates>(
           buildWhen: (old, newState) => newState is ToggleSelectedServiceState,
           builder: (_, state) => SalonServices(
+            onItemToggled:
+                SalonsCubit.getInstance(context).toggelSelectedService,
             deviceInfo: deviceInfo,
             services:
                 SalonsCubit.getInstance(context).salonDetail.salonServices,

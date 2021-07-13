@@ -34,4 +34,7 @@ class SalonOffer extends BasicData {
     categoryEn = json['category_en'];
     qty = json['qty'];
   }
+  Map<String, dynamic> toMap() {
+    return {};
+  }
 }

@@ -29,7 +29,7 @@ class BuildOffersItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: getFontSizeVersion2(deviceInfo),
+                        fontSize: getFontSizeVersion2(deviceInfo) * 0.75,
                         color: Colors.white,
                         fontWeight: FontWeight.bold)),
                 decoration: BoxDecoration(

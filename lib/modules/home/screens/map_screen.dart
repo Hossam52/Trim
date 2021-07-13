@@ -1,4 +1,9 @@
+import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,9 +30,7 @@ class _MapScreenState extends State<MapScreen> {
   Set<Marker> allMarkers = <Marker>{};
   GoogleMapController mapController;
   BitmapDescriptor customIcon1;
-  bool correctData = true;
   bool showSalonsWidget = true;
-  bool displayPage = false;
   final itemScrollController = ItemScrollController();
   final itemPositionsListener = ItemPositionsListener.create();
   bool canLoadMap = false;
@@ -35,33 +38,66 @@ class _MapScreenState extends State<MapScreen> {
   Position userPoition;
   bool loadData = true;
 
-  LatLngBounds boundsFromLatLngList(Set<Marker> list) {
-    if (list.isEmpty) return null;
-    double x0, x1, y0, y1;
-    for (Marker marker in list) {
-      final latLng = marker.position;
-      if (x0 == null) {
-        x0 = x1 = latLng.latitude;
-        y0 = y1 = latLng.longitude;
-      } else {
-        if (latLng.latitude > x1) x1 = latLng.latitude;
-        if (latLng.latitude < x0) x0 = latLng.latitude;
-        if (latLng.longitude > y1) y1 = latLng.longitude;
-        if (latLng.longitude < y0) y0 = latLng.longitude;
-      }
-    }
-    return LatLngBounds(northeast: LatLng(x1, y1), southwest: LatLng(x0, y0));
+  LatLngBounds boundsFromLatLngList(Set<Marker> markers) {
+    var lngs = markers.map<double>((m) => m.position.longitude).toList();
+    var lats = markers.map<double>((m) => m.position.latitude).toList();
+
+    double topMost = lngs.reduce(max);
+    double leftMost = lats.reduce(min);
+    double rightMost = lats.reduce(max);
+    double bottomMost = lngs.reduce(min);
+
+    LatLngBounds bounds = LatLngBounds(
+      northeast: LatLng(rightMost, topMost),
+      southwest: LatLng(leftMost, bottomMost),
+    );
+
+    return bounds;
   }
 
-  Widget _buildMap() {
+  double getBoundsZoomLevel(LatLngBounds bounds, Size mapDimensions) {
+    var worldDimension = Size(1024, 1024);
+
+    double latRad(lat) {
+      var sinValue = sin(lat * pi / 180);
+      var radX2 = log((1 + sinValue) / (1 - sinValue)) / 2;
+      return max(min(radX2, pi), -pi) / 2;
+    }
+
+    double zoom(mapPx, worldPx, fraction) {
+      return (log(mapPx / worldPx / fraction) / ln2).floorToDouble();
+    }
+
+    var ne = bounds.northeast;
+    var sw = bounds.southwest;
+
+    var latFraction = (latRad(ne.latitude) - latRad(sw.latitude)) / pi;
+
+    var lngDiff = ne.longitude - sw.longitude;
+    var lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+
+    var latZoom =
+        zoom(mapDimensions.height, worldDimension.height, latFraction);
+    var lngZoom = zoom(mapDimensions.width, worldDimension.width, lngFraction);
+
+    if (latZoom < 0) return lngZoom;
+    if (lngZoom < 0) return latZoom;
+
+    return min(latZoom, lngZoom);
+  }
+
+  Widget _buildMap(double width, double height) {
+    final bounds = boundsFromLatLngList(allMarkers);
+    var zoomLevel = getBoundsZoomLevel(bounds, Size(width, height));
     return GoogleMap(
       mapType: MapType.terrain,
       myLocationEnabled: true,
       myLocationButtonEnabled: true,
       initialCameraPosition: CameraPosition(
         target: LatLng(userPoition.latitude, userPoition.longitude),
+        zoom: zoomLevel,
       ),
-      cameraTargetBounds: CameraTargetBounds(boundsFromLatLngList(allMarkers)),
+      cameraTargetBounds: CameraTargetBounds(bounds),
       markers: allMarkers,
       onTap: (pos) {},
     );
@@ -121,6 +157,7 @@ class _MapScreenState extends State<MapScreen> {
                                   ': ${state.error}'),
                               TextButton(
                                   onPressed: () {
+                                    //TO-DO
                                     SalonsCubit.getInstance(context)
                                         .loadNearestSalons(31, 31.5);
                                   },
@@ -136,7 +173,8 @@ class _MapScreenState extends State<MapScreen> {
                         child: SafeArea(
                           child: Stack(
                             children: [
-                              _buildMap(),
+                              _buildMap(MediaQuery.of(context).size.width,
+                                  MediaQuery.of(context).size.height),
                               Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Padding(
@@ -262,7 +300,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> makeUserLocationMarker() async {
-    await getUserLocation().then((value) {
+    await getUserLocation().then((LatLng value) {
       setState(() {
         allMarkers.add(Marker(
             visible: true,
@@ -273,13 +311,26 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void makeSalonsMarkers() {
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        .buffer
+        .asUint8List();
+  }
+
+  void makeSalonsMarkers() async {
     List<Salon> mapSalons = SalonsCubit.getInstance(context).nearestSalons;
+    final iconWidth = MediaQuery.of(context).size.width * 0.4;
+    final markerIconBytes = await getBytesFromAsset(
+        'assets/icons/map-scissor.png', iconWidth.ceil());
 
     for (int i = 0; i < mapSalons.length; i++) {
       Marker f = Marker(
           markerId: MarkerId(mapSalons[i].id.toString()),
-          icon: customIcon1,
+          icon: BitmapDescriptor.fromBytes(markerIconBytes),
           position: LatLng(mapSalons[i].lat ?? 0, mapSalons[i].lang ?? 0),
           infoWindow: InfoWindow(title: mapSalons[i].name),
           onTap: () {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
@@ -115,23 +117,25 @@ class _SalonsScreenState extends State<SalonsScreen> {
 
     return Row(
       children: [
-        ElevatedButton(
-          onPressed: () async {
-            await showCities(context);
-          },
-          child: Image.asset(
-            'assets/icons/settings-icon.png',
-            height: 25,
-            width: 25,
-            color: Theme.of(context).primaryColor,
-          ),
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.white),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  side: BorderSide(
-                      color: Theme.of(context).primaryColor, width: 1)),
+        InfoWidget(
+          responsiveWidget: (_, deviceInfo) => ElevatedButton(
+            onPressed: () async {
+              await showCities(context);
+            },
+            child: Image.asset(
+              'assets/icons/settings-icon.png',
+              height: getFontSizeVersion2(deviceInfo),
+              width: getFontSizeVersion2(deviceInfo),
+              color: Theme.of(context).primaryColor,
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.white),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    side: BorderSide(
+                        color: Theme.of(context).primaryColor, width: 1)),
+              ),
             ),
           ),
         ),
@@ -176,7 +180,6 @@ class BuildGridViewSalons extends StatefulWidget {
 }
 
 class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
-  final gridViewController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -194,19 +197,11 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
         SalonsCubit.getInstance(context)
             .loadSalons(refreshPage: true, context: context);
     }
-
-    gridViewController.addListener(() {
-      if (gridViewController.position.pixels ==
-          gridViewController.position.maxScrollExtent) {
-        SalonsCubit.getInstance(context).loadMoreSalons(context);
-      }
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    gridViewController.dispose();
   }
 
   @override
@@ -250,35 +245,39 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
                 SalonsCubit.getInstance(context).getSalonsToDisplay(context);
             final pageNumber =
                 SalonsCubit.getInstance(context).getCurrentPage(context);
-            return Column(
-              children: [
-                Expanded(
-                  child: GridView.builder(
-                      controller: gridViewController,
-                      physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      itemCount: list.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.72,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10),
-                      itemBuilder: (context, index) => BuildSalonItemGrid(
-                            salon: list[index],
-                          )),
-                ),
-                if (state is LoadingMoreSalonState) LoadingMoreItemsIndicator(),
-                if (state is NoMoreSalonState)
-                  NoMoreItems(
-                    deviceInfo: deviceInfo,
-                    label: getWord('No More Salons', context),
-                  ),
-                NavigatePages(
-                  nextPage: SalonsCubit.getInstance(context).getNextPage,
-                  pageNumber: pageNumber,
-                  prevPage: SalonsCubit.getInstance(context).getPreviousPage,
-                ),
-              ],
+            return StaggeredGridView.countBuilder(
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(vertical: 10),
+              itemCount: list.length + 1,
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              itemBuilder: (_, index) {
+                if (index == list.length) {
+                  if (state is LoadingMoreSalonState)
+                    return LoadingMoreItemsIndicator();
+                  if (state is NoMoreSalonState)
+                    return NoMoreItems(
+                      deviceInfo: deviceInfo,
+                      label: getWord('No More Salons', context),
+                    );
+                  return NavigatePages(
+                    nextPage: SalonsCubit.getInstance(context).getNextPage,
+                    pageNumber: pageNumber,
+                    prevPage: SalonsCubit.getInstance(context).getPreviousPage,
+                  );
+                }
+                return BuildSalonItemGrid(
+                  salon: list[index],
+                );
+              },
+              staggeredTileBuilder: (index) {
+                if (index == list.length) {
+                  //Last element put the navigatrion
+                  return StaggeredTile.fit(2);
+                }
+                return StaggeredTile.count(1, 1 / 0.72);
+              },
             );
           },
         ),

@@ -140,7 +140,7 @@ class BuildHomeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InfoWidget(
       responsiveWidget: (context, deviceInfo) {
-        double fontSize = constants.getFontSizeVersion2(deviceInfo);
+        double fontSize = constants.getFontSizeVersion2(deviceInfo) * 0.8;
         return Container(
           height: deviceInfo.localHeight,
           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),

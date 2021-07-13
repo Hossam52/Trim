@@ -24,7 +24,7 @@ class BuildSalonItemGrid extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              flex: 2,
+              // flex: 2,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: TrimCachedImage(src: salon.image)),

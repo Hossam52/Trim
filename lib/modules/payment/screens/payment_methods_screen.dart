@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/modules/payment/widgets/payment_methods_widgets.dart';
 import '../cubits/payment_cubit.dart';
 import '../cubits/payment_states.dart';
 import './payment_detail_screen.dart';
@@ -42,36 +43,11 @@ class PaymentMethodsScreen extends StatelessWidget {
                   PaymentCubit.getInstance(context).paymentMethod;
               return Column(
                 children: [
-                  if (showCashMethod)
-                    RadioListTile<PaymentMethod>(
-                      onChanged: (val) {
-                        PaymentCubit.getInstance(context)
-                            .changeSelectedPaymentMethod(val);
-                      },
-                      title: Text(getWord('Pay with cach', context)),
-                      groupValue: paymentMethod,
-                      value: PaymentMethod.Cash,
-                      selected: true,
-                      secondary: Image.asset('assets/icons/cash.png'),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                  Container(
-                    decoration: BoxDecoration(border: Border.symmetric()),
-                    child: RadioListTile<PaymentMethod>(
-                      onChanged: (val) {
-                        PaymentCubit.getInstance(context)
-                            .changeSelectedPaymentMethod(val);
-                      },
-                      title: Text(getWord('Pay with VISA/MASTERCARD', context)),
-                      secondary: Image.asset('assets/icons/visa.png'),
-                      groupValue: paymentMethod,
-                      value: PaymentMethod.VisaMaster,
-                      selected: true,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                  ),
+                  PaymentMethodsWidget(
+                      onChangeSelection: PaymentCubit.getInstance(context)
+                          .changeSelectedPaymentMethod,
+                      showCashMethod: showCashMethod,
+                      paymentMethod: paymentMethod),
                   Spacer(),
                   DefaultButton(
                       text: getWord('Pay Now', context) + ' $totalPrice EGP',

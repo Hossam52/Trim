@@ -1,46 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class DateBuilder extends StatefulWidget {
+  final void Function(DateTime selectedDate) onChangeDate;
+  final DateTime initialSelectedDate;
+
+  const DateBuilder(
+      {Key key,
+      @required this.onChangeDate,
+      @required this.initialSelectedDate})
+      : super(key: key);
   @override
   _DateBuilderState createState() => _DateBuilderState();
 }
 
 class _DateBuilderState extends State<DateBuilder> {
   final DateOperations dateOperations = DateOperations();
-  List<DateTime> days = [];
+  List<DateTime> daysInMonth = [];
   DateTime displayedDate;
   DateTime now;
   String year;
   String month;
-  int selectedDayIndex = 0;
+  DateTime selectedDate;
+  final itemScrollController = ItemScrollController();
 
   @override
   void initState() {
     super.initState();
     now = DateTime.now();
-    displayedDate = DateTime.now();
-    days = dateOperations.generateDays(now);
-    month = DateFormat('MMM').format(now);
-    year = now.year.toString();
-    selectedDayIndex = SalonsCubit.getInstance(context).selectedDateIndex;
+    final intialDate = widget.initialSelectedDate;
+    displayedDate =
+        intialDate; //For the date that appear like this < aug 20221 >
+    selectedDate = intialDate;
+    daysInMonth = dateOperations
+        .generateDays(selectedDate); //All days displaed in specific month
+    month = DateFormat('MMM').format(displayedDate);
+    year = displayedDate.year.toString();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //To make the view of listview at the reservationdate
+      setIndexDisplayedFirst(selectedDate.difference(daysInMonth.first).inDays);
+    });
   }
 
-  Widget buildDay(int index, [bool selected = false]) {
-    final String dayName = DateFormat('EEE').format(days[index]);
-    final String dayNumber = days[index].day.toString();
+  void setIndexDisplayedFirst(int index) {
+    itemScrollController.jumpTo(index: index);
+  }
+
+  Widget buildDay(DateTime date, [bool selected = false]) {
+    final String dayName = DateFormat('EEE').format(date);
+    final String dayNumber = date.day.toString();
     final selectedColor = selected ? Colors.black : Colors.white;
     final TextStyle style =
         TextStyle(color: selectedColor, fontSize: defaultFontSize);
     return InkWell(
       onTap: () {
         setState(() {
-          selectedDayIndex = index;
+          selectedDate = date;
         });
-        SalonsCubit.getInstance(context)
-            .getAvilableDates(days[selectedDayIndex]);
+        widget.onChangeDate(date);
       },
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -64,10 +87,10 @@ class _DateBuilderState extends State<DateBuilder> {
   void nextMonth() {
     setState(() {
       displayedDate = dateOperations.getNextMonth(displayedDate);
-      days = dateOperations.generateDays(displayedDate);
+      daysInMonth = dateOperations.generateDays(displayedDate);
       month = DateFormat('MMM').format(displayedDate);
       year = displayedDate.year.toString();
-      selectedDayIndex = 0;
+      setIndexDisplayedFirst(0);
     });
   }
 
@@ -76,20 +99,37 @@ class _DateBuilderState extends State<DateBuilder> {
       return null; //can not go previous
     setState(() {
       displayedDate = dateOperations.getPreviousMonth(displayedDate);
-      days = dateOperations.generateDays(displayedDate);
+      daysInMonth = dateOperations.generateDays(displayedDate);
       month = DateFormat('MMM').format(displayedDate);
       year = displayedDate.year.toString();
-      selectedDayIndex = 0;
+      setIndexDisplayedFirst(0);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FlexibleSpaceBar(
-      background: Center(
-        child: Column(
+    return SliverAppBar(
+      leading: BackButton(
+        color: Colors.black,
+      ),
+      flexibleSpace: FlexibleSpaceBar(
+        background: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            InfoWidget(
+              responsiveWidget: (_, deviceInfo) => Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    getWord('Select a suitable date', context),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: getFontSizeVersion2(deviceInfo)),
+                  ),
+                ],
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -107,22 +147,33 @@ class _DateBuilderState extends State<DateBuilder> {
                     onPressed: nextMonth)
               ],
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ...List.generate(days.length, (index) {
-                    if (index == selectedDayIndex) return buildDay(index, true);
-                    return buildDay(index);
-                  })
-                ],
+            Expanded(
+              child: ScrollablePositionedList.builder(
+                itemScrollController: itemScrollController,
+                itemCount: daysInMonth.length,
+                itemBuilder: (_, index) {
+                  final dateFormat = DateFormat(
+                      'DDMMYYYY'); //To format both displaed and reservation date and know if specific date selected or not
+                  if (dateFormat.format(daysInMonth[index]) ==
+                      dateFormat.format(selectedDate))
+                    return buildDay(selectedDate, true);
+                  return buildDay(daysInMonth[index]);
+                },
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
               ),
             )
           ],
         ),
       ),
+      floating: false,
+      pinned: false,
+      backgroundColor: Color(0xff2C73A8),
+      expandedHeight: 240,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(roundedRadius),
+              bottomRight: Radius.circular(roundedRadius))),
     );
   }
 }
@@ -155,8 +206,9 @@ class DateOperations {
         dates.add(now.add(Duration(days: day++)));
       }
     } else {
+      final displayedMonth = DateTime(date.year, date.month);
       List.generate(lastDayInMonth.day, (index) {
-        dates.add(date.add(Duration(days: index)));
+        dates.add(displayedMonth.add(Duration(days: index)));
       });
     }
     return dates;

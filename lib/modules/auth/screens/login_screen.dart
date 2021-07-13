@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/not_acitvate_account_screen.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/auth/widgets/social.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import '../widgets/frame_card_auth.dart';
 import '../../../general_widgets/trim_text_field.dart';
 import '../widgets/not_correct_input.dart';
@@ -62,8 +64,12 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushNamed(context, ForgotPassword.routeName);
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: Text(getWord('Forgot password', context),
-          style: TextStyle(color: Colors.grey, fontSize: 20)),
+      child: InfoWidget(
+        responsiveWidget: (_, deviceInfo) => Text(
+            getWord('Forgot password', context),
+            style: TextStyle(
+                color: Colors.grey, fontSize: getFontSizeVersion2(deviceInfo))),
+      ),
     );
 
     final Widget createAccount = RawMaterialButton(
@@ -74,8 +80,13 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () =>
           AuthCubit.getInstance(context).navigateToRegister(context),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: Text(getWord('Create account', context),
-          style: TextStyle(color: Colors.grey, fontSize: 18)),
+      child: InfoWidget(
+        responsiveWidget: (_, deviceInfo) => Text(
+            getWord('Create account', context),
+            style: TextStyle(
+                color: Colors.grey,
+                fontSize: getFontSizeVersion2(deviceInfo) * 0.88)),
+      ),
     );
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -133,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   forgotPassword,
                   createAccount,
                   Divider(),
-                  Text(getWord('Or Register using',context)),
+                  Text(getWord('Or Register using', context)),
                   SocialAuth(),
                 ],
               );

@@ -21,9 +21,10 @@ class BuildSearchWidget extends StatelessWidget {
             controller: controller,
             onChanged: onChanged,
             decoration: InputDecoration(
-              hintStyle: TextStyle(fontSize: getFontSizeVersion2(deviceInfo)),
+              hintStyle:
+                  TextStyle(fontSize: getFontSizeVersion2(deviceInfo) * 0.8),
               contentPadding: const EdgeInsets.all(0),
-              hintText: getWord('Search for', context),
+              hintText: getWord('Search for', context) + ' ...',
               prefixIcon: Icon(
                 Icons.search,
                 color: Theme.of(context).primaryColor,

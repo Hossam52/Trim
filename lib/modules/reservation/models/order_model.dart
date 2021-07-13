@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+
 import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/modules/market/models/Product.dart';
@@ -116,4 +120,42 @@ class OrderModel {
       });
     }
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'lat': lat,
+      'lng': lng,
+      'userId': userId,
+      'userName': userName,
+      'barberId': barberId,
+      'barberName': barberName,
+      'statusId': statusId,
+      'statusAr': statusAr,
+      'statusEn': statusEn,
+      'cancelReason': cancelReason,
+      'approve': approve,
+      'rate': rate,
+      'review': review,
+      'reviewImage': reviewImage,
+      'paymentMethod': paymentMethod,
+      'paymentCoupon': paymentCoupon,
+      'phone': phone,
+      'address': address,
+      'isNow': isNow,
+      'type': type,
+      'workDayId': workDayId,
+      'cost': cost,
+      'discount': discount,
+      'total': total,
+      'reservationTime': reservationTime,
+      'reservationDay': reservationDay,
+      'createdAt': createdAt,
+      'services': services.map((x) => x.toJson()).toList(),
+      'offers': offers.map((x) => x.toMap()).toList(),
+      'products': products.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }

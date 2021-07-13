@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../models/google_auth_model.dart';
 
 class Authenitcations {
   static Future<FirebaseApp> initializeFirebase() async {
@@ -10,7 +11,8 @@ class Authenitcations {
     return firebaseApp;
   }
 
-  static Future<User> signInWithGoogle(BuildContext context) async {
+  static Future<GoogleProfileModel> signInWithGoogle(
+      BuildContext context) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User user;
     final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -24,18 +26,12 @@ class Authenitcations {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
-      // print('Firebase auth' + auth.toString());
-      // print('Google sign in account ' + googleSignInAccount.toString());
-      // print('Google sign in authentication ' +
-      //     googleSignInAuthentication.toString());
-      // print('Credential ' + credential.toString());
       print('Access Token  ' + googleSignInAuthentication.accessToken);
       print('Id Token  ' + googleSignInAuthentication.idToken);
 
       try {
         final UserCredential userCredential =
             await auth.signInWithCredential(credential);
-        print('Additional info' + userCredential.additionalUserInfo.toString());
 
         user = userCredential.user;
       } on FirebaseAuthException catch (e) {
@@ -50,13 +46,12 @@ class Authenitcations {
         print('Error happened when sign in ' + e.toString());
         // handle the error here
       }
-    } else {
-      return null;
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('signed in with ${user.displayName}')));
+      return GoogleProfileModel(
+          user: user, token: googleSignInAuthentication.idToken);
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('signed in with ${user.displayName}')));
-    return user;
+    return null;
   }
 
   static Future<void> signOut(BuildContext context) async {

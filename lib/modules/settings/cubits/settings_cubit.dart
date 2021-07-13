@@ -49,7 +49,7 @@ class SettingCubit extends Cubit<SettingsStatates> {
         await Future.delayed(Duration(seconds: 1));
         emit(LoadedNotificationState());
       } else {
-        notificationPageNumber++;
+        if (!refreshPage) notificationPageNumber++;
         notifications = response.data.notifications;
         emit(LoadedNotificationState());
       }
@@ -81,7 +81,13 @@ class SettingCubit extends Cubit<SettingsStatates> {
 
   void navigateToNotificationsScreen(BuildContext context) {
     loadNotifications(true);
-    Navigator.pushNamed(context, NotificationScreen.routeName);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => BlocProvider.value(
+                  value: getInstance(context),
+                  child: NotificationScreen(),
+                )));
   }
 
   Future<void> logoutUser(BuildContext context) async {

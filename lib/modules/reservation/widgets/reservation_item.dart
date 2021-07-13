@@ -27,7 +27,7 @@ class ReservationItem extends StatelessWidget {
               Flexible(
                 child: Text(
                   '${getWord('Reservation no', context)} : ${reservation.id} ',
-                  style: TextStyle(fontSize: fontSize),
+                  style: TextStyle(fontSize: fontSize * 0.8),
                 ),
               ),
               if (showMoreDetails) buildMoreDetails(context),
@@ -46,56 +46,48 @@ class ReservationItem extends StatelessWidget {
             children: [
               if (reservation.barberId != null)
                 reservationRowItem(
-                    key: getWord('Salon name', context),
-                    values: [
-                      reservation.barberName ?? getWord('Unknown', context)
-                    ],
-                    fontSize: fontSize),
+                  key: getWord('Salon name', context),
+                  values: [
+                    reservation.barberName ?? getWord('Unknown', context)
+                  ],
+                ),
               reservationRowItem(
                   key: getWord('Reservation time', context),
                   values: [
                     '${reservation.reservationTime ?? getWord('Unknown', context)}',
                     '${reservation.reservationDay ?? getWord('Unknown', context)}',
-                  ],
-                  fontSize: fontSize),
+                  ]),
               if (!showMoreDetails)
                 reservationRowItem(
                     key: getWord('Created at', context),
                     values: [
                       '${reservation.createdAt ?? getWord('Unknown', context)}',
-                    ],
-                    fontSize: fontSize),
+                    ]),
               if (!showMoreDetails)
                 reservationRowItem(
                     key: getWord('Payment method', context),
                     values: [
                       '${reservation.paymentMethod ?? getWord('Unknown', context)}',
-                    ],
-                    fontSize: fontSize),
+                    ]),
               reservationRowItem(
                   key: getWord('Address', context),
-                  values: [reservation.address ?? getWord('Unknown', context)],
-                  fontSize: fontSize),
+                  values: [reservation.address ?? getWord('Unknown', context)]),
               reservationRowItem(
                   key: getWord('Service type', context),
-                  values: [reservation.type],
-                  fontSize: fontSize),
+                  values: [reservation.type]),
               if (!showMoreDetails)
                 reservationRowItem(
                     key: '${reservation.type}',
-                    values: getWhatToDisplayAccordingToType(reservation),
-                    fontSize: fontSize),
-              reservationRowItem(
-                  key: getWord('Status', context),
-                  values: [reservation.statusEn ?? getWord('Unknown', context)],
-                  fontSize: fontSize),
+                    values: getWhatToDisplayAccordingToType(reservation)),
+              reservationRowItem(key: getWord('Status', context), values: [
+                reservation.statusEn ?? getWord('Unknown', context)
+              ]),
               if (!showMoreDetails && reservation.statusId == "2")
                 reservationRowItem(
                     key: getWord('Cancel reason', context),
                     values: [
                       reservation.cancelReason ?? getWord('Unknown', context)
-                    ],
-                    fontSize: fontSize),
+                    ]),
             ],
           ),
         ],
@@ -130,20 +122,20 @@ class ReservationItem extends StatelessWidget {
         },
         child: Text(
           getWord('More details', context),
-          style: TextStyle(fontSize: fontSize, color: Colors.green),
+          style: TextStyle(fontSize: fontSize * 0.8, color: Colors.green),
         ),
       ),
     );
   }
 
-  TableRow reservationRowItem(
-      {String key, List<String> values, double fontSize}) {
+  TableRow reservationRowItem({String key, List<String> values}) {
     return TableRow(children: [
       Padding(
         padding: const EdgeInsets.all(5.0),
         child: Text(
           key,
-          style: TextStyle(fontSize: fontSize),
+          style:
+              TextStyle(fontSize: fontSize * 0.85, fontWeight: FontWeight.bold),
         ),
       ),
       Padding(
@@ -153,7 +145,7 @@ class ReservationItem extends StatelessWidget {
               .map(
                 (value) => Text(
                   value,
-                  style: TextStyle(fontSize: fontSize),
+                  style: TextStyle(fontSize: fontSize * 0.75),
                 ),
               )
               .toList(),

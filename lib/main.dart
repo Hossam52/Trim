@@ -104,7 +104,6 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => SalonsCubit()),
         BlocProvider(create: (_) => PersonsCubit()),
         BlocProvider(create: (_) => ProductsCategoryCubit()),
-        BlocProvider(create: (context) => SettingCubit()),
         BlocProvider(create: (context) => AuthCubit()),
         BlocProvider(create: (context) => ReservationCubit()),
         BlocProvider(create: (context) => PaymentCubit()),

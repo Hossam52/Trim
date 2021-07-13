@@ -36,10 +36,15 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   File coverImage;
   File image;
   Future<File> getImageFromGellary() async {
-    imagePicker = ImagePicker();
-    final imagePicked = await imagePicker.getImage(source: ImageSource.gallery);
-    if (imagePicked == null) return null;
-    return File(imagePicked.path);
+    try {
+      imagePicker = ImagePicker();
+      final imagePicked =
+          await imagePicker.getImage(source: ImageSource.gallery);
+      if (imagePicked == null) return null;
+      return File(imagePicked.path);
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
@@ -147,7 +152,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.camera_alt, color: Colors.white),
-                Text(getWord('Change cover photo',context),
+                Text(getWord('Change cover photo', context),
                     style: TextStyle(color: Colors.white)),
               ],
             )),
@@ -232,13 +237,13 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
               .showSnackBar(SnackBar(content: Text(state.error)));
         if (state is NoUpdatingUserInformationState)
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(getWord('You dont modify any thing',context)),
+            content: Text(getWord('You dont modify any thing', context)),
             duration: Duration(seconds: 1),
           ));
 
         if (state is SuccessUpdatingUserInformationState)
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(getWord('Modify Done',context)),
+            content: Text(getWord('Modify Done', context)),
             duration: Duration(seconds: 1),
           ));
       },

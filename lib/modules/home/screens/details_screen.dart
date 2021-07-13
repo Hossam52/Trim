@@ -97,8 +97,10 @@ class DetailsScreen extends StatelessWidget {
                           ),
                         ),
                         SalonServices(
+                            onItemToggled: SalonsCubit.getInstance(context)
+                                .toggelSelectedService,
                             services: salon.salonServices,
-                            child: reserveButton(context, deviceInfo),
+                            bottomWidget: reserveButton(context, deviceInfo),
                             deviceInfo: deviceInfo),
                         SalonOffers(deviceInfo, salon.salonOffers),
                       ],
@@ -126,9 +128,11 @@ class DetailsScreen extends StatelessWidget {
   }
 
   void reserveSalon(context, DeviceInfo deviceInfo) {
-    SalonsCubit.getInstance(context).getAvilableDates(DateTime.now());
+    SalonsCubit.getInstance(context)
+        .getAvilableDates(SalonsCubit.getInstance(context).reservationDate);
     Navigator.pushNamed(context, ReserveScreen.routeName,
         arguments: SalonDetailModel(
+            showCopounWidget: true,
             showDateWidget: true,
             showAvailableTimes: true,
             showOffersWidget: true,
@@ -224,25 +228,41 @@ class DetailsScreen extends StatelessWidget {
     final openTo = salon.openTo == "" ? "N/A" : salon.openTo;
     final to = getWord('To', context);
 
-    return Card(
-      elevation: 10,
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(
-          getWord('Open', context),
+    final String openingStatus = salon.status;
+    final bool isClosed = openingStatus.toLowerCase() == 'closed';
+    Widget closedWidget() {
+      return Center(
+        child: Text(
+          openingStatus,
           style: TextStyle(
-            color: Colors.green,
-            fontSize: fontSize,
+            color: Colors.red,
+            fontSize: getFontSizeVersion2(deviceInfo) * 0.85,
             fontWeight: FontWeight.bold,
           ),
         ),
-        Flexible(
-          child: Text('$openFrom $to $openTo',
+      );
+    }
+
+    Widget openWidget() {
+      return FittedBox(
+        child: Column(children: [
+          Text(
+            getWord('Open', context),
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text('$openFrom $to $openTo',
               textAlign: TextAlign.center,
               style:
                   TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-        ),
-      ]),
-    );
+        ]),
+      );
+    }
+
+    return Card(elevation: 10, child: isClosed ? closedWidget() : openWidget());
   }
 }
 

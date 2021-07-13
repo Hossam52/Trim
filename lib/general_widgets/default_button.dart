@@ -28,7 +28,7 @@ class DefaultButton extends StatelessWidget {
             child: widget ??
                 Text(text,
                     style: TextStyle(
-                        fontSize: getFontSizeVersion2(deviceInfo),
+                        fontSize: getFontSizeVersion2(deviceInfo) * 0.8,
                         color: textColor)),
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(

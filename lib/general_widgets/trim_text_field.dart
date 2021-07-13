@@ -40,7 +40,7 @@ class TrimTextField extends StatelessWidget {
             validator: validator,
             obscureText: password,
             controller: controller,
-            style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo)),
+            style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo) * 0.75),
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               // contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),

@@ -9,6 +9,15 @@ class Product {
   final String productQuantity;
   final int categoryId;
   bool available = true;
+
+  Product(
+      {this.categoryId,
+      @required this.nameAr,
+      @required this.nameEn,
+      @required this.productId,
+      @required this.productImage,
+      @required this.productPrice,
+      @required this.productQuantity});
   factory Product.fromjson(Map<String, dynamic> data) {
     return Product(
         // categoryId: data['id'],
@@ -20,12 +29,7 @@ class Product {
         productQuantity: data['qty']);
   }
 
-  Product(
-      {this.categoryId,
-      @required this.nameAr,
-      @required this.nameEn,
-      @required this.productId,
-      @required this.productImage,
-      @required this.productPrice,
-      @required this.productQuantity});
+  Map<String, dynamic> toMap() {
+    return {};
+  }
 }

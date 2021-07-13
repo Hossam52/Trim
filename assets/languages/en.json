@@ -175,5 +175,18 @@
    "Discount code":"Discount code",
    "Please tell us your review for enhance the service":"Please tell us your review for enhance the service",
    "My wallet":"My wallet",
-   "Total amount in your wallet":"Total amount in your wallet"
+   "Total amount in your wallet":"Total amount in your wallet",
+   "The reservaion number":"The reservaion number",
+   "cancelled successifully":"cancelled successifully",
+   "Next":"Next",
+   "Previous":"Previous",
+   "Login failed":"Login failed",
+   "No Services is added yet":"No Services is added yet",
+   "You should select at least one service":"You should select at least one service",
+   "Confirm":"Confirm",
+   "Modify":"Modify",
+   "Change date":"Change date",
+   "Change payment method":"Change payment method"
+   
+
 }

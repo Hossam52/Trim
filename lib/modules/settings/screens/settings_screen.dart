@@ -37,91 +37,102 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: BlocBuilder<SettingCubit, SettingsStatates>(
-          builder: (_, state) {
-            if (state is LoadingPersonalDataState)
-              return Center(child: CircularProgressIndicator());
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                      onTap: () {
+    return BlocProvider(
+      create: (_) => SettingCubit(),
+      child: Builder(
+        builder: (context) => SafeArea(
+          child: SingleChildScrollView(
+            child: BlocBuilder<SettingCubit, SettingsStatates>(
+              builder: (_, state) {
+                if (state is LoadingPersonalDataState)
+                  return Center(child: CircularProgressIndicator());
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, PersonDetailScreen.routeName);
+                          },
+                          child: buildPersonWidget(context)),
+                    ),
+                    Divider(),
+                    SettingItem(
+                      imagename: 'calendar',
+                      label: getWord("my reservations", context),
+                      function: () async {
+                        Navigator.of(context)
+                            .pushNamed(ReservationsScreen.routeName);
+                      },
+                    ),
+                    SettingItem(
+                      imagename: 'bell',
+                      label: getWord("notifications", context),
+                      function: () => SettingCubit.getInstance(context)
+                          .navigateToNotificationsScreen(context),
+                    ),
+                    SettingItem(
+                      imagename: 'user',
+                      label: getWord("personal profile", context),
+                      function: () {
                         Navigator.pushNamed(
                             context, PersonDetailScreen.routeName);
                       },
-                      child: buildPersonWidget(context)),
-                ),
-                Divider(),
-                SettingItem(
-                  imagename: 'calendar',
-                  label: getWord("my reservations", context),
-                  function: () async {
-                    Navigator.of(context)
-                        .pushNamed(ReservationsScreen.routeName);
-                  },
-                ),
-                SettingItem(
-                  imagename: 'bell',
-                  label: getWord("notifications", context),
-                  function: () => SettingCubit.getInstance(context)
-                      .navigateToNotificationsScreen(context),
-                ),
-                SettingItem(
-                  imagename: 'user',
-                  label: getWord("personal profile", context),
-                  function: () {
-                    Navigator.pushNamed(context, PersonDetailScreen.routeName);
-                  },
-                ),
-                SettingItem(
-                  imagename: 'favourite',
-                  label: getWord("my favorites", context),
-                  function: () => HomeCubit.getInstance(context)
-                      .navigateToFavoriets(context),
-                ),
-                SettingItem(
-                  imagename: 'support',
-                  label: getWord("support", context),
-                  function: () {
-                    if (SettingCubit.getInstance(context).emails.isEmpty ||
-                        SettingCubit.getInstance(context).phones.isEmpty)
-                      SettingCubit.getInstance(context).loadContacts();
-                    Navigator.pushNamed(
-                        context, CustomerServiceScreen.routeName);
-                  },
-                ),
-                InfoWidget(
-                  responsiveWidget: (context, deviceInfo) {
-                    return ListTile(
-                      onTap: () async {
-                        final logout = await confirmLogout(context);
-                        if (logout != null && logout) {
-                          await SettingCubit.getInstance(context)
-                              .logoutUser(context);
-                          AuthCubit.getInstance(context).logout();
-                          await loadingLogoutDialog(context);
-                          Navigator.pushReplacementNamed(
-                              context, LoginScreen.routeName);
-                        }
+                    ),
+                    SettingItem(
+                      imagename: 'favourite',
+                      label: getWord("my favorites", context),
+                      function: () => HomeCubit.getInstance(context)
+                          .navigateToFavoriets(context),
+                    ),
+                    SettingItem(
+                      imagename: 'support',
+                      label: getWord("support", context),
+                      function: () {
+                        if (SettingCubit.getInstance(context).emails.isEmpty ||
+                            SettingCubit.getInstance(context).phones.isEmpty)
+                          SettingCubit.getInstance(context).loadContacts();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                      value: SettingCubit.getInstance(context),
+                                      child: CustomerServiceScreen(),
+                                    )));
                       },
-                      leading: Icon(Icons.logout, color: Colors.red),
-                      title: Text(
-                        getWord("log out", context),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                            fontSize: getFontSizeVersion2(deviceInfo)),
-                      ),
-                    );
-                  },
-                )
-              ],
-            );
-          },
+                    ),
+                    InfoWidget(
+                      responsiveWidget: (context, deviceInfo) {
+                        return ListTile(
+                          onTap: () async {
+                            final logout = await confirmLogout(context);
+                            if (logout != null && logout) {
+                              await SettingCubit.getInstance(context)
+                                  .logoutUser(context);
+                              AuthCubit.getInstance(context).logout();
+                              await loadingLogoutDialog(context);
+                              Navigator.pushReplacementNamed(
+                                  context, LoginScreen.routeName);
+                            }
+                          },
+                          leading: Icon(Icons.logout, color: Colors.red),
+                          title: Text(
+                            getWord("log out", context),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                                fontSize: getFontSizeVersion2(deviceInfo)),
+                          ),
+                        );
+                      },
+                    )
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

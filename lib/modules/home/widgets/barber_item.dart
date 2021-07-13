@@ -41,7 +41,7 @@ class BarberItem extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                        fontSize: getFontSizeVersion2(deviceInfo),
+                        fontSize: getFontSizeVersion2(deviceInfo) * 0.75,
                         fontWeight: FontWeight.bold),
                   ),
                   BuildStars(

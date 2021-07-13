@@ -32,7 +32,7 @@ class _CancelReasonsState extends State<CancelReasons> {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = getFontSize(widget.deviceInfo);
+    double fontSize = getFontSize(widget.deviceInfo) * 0.8;
     final canceledReasons = getCancelReasons(context);
     return Column(
       mainAxisSize: MainAxisSize.min,

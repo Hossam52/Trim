@@ -18,14 +18,14 @@ class SettingItem extends StatelessWidget {
             onTap: function,
             leading: Image.asset(
               'assets/icons/$imagename.png',
-              height: 25,
-              width: 25,
+              height: getFontSizeVersion2(deviceInfo),
+              width: getFontSizeVersion2(deviceInfo),
             ),
             title: Text(
               label,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: getFontSizeVersion2(deviceInfo)),
+                  fontSize: getFontSizeVersion2(deviceInfo) * 0.85),
             ),
           ),
         );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
@@ -97,16 +98,30 @@ class _PersonsGridViewState extends State<PersonsGridView> {
               return Column(
                 children: [
                   Expanded(
-                    child: GridView.builder(
-                      controller: scrollController,
-                      shrinkWrap: true,
+                    child: StaggeredGridView.countBuilder(
                       physics: BouncingScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10),
-                      itemCount: trimStarList.length,
-                      itemBuilder: (BuildContext context, int index) {
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      itemCount: trimStarList.length + 1,
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      itemBuilder: (_, index) {
+                        if (index == trimStarList.length) {
+                          if (state is LoadingMorePersonState)
+                            return LoadingMoreItemsIndicator();
+                          if (state is NoMorePersonState)
+                            return NoMoreItems(
+                              deviceInfo: deviceInfo,
+                              label: getWord('No More Salons', context),
+                            );
+                          return NavigatePages(
+                            nextPage:
+                                PersonsCubit.getInstance(context).getNextPage,
+                            pageNumber: pageNumber,
+                            prevPage: PersonsCubit.getInstance(context)
+                                .getPreviousPage,
+                          );
+                        }
                         return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: BarberItem(
@@ -115,19 +130,12 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                                 personItem: trimStarList[index],
                                 deviceInfo: deviceInfo));
                       },
+                      staggeredTileBuilder: (index) {
+                        if (index == trimStarList.length)
+                          return StaggeredTile.fit(2);
+                        return StaggeredTile.count(1, 1);
+                      },
                     ),
-                  ),
-                  if (state is LoadingMorePersonState)
-                    LoadingMoreItemsIndicator(),
-                  if (state is NoMorePersonState)
-                    NoMoreItems(
-                      deviceInfo: deviceInfo,
-                      label: getWord('No More Salons', context),
-                    ),
-                  NavigatePages(
-                    nextPage: PersonsCubit.getInstance(context).getNextPage,
-                    pageNumber: pageNumber,
-                    prevPage: PersonsCubit.getInstance(context).getPreviousPage,
                   ),
                 ],
               );

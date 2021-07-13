@@ -6,6 +6,7 @@ import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/cubits/reservation_states.dart';
 import 'package:trim/general_widgets/price_information.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
+import 'package:trim/modules/reservation/screens/modify_salon_order.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 import 'package:trim/general_widgets/BuildAppBar.dart';
@@ -28,8 +29,11 @@ class ReservationDetailsScreen extends StatelessWidget {
             listener: (_, state) {
               if (state is LoadedCancedReservationState) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                        'The reservaion number ${reservationData.id} cancelled successifully')));
+                    content: Text(getWord('The reservaion number', context) +
+                        ' ' +
+                        reservationData.id.toString() +
+                        ' ' +
+                        getWord('cancelled successifully', context))));
                 Navigator.pop(context);
               }
             },
@@ -67,7 +71,8 @@ class ReservationDetailsScreen extends StatelessWidget {
                                     reservationData.total ?? "0",
                               ),
                             if (reservationData.statusId != "2")
-                              buildReservationActions(fontSize, context),
+                              buildReservationActions(
+                                  reservationData, fontSize, context),
                           ],
                         ),
                       ),
@@ -82,7 +87,8 @@ class ReservationDetailsScreen extends StatelessWidget {
     );
   }
 
-  Row buildReservationActions(double fontSize, BuildContext context) {
+  Row buildReservationActions(
+      OrderModel order, double fontSize, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -91,7 +97,17 @@ class ReservationDetailsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: DefaultButton(
             text: getWord('Modify order', context),
-            onPressed: () {},
+            onPressed: () async {
+              if (order.type == 'services') {
+                final succssModified = await Navigator.of(context)
+                    .pushNamed(ModifySalonOrder.routeName, arguments: order);
+                if (succssModified != null && succssModified) {
+                  ReservationCubit.getInstance(context)
+                      .loadMyOrders(refreshPage: true);
+                  Navigator.pop(context);
+                }
+              }
+            },
           ),
         )),
         Expanded(

@@ -12,13 +12,12 @@ class SocialAuth extends StatelessWidget {
       children: [
         IconButton(
             icon: Image.asset(facebookImagePath),
-            onPressed: 1 == 0
-                ? () {}
-                : () async {
-                    await Authenitcations.signInWithFacebook(context);
-                    return;
-                    await AuthCubit.getInstance(context).loginFacebook(context);
-                  }),
+            onPressed: () async {
+              return;
+              await Authenitcations.signInWithFacebook(context);
+              return;
+              await AuthCubit.getInstance(context).loginFacebook(context);
+            }),
         FutureBuilder(
           future: Authenitcations.initializeFirebase(),
           builder: (context, snapshot) {
@@ -27,38 +26,10 @@ class SocialAuth extends StatelessWidget {
             else if (snapshot.connectionState == ConnectionState.done)
               return IconButton(
                   icon: Image.asset(googleImagePath),
-                  onPressed: 1 == 0
-                      ? () {}
-                      : () async {
-                          final user =
-                              await Authenitcations.signInWithGoogle(context);
-                          print('User is ' + user.toString());
-                          return;
-                          // final a = await GoogleSignInApi.login();
-                          // print(GoogleSignInApi._googleSignIn.clientId);
-
-                          // print(a.toString());
-                          // return;
-                          final res = GoogleSignIn(
-                            scopes: [
-                              'profile',
-                              'https://www.googleapis.com/auth/userinfo.profile',
-                              'https://www.googleapis.com/auth/gmail.readonly',
-                            ],
-                          );
-                          if (await res.isSignedIn()) {
-                            print(res.currentUser);
-                            print('Signed in');
-                          } else {
-                            print('Not signed in');
-                            // await res.signOut();
-                            final signInUser = await res.signIn();
-                            if (signInUser == null)
-                              print('null');
-                            else
-                              print(signInUser.email);
-                          }
-                        });
+                  onPressed: () async {
+                    await AuthCubit.getInstance(context)
+                        .loginWithGmail(context);
+                  });
             return CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(
               Colors.orange,

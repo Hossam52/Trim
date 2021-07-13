@@ -13,6 +13,7 @@ import 'package:trim/modules/auth/models/facebook_auth_model.dart';
 import 'package:trim/modules/auth/models/login_model.dart';
 import 'package:trim/modules/auth/models/register_model.dart';
 import 'package:trim/modules/auth/models/token_model.dart';
+import 'package:trim/modules/auth/repositries/authentications.dart';
 import 'package:trim/modules/auth/repositries/login_repositries.dart';
 import 'package:trim/modules/auth/repositries/register_repositry.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
@@ -139,6 +140,25 @@ class AuthCubit extends Cubit<AuthStates> {
         emit(ErrorAuthState(response.errorMessage));
       } else {
         successLogin(response, context);
+        emit(LoadedAuthState());
+      }
+    }
+  }
+
+  Future<void> loginWithGmail(BuildContext context) async {
+    final user = await Authenitcations.signInWithGoogle(context);
+    emit(IntialAuthLoginState());
+    if (user == null) {
+      emit(ErrorAuthState(getWord('Login failed', context)));
+    } else {
+      emit(LoadingAuthState());
+      var body = user.toMap();
+      body.addAll({'provider': 'gmail'});
+      final res = await socialRegisterFromServer(body);
+      if (res.error) {
+        emit(ErrorAuthState(res.errorMessage));
+      } else {
+        await successLogin(res, context);
         emit(LoadedAuthState());
       }
     }
