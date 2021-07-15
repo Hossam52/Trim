@@ -186,5 +186,7 @@
     "Confirm": "تأكيد",
     "Modify":"تعديل",
    "Change date":"تغيير التاريخ",
-   "Change payment method":"تغيير طريقة الدفع"
+   "Change payment method":"تغيير طريقة الدفع",
+   "Order updated successifully":"تم تعديل الطلب بنجاح"
+
 }

@@ -165,6 +165,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
       alignment: Alignment.bottomCenter,
       child: CircleAvatar(
         child: Stack(
+          alignment: AlignmentDirectional.bottomStart,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(1000),
@@ -179,15 +180,13 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
                     : TrimCachedImage(src: AppCubit.getInstance(context).image),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: IconButton(
-                icon: Icon((Icons.add_a_photo)),
-                onPressed: () async {
+            IconButton(
+              icon: Icon((Icons.add_a_photo)),
+              onPressed: () async {
+                setState(() async {
                   image = await getImageFromGellary();
-                  setState(() {});
-                },
-              ),
+                });
+              },
             ),
           ],
         ),

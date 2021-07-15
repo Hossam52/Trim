@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/confirm_cancel_buttons.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
@@ -18,6 +19,7 @@ import 'package:trim/modules/reservation/cubits/update_order_cubit.dart';
 import 'package:trim/modules/reservation/cubits/update_order_states.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
 
 class ModifySalonOrder extends StatelessWidget {
   static String routeName = '/modify-salon-order';
@@ -36,7 +38,7 @@ class ModifySalonOrder extends StatelessWidget {
               listener: (_, state) {
                 if (state is UpdatedOrder) {
                   Fluttertoast.showToast(
-                      msg: 'Order updated successifully',
+                      msg: getWord('Order updated successifully', context),
                       backgroundColor: Colors.green);
                   Navigator.pop(context, true);
                 }
@@ -76,8 +78,8 @@ class ModifySalonOrder extends StatelessWidget {
                   children: [
                     Expanded(
                       child: DefaultTabController(
-                        length: 3,
-                        initialIndex: 1,
+                        length: tabs.length,
+                        initialIndex: 0,
                         child: Column(
                           children: [
                             TabBar(
@@ -115,30 +117,11 @@ class ModifySalonOrder extends StatelessWidget {
           return Center(
             child: CircularProgressIndicator(),
           );
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-                child: DefaultButton(
-              text: getWord('Confirm', context),
-              onPressed: () async {
-                await UpdateOrderCubit.getInstance(context).updateSalonOrder(
-                    reservationDate: DateTime.now(),
-                    reservationTime: '5:00 PM');
-              },
-              color: Colors.green,
-            )),
-            SizedBox(
-              width: 70,
-            ),
-            Expanded(
-                child: DefaultButton(
-                    text: getWord('Cancel', context),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    color: Colors.red)),
-          ],
+        return ConfirmCancelButtons(
+          onPressConfirm: () async {
+            await UpdateOrderCubit.getInstance(context).updateSalonOrder(
+                reservationDate: DateTime.now(), reservationTime: '5:00 PM');
+          },
         );
       },
     );
@@ -164,17 +147,17 @@ class ModifySalonOrder extends StatelessWidget {
           text: getWord('Change date', context),
           contentWidget:
               Padding(padding: const EdgeInsets.all(8.0), child: Container())),
-      UpdateArea(
-          text: getWord('Change payment method', context),
-          contentWidget: PaymentMethodsWidget(
-            onChangeSelection: (val) {
-              print(val);
-              UpdateOrderCubit.getInstance(context)
-                  .changeSelectedPaymentMethod(val);
-            },
-            paymentMethod: UpdateOrderCubit.getInstance(context).paymentMethod,
-            showCashMethod: true,
-          )),
+      // UpdateArea(
+      //     text: getWord('Change payment method', context),
+      //     contentWidget: PaymentMethodsWidget(
+      //       onChangeSelection: (val) {
+      //         print(val);
+      //         UpdateOrderCubit.getInstance(context)
+      //             .changeSelectedPaymentMethod(val);
+      //       },
+      //       paymentMethod: UpdateOrderCubit.getInstance(context).paymentMethod,
+      //       showCashMethod: true,
+      //     )),
     ];
   }
 }
