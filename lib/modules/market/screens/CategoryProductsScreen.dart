@@ -286,7 +286,9 @@ class _BuildProductItemState extends State<BuildProductItem> {
     return Text(
       isArabic ? widget.prodcut.nameAr : widget.prodcut.nameEn,
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+      style: TextStyle(fontSize: fontSize-4, fontWeight: FontWeight.bold),
     );
   }
 }

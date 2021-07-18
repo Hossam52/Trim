@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/cubits/reservation_states.dart';
 import 'package:trim/general_widgets/price_information.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
+import 'package:trim/modules/reservation/screens/modify_products_screen.dart';
 import 'package:trim/modules/reservation/screens/modify_salon_order.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
@@ -106,6 +108,13 @@ class ReservationDetailsScreen extends StatelessWidget {
                       .loadMyOrders(refreshPage: true);
                   Navigator.pop(context);
                 }
+              } else {
+                //  Navigator.pushNamed(
+                //   context,
+                //   ModifyProductsScreen.routeName,
+                //   arguments: order,
+                // );
+                // Fluttertoast.showToast(msg: 'Products');
               }
             },
           ),

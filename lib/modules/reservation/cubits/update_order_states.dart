@@ -25,3 +25,5 @@ class ErrorUpdateOrder extends UpdateOrderStates {
 
   ErrorUpdateOrder(this.error);
 }
+class ChangeQuantityProduct extends UpdateOrderStates{}
+class RemoveProduct extends UpdateOrderStates{}

@@ -71,40 +71,43 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
+     
       body: SafeArea(
         child: InfoWidget(
-          responsiveWidget: (context, deviceInfo) => GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: Column(
-              children: [
-                Container(
-                  height: getSizeProfileStack(deviceInfo),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        height: getSizeProfileStack(deviceInfo) -
-                            (deviceInfo.type == deviceType.mobile ? 50 : 60),
-                        child: Stack(
-                          children: [
-                            _buildCoverPhoto(),
-                            _changeCoverButton(),
-                          ],
+          responsiveWidget: (context, deviceInfo) => SingleChildScrollView(
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Column(
+                children: [
+                    Container(
+                    height: getSizeProfileStack(deviceInfo),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: AlignmentDirectional.topStart,
+                      children: [
+                        Container(
+                          height: getSizeProfileStack(deviceInfo) -
+                              (deviceInfo.type == deviceType.mobile ? 50 : 60),
+                          child: Stack(
+                             alignment: AlignmentDirectional.bottomEnd,
+                            children: [
+                              _buildCoverPhoto(),
+                              _changeCoverButton(),
+                            ],
+                          ),
                         ),
-                      ),
-                      BuildBackButtonWidget(
-                        localHeight: 530,
-                      ),
-                      _buildPersonPhoto(deviceInfo),
-                    ],
+                        BuildBackButtonWidget(
+                          localHeight: 530,
+                        ),
+                        _buildPersonPhoto(deviceInfo),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                Expanded(
-                  // flex: 3,
-                  child: SingleChildScrollView(
+                  SizedBox(height: 10),
+                  SingleChildScrollView(
                     child: Card(
                       margin: const EdgeInsets.all(15.0),
                       elevation: 4,
@@ -118,8 +121,8 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
                           )),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -164,6 +167,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: CircleAvatar(
+        
         child: Stack(
           alignment: AlignmentDirectional.bottomStart,
           children: [
@@ -180,17 +184,19 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
                     : TrimCachedImage(src: AppCubit.getInstance(context).image),
               ),
             ),
+          //  Expanded()
             IconButton(
+              padding: EdgeInsets.zero,
               icon: Icon((Icons.add_a_photo)),
               onPressed: () async {
-                setState(() async {
-                  image = await getImageFromGellary();
+                 image = await getImageFromGellary();
+                setState(()  {
                 });
               },
             ),
           ],
         ),
-        radius: deviceInfo.type == deviceType.mobile ? 50 : 65,
+        radius:(deviceInfo.localWidth)* (deviceInfo.orientation==Orientation.portrait?0.15:0.085)
       ),
     );
   }

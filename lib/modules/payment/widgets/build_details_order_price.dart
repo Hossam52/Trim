@@ -84,10 +84,16 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                 controller: controller,
                 enabled: correctCopon,
                 updateUi: (bool coorectCopon, int discount) {
-                  setState(() {
-                    correctCopon = true;
-                    discountValue = discount;
-                  });
+                  if (discount == null || discount == 0)
+                    setState(() {
+                      correctCopon = false;
+                    });
+                  else {
+                    setState(() {
+                      correctCopon = true;
+                      discountValue = discount;
+                    });
+                  }
                 },
               ),
             BuildListTileCofirm(
@@ -122,9 +128,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: BlocConsumer<OrderCubit, OrderStates>(
                 listener: (_, state) {
-                  if (state is ErrorOrderState)
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text(state.error)));
+                  
                 },
                 builder: (_, state) => DefaultButton(
                   onPressed: state is LoadingOrderState
@@ -180,11 +184,12 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
             paymentMethod: widget.paymentMethod == PaymentMethod.Cash
                 ? 'Cash'
                 : 'VisaMatercard');
-        if (productsOrderBloc.discount != 0 ||
-            productsOrderBloc.discount != null)
+        bool checkValue = productsOrderBloc.discount == null ? false : true;
+        if (checkValue && productsOrderBloc.discount != 0) {
           Fluttertoast.showToast(
               msg:
                   'we will apply discount with ${productsOrderBloc.discount} when paying');
+        }
 
         if (OrderCubit.getInstance(context).state is! ErrorOrderState) {
           cartBloc.add(DeleteAllItemsInCart());
@@ -218,7 +223,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                   : () async {
                       try {
                         FocusScope.of(context).unfocus();
-                        if (controller.text.isEmpty) {
+                        if (controller.text.isEmpty || controller.text == ' ') {
                           Fluttertoast.showToast(
                               msg:
                                   getWord('Pleas Enter coupoun code', context));
@@ -228,6 +233,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                               body: {
                                 'code': controller.text,
                               });
+                          Fluttertoast.showToast(msg: response.data['success'].toString()+"هذا  ");
                           if (!response.data['success']) {
                             Fluttertoast.showToast(
                                 msg: isArabic

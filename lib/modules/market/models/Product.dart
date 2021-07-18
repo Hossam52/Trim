@@ -6,7 +6,7 @@ class Product {
   final int productId;
   final String productImage;
   final String productPrice;
-  final String productQuantity;
+  String productQuantity;
   final int categoryId;
   bool available = true;
 

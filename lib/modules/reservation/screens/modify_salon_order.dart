@@ -17,9 +17,8 @@ import 'package:trim/modules/payment/screens/payment_methods_screen.dart';
 import 'package:trim/modules/payment/widgets/payment_methods_widgets.dart';
 import 'package:trim/modules/reservation/cubits/update_order_cubit.dart';
 import 'package:trim/modules/reservation/cubits/update_order_states.dart';
+import 'package:trim/modules/reservation/models/UpdateArea.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
-import 'package:trim/utils/ui/app_dialog.dart';
 
 class ModifySalonOrder extends StatelessWidget {
   static String routeName = '/modify-salon-order';
@@ -127,6 +126,8 @@ class ModifySalonOrder extends StatelessWidget {
     );
   }
 
+  
+
   List<UpdateArea> allTabs(BuildContext context) {
     return [
       UpdateArea(
@@ -162,20 +163,4 @@ class ModifySalonOrder extends StatelessWidget {
   }
 }
 
-class UpdateArea {
-  final String text;
-  final Widget contentWidget;
-  Tab tabWidget;
-  UpdateArea({@required this.text, @required this.contentWidget}) {
-    tabWidget = Tab(
-      child: InfoWidget(
-        responsiveWidget: (_, deviceInfo) => Text(
-          text,
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: getFontSizeVersion2(deviceInfo) * 0.8),
-        ),
-      ),
-    );
-  }
-}
+

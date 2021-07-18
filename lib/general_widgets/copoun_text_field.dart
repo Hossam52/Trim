@@ -31,23 +31,19 @@ class CoupounTextField extends StatelessWidget {
                   FocusScope.of(context).unfocus();
                   try {
                     FocusScope.of(context).unfocus();
-                    if (controller.text.isEmpty) {
+                    if (controller.text.isEmpty || controller.text == ' ') {
                       Fluttertoast.showToast(
-                          msg: getWord('Pleas Enter coupoun code', context));
+                          msg: getWord('Please Enter coupoun code', context));
                     } else {
                       final response =
                           await DioHelper.postData(url: couponeUrl, body: {
                         'code': controller.text,
                       });
                       if (!response.data['success']) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(isArabic
-                                ? 'الكوبون غير متاح'
-                                : 'Coupone not  available')));
                         Fluttertoast.showToast(
                             msg: isArabic
                                 ? 'الكوبون غير متاح'
-                                : response.data['message']);
+                                : 'Coupone not  available');
                       } else {
                         updateUi(true,
                             int.tryParse(response.data['data']['price']) ?? 0);

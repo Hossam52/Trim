@@ -280,7 +280,7 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   String validatePhone(String phone, BuildContext context) {
-    String p = '^(01)(1|0|2)[0-9]{8}\$';
+    String p = '^(01)(1|0|2|5)[0-9]{8}\$';
     RegExp regExp = RegExp(p);
     if (regExp.hasMatch(phone))
       return null;
