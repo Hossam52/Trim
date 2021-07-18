@@ -98,7 +98,7 @@ class ReservationDetailsScreen extends StatelessWidget {
           child: DefaultButton(
             text: getWord('Modify order', context),
             onPressed: () async {
-              if (order.type == 'services') {
+              if (order.services.isNotEmpty) {
                 final succssModified = await Navigator.of(context)
                     .pushNamed(ModifySalonOrder.routeName, arguments: order);
                 if (succssModified != null && succssModified) {

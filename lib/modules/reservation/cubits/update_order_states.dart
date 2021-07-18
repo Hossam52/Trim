@@ -25,3 +25,13 @@ class ErrorUpdateOrder extends UpdateOrderStates {
 
   ErrorUpdateOrder(this.error);
 }
+
+class GettingAvilableTimes extends UpdateOrderStates {}
+
+class SuccessAvilableTimes extends UpdateOrderStates {}
+
+class FailedAvilableTimes extends UpdateOrderStates {}
+
+class NoAvailableDates extends UpdateOrderStates {}
+
+class ChangeTime extends UpdateOrderStates {}

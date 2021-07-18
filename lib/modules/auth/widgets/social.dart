@@ -13,8 +13,8 @@ class SocialAuth extends StatelessWidget {
         IconButton(
             icon: Image.asset(facebookImagePath),
             onPressed: () async {
-              return;
-              await Authenitcations.signInWithFacebook(context);
+              AuthCubit.getInstance(context).loginFacebook(context);
+              // await Authenitcations.signInWithFacebook(context);
               return;
               await AuthCubit.getInstance(context).loginFacebook(context);
             }),

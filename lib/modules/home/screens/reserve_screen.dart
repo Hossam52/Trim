@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/general_widgets/empty_time_day.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
@@ -52,77 +53,91 @@ class _ReserveScreenState extends State<ReserveScreen> {
           },
           builder: (_, state) => InfoWidget(
             responsiveWidget: (context, deviceInfo) => SafeArea(
-              child: CustomScrollView(
-                physics: BouncingScrollPhysics(),
-                slivers: [
-                  if (selectDateWidget != false)
-                    DateBuilder(
-                        onChangeDate:
-                            SalonsCubit.getInstance(context).getAvilableDates,
-                        initialSelectedDate:
-                            SalonsCubit.getInstance(context).reservationDate),
-                  SliverList(
-                    delegate: SliverChildListDelegate.fixed([
-                      if (selectDateWidget == false)
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: BackButton()),
-                      if (availableDatesWidget != false) AvailableTimes(),
-                      if (selectDateWidget != false ||
-                          availableDatesWidget != false)
-                        Divider(),
-                      if (servicesWidget != false) buildServices(context),
-                      if (offersWidget != false)
-                        buildOffers(deviceInfo, context),
-                      if (!copounWidget)
-                        CoupounTextField(
-                          controller: controller,
-                          enabled: correctCopon,
-                          updateUi: (bool isCorrectCopon, int coponDiscount) {
-                            setState(() {
-                              discount = coponDiscount;
-                              correctCopon = isCorrectCopon;
-                            });
-                          },
-                        ),
+                child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (selectDateWidget != false)
+                      DateBuilder(
+                          onChangeDate:
+                              SalonsCubit.getInstance(context).getAvilableDates,
+                          initialSelectedDate:
+                              SalonsCubit.getInstance(context).reservationDate),
+                    if (selectDateWidget == false)
+                      Align(
+                          alignment: Alignment.centerLeft, child: BackButton()),
+                    if (availableDatesWidget != false)
                       BlocBuilder<SalonsCubit, SalonStates>(
                         builder: (_, state) {
-                          double totalAfterDiscount =
-                              SalonsCubit.getInstance(context).totalPrice -
-                                  discount;
-                          return PriceInformation(
-                            total: SalonsCubit.getInstance(context)
-                                .totalPrice
-                                .toString(),
-                            discount: discount.toString(),
-                            totalAfterDiscount: totalAfterDiscount.toString(),
+                          if (state is LoadingAvilableDatesState) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (state is EmptyAvialbleDatesState ||
+                              SalonsCubit.getInstance(context)
+                                  .availableDates
+                                  .isEmpty)
+                            return Center(child: EmptyTimeAtDay());
+                          return AvailableTimes(
+                            dates:
+                                SalonsCubit.getInstance(context).availableDates,
+                            selectedIndex: SalonsCubit.getInstance(context)
+                                .getSelectedReserveTime,
+                            onDateChange: SalonsCubit.getInstance(context)
+                                .changeSelectedReserveDate,
                           );
                         },
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                        child: BlocBuilder<SalonsCubit, SalonStates>(
-                          builder: (_, state) {
-                            final canReserveSalon =
-                                SalonsCubit.getInstance(context)
-                                    .canReserveSalon();
-                            return DefaultButton(
-                                text: getWord('Reserve now', context),
-                                widget: state is LoadingMakeOrderState
-                                    ? Center(child: CircularProgressIndicator())
-                                    : null,
-                                onPressed: !canReserveSalon ||
-                                        state is LoadingMakeOrderState
-                                    ? null
-                                    : reserveSalonFunction(context));
-                          },
-                        ),
-                      )
-                    ]),
-                  ),
-                ],
-              ),
-            ),
+                    if (selectDateWidget != false ||
+                        availableDatesWidget != false)
+                      Divider(),
+                    if (servicesWidget != false) buildServices(context),
+                    if (offersWidget != false) buildOffers(deviceInfo, context),
+                    if (!copounWidget)
+                      CoupounTextField(
+                        controller: controller,
+                        enabled: correctCopon,
+                        updateUi: (bool isCorrectCopon, int coponDiscount) {
+                          setState(() {
+                            discount = coponDiscount;
+                            correctCopon = isCorrectCopon;
+                          });
+                        },
+                      ),
+                    BlocBuilder<SalonsCubit, SalonStates>(
+                      builder: (_, state) {
+                        double totalAfterDiscount =
+                            SalonsCubit.getInstance(context).totalPrice -
+                                discount;
+                        return PriceInformation(
+                          total: SalonsCubit.getInstance(context)
+                              .totalPrice
+                              .toString(),
+                          discount: discount.toString(),
+                          totalAfterDiscount: totalAfterDiscount.toString(),
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: BlocBuilder<SalonsCubit, SalonStates>(
+                        builder: (_, state) {
+                          final canReserveSalon =
+                              SalonsCubit.getInstance(context)
+                                  .canReserveSalon();
+                          return DefaultButton(
+                              text: getWord('Reserve now', context),
+                              widget: state is LoadingMakeOrderState
+                                  ? Center(child: CircularProgressIndicator())
+                                  : null,
+                              onPressed: !canReserveSalon ||
+                                      state is LoadingMakeOrderState
+                                  ? null
+                                  : reserveSalonFunction(context));
+                        },
+                      ),
+                    )
+                  ]),
+            )),
           ),
         ),
       ),

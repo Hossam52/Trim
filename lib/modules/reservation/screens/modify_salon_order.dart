@@ -5,6 +5,7 @@ import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/confirm_cancel_buttons.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/empty_time_day.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
@@ -30,7 +31,7 @@ class ModifySalonOrder extends StatelessWidget {
     final order = ModalRoute.of(context).settings.arguments as OrderModel;
 
     return BlocProvider(
-      create: (_) => UpdateOrderCubit(order: order)..getServices(context),
+      create: (_) => UpdateOrderCubit(order: order)..extractOrderData(),
       child: Builder(
         builder: (context) => SafeArea(
           child: Scaffold(
@@ -60,15 +61,14 @@ class ModifySalonOrder extends StatelessWidget {
                       text: state.error,
                       onRetry: () async {
                         await UpdateOrderCubit.getInstance(context)
-                            .getServices(context);
+                            .extractOrderData();
                       });
                 if (state is ErrorUpdateOrder)
                   return RetryWidget(
                       text: state.error,
                       onRetry: () {
-                        UpdateOrderCubit.getInstance(context).updateSalonOrder(
-                            reservationDate: DateTime.now(),
-                            reservationTime: '5:00 PM');
+                        UpdateOrderCubit.getInstance(context)
+                            .updateSalonOrder();
                       });
 
                 final List<UpdateArea> tabs = allTabs(context);
@@ -118,10 +118,8 @@ class ModifySalonOrder extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         return ConfirmCancelButtons(
-          onPressConfirm: () async {
-            await UpdateOrderCubit.getInstance(context).updateSalonOrder(
-                reservationDate: DateTime.now(), reservationTime: '5:00 PM');
-          },
+          onPressConfirm: () async =>
+              await UpdateOrderCubit.getInstance(context).updateSalonOrder(),
         );
       },
     );
@@ -132,33 +130,56 @@ class ModifySalonOrder extends StatelessWidget {
       UpdateArea(
           text: getWord('Modify', context),
           contentWidget: SingleChildScrollView(
-            child: BlocBuilder<UpdateOrderCubit, UpdateOrderStates>(
-              buildWhen: (_, newState) {
-                if (newState is ToggleServiceSelected) return true;
-                return false;
-              },
-              builder: (_, state) => SalonServices(
-                  services: UpdateOrderCubit.getInstance(context).allServices,
-                  onItemToggled: UpdateOrderCubit.getInstance(context)
-                      .toggleSelectedService),
-            ),
+            child: SalonServices(
+                services: UpdateOrderCubit.getInstance(context).allServices,
+                onItemToggled: UpdateOrderCubit.getInstance(context)
+                    .toggleSelectedService),
           )),
       UpdateArea(
-          text: getWord('Change date', context),
-          contentWidget:
-              Padding(padding: const EdgeInsets.all(8.0), child: Container())),
-      // UpdateArea(
-      //     text: getWord('Change payment method', context),
-      //     contentWidget: PaymentMethodsWidget(
-      //       onChangeSelection: (val) {
-      //         print(val);
-      //         UpdateOrderCubit.getInstance(context)
-      //             .changeSelectedPaymentMethod(val);
-      //       },
-      //       paymentMethod: UpdateOrderCubit.getInstance(context).paymentMethod,
-      //       showCashMethod: true,
-      //     )),
+        text: getWord('Change date', context),
+        contentWidget: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildDateSelection(context),
+              BlocBuilder<UpdateOrderCubit, UpdateOrderStates>(
+                  builder: (_, state) {
+                if (state is GettingAvilableTimes)
+                  return Center(child: CircularProgressIndicator());
+                else if (state is NoAvailableDates) return EmptyTimeAtDay();
+                return AvailableTimes(
+                  dates: UpdateOrderCubit.getInstance(context).availableTimes,
+                  onDateChange: UpdateOrderCubit.getInstance(context)
+                      .changeSelectedTimeIndex,
+                  selectedIndex:
+                      UpdateOrderCubit.getInstance(context).selectedTimeIndex,
+                );
+              }),
+            ],
+          )),
+        ),
+      ),
+      UpdateArea(
+          text: getWord('Change payment method', context),
+          contentWidget: PaymentMethodsWidget(
+            onChangeSelection: (val) {
+              UpdateOrderCubit.getInstance(context)
+                  .changeSelectedPaymentMethod(val);
+            },
+            paymentMethod: UpdateOrderCubit.getInstance(context).paymentMethod,
+            showCashMethod: true,
+          )),
     ];
+  }
+
+  DateBuilder buildDateSelection(BuildContext context) {
+    return DateBuilder(
+        onChangeDate: (date) =>
+            UpdateOrderCubit.getInstance(context).changeSelectedDate(date),
+        initialSelectedDate:
+            UpdateOrderCubit.getInstance(context).selectedDate);
   }
 }
 

@@ -108,72 +108,64 @@ class _DateBuilderState extends State<DateBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      leading: BackButton(
-        color: Colors.black,
-      ),
-      flexibleSpace: FlexibleSpaceBar(
-        background: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            InfoWidget(
-              responsiveWidget: (_, deviceInfo) => Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    getWord('Select a suitable date', context),
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: getFontSizeVersion2(deviceInfo)),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Container(
+      height: 240,
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+          borderRadius:
+              BorderRadius.vertical(bottom: Radius.circular(roundedRadius))),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          InfoWidget(
+            responsiveWidget: (_, deviceInfo) => Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back_ios_sharp, color: Colors.white),
-                  onPressed: previousMonth,
+                Text(
+                  getWord('Select a suitable date', context),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: getFontSizeVersion2(deviceInfo)),
                 ),
-                Text('$month  $year',
-                    style: TextStyle(
-                        color: Colors.white, fontSize: defaultFontSize)),
-                IconButton(
-                    disabledColor: Colors.red,
-                    icon: Icon(Icons.arrow_forward_ios_sharp,
-                        color: Colors.white),
-                    onPressed: nextMonth)
               ],
             ),
-            Expanded(
-              child: ScrollablePositionedList.builder(
-                itemScrollController: itemScrollController,
-                itemCount: daysInMonth.length,
-                itemBuilder: (_, index) {
-                  final dateFormat = DateFormat(
-                      'DDMMYYYY'); //To format both displaed and reservation date and know if specific date selected or not
-                  if (dateFormat.format(daysInMonth[index]) ==
-                      dateFormat.format(selectedDate))
-                    return buildDay(selectedDate, true);
-                  return buildDay(daysInMonth[index]);
-                },
-                scrollDirection: Axis.horizontal,
-                physics: BouncingScrollPhysics(),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back_ios_sharp, color: Colors.white),
+                onPressed: previousMonth,
               ),
-            )
-          ],
-        ),
+              Text('$month  $year',
+                  style: TextStyle(
+                      color: Colors.white, fontSize: defaultFontSize)),
+              IconButton(
+                  disabledColor: Colors.red,
+                  icon:
+                      Icon(Icons.arrow_forward_ios_sharp, color: Colors.white),
+                  onPressed: nextMonth)
+            ],
+          ),
+          Expanded(
+            child: ScrollablePositionedList.builder(
+              itemScrollController: itemScrollController,
+              itemCount: daysInMonth.length,
+              itemBuilder: (_, index) {
+                final dateFormat = DateFormat(
+                    'DDMMYYYY'); //To format both displaed and reservation date and know if specific date selected or not
+                if (dateFormat.format(daysInMonth[index]) ==
+                    dateFormat.format(selectedDate))
+                  return buildDay(selectedDate, true);
+                return buildDay(daysInMonth[index]);
+              },
+              scrollDirection: Axis.horizontal,
+              physics: BouncingScrollPhysics(),
+            ),
+          )
+        ],
       ),
-      floating: false,
-      pinned: false,
-      backgroundColor: Color(0xff2C73A8),
-      expandedHeight: 240,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(roundedRadius),
-              bottomRight: Radius.circular(roundedRadius))),
     );
   }
 }

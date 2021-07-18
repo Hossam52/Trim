@@ -74,6 +74,7 @@ Future<RecievedData> callAPI(String url,
             : 'Client side error please modify it then retry.';
     }
   } catch (e) {
+    print(e.toString());
     error = isArabic
         ? 'لقد حدث خطأ يرجي المحاولة مجددا'
         : 'Un expected error happened';

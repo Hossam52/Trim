@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
+import 'package:trim/modules/home/repositories/salons_repo.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/reservation/cubits/update_order_states.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
@@ -23,14 +24,18 @@ class UpdateOrderCubit extends Cubit<UpdateOrderStates> {
 
   PaymentMethod paymentMethod = PaymentMethod.Cash;
   List<SalonService> allServices = [];
+  List<String> availableTimes = [];
+  DateTime selectedDate;
+  int selectedTimeIndex = 0;
 
-  Future<void> getServices(BuildContext context) async {
+  Future<void> extractOrderData() async {
     emit(LoadingOrderData());
     final res = await getSalonProfileFromServer(int.parse(order.barberId));
     if (res.error) {
       emit(ErrorOrderData(res.errorMessage));
       return;
     }
+
     emit(LoadedOrderData());
     allServices = [];
     final salon = res.data.salon;
@@ -43,23 +48,34 @@ class UpdateOrderCubit extends Cubit<UpdateOrderStates> {
 
       return service;
     }).toList();
+    selectedDate = selectedDate == null
+        ? DateTime.parse(order.reservationDay)
+        : selectedDate;
+    print('$selectedDate   ${order.reservationDay}');
+    await getAvailableDates();
+    selectedTimeIndex =
+        availableTimes.indexWhere((time) => time == order.reservationTime);
+    if (selectedTimeIndex == -1) selectedTimeIndex = 0;
   }
 
-  void changeSelectedPaymentMethod(PaymentMethod method) {
-    paymentMethod = method;
-    emit(ChangePaymentMethod());
+  Future<void> getAvailableDates() async {
+    emit(GettingAvilableTimes());
+    final res = await getAvailableDatesFromServer(
+        id: int.parse(order.barberId), date: selectedDate);
+    if (res.error) {
+      emit(ErrorOrderData(res.errorMessage));
+      return;
+    } else {
+      if (res.data.avilableDates.isEmpty)
+        emit(NoAvailableDates());
+      else {
+        availableTimes = res.data.avilableDates;
+        emit(SuccessAvilableTimes());
+      }
+    }
   }
 
-  void toggleSelectedService(int serviceId) {
-    int index = allServices.indexWhere((element) => element.id == serviceId);
-    allServices[index].selected = !allServices[index].selected;
-    emit(ToggleServiceSelected());
-  }
-
-  Future<void> updateSalonOrder({
-    @required DateTime reservationDate,
-    @required String reservationTime,
-  }) async {
+  Future<void> updateSalonOrder() async {
     final selectedServices =
         allServices.where((service) => service.selected).toList();
     if (selectedServices.isEmpty) {
@@ -72,8 +88,8 @@ class UpdateOrderCubit extends Cubit<UpdateOrderStates> {
       'order_id': order.id,
       'services': selectedServices.map((service) => service.toJson()).toList(),
       'payment_method': getPaymentMethodString(paymentMethod),
-      'reservation_day': reservationDate.add(Duration(days: 5)).toString(),
-      'reservation_time': reservationTime
+      'reservation_day': selectedDate.toString(),
+      'reservation_time': availableTimes[selectedTimeIndex]
     });
     final res = await updateOrderFromServer(body);
     if (res.error) {
@@ -83,4 +99,28 @@ class UpdateOrderCubit extends Cubit<UpdateOrderStates> {
       emit(UpdatedOrder());
     }
   }
+
+  void changeSelectedPaymentMethod(PaymentMethod method) {
+    paymentMethod = method;
+    emit(ChangePaymentMethod());
+  }
+
+  void changeSelectedDate(DateTime date) {
+    selectedDate = date;
+    selectedTimeIndex = 0;
+    getAvailableDates();
+  }
+
+  void changeSelectedTimeIndex(index) {
+    selectedTimeIndex = index;
+    emit(ChangeTime());
+  }
+
+  void toggleSelectedService(int serviceId) {
+    int index = allServices.indexWhere((element) => element.id == serviceId);
+    allServices[index].selected = !allServices[index].selected;
+    emit(ToggleServiceSelected());
+  }
+
+  String get getSlectedTime => availableTimes[selectedTimeIndex];
 }

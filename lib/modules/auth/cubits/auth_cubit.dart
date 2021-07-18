@@ -129,17 +129,23 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   Future<void> loginFacebook(BuildContext context) async {
-    final facebookProfile = await getFacebookAccount();
-    if (facebookProfile == null) {
-      emit(ErrorAuthState('Auth Failed'));
+    final user = await Authenitcations.signInWithFacebook(context);
+    emit(IntialAuthLoginState());
+    if (user == null) {
+      emit(ErrorAuthState(getWord('Login failed', context)));
     } else {
       emit(LoadingAuthState());
-      final response = await socialRegisterFromServer(facebookProfile.toJson());
-      if (response.error) {
-        print(response.errorMessage);
-        emit(ErrorAuthState(response.errorMessage));
+      var body = user.toMap();
+      print(body);
+      body.addAll({'provider': 'facebook'});
+      final res = await socialRegisterFromServer(body);
+      await Authenitcations.signOut(context);
+
+      if (res.error) {
+        emit(ErrorAuthState(res.errorMessage));
       } else {
-        successLogin(response, context);
+        await successLogin(res, context);
+        await Authenitcations.signOut(context);
         emit(LoadedAuthState());
       }
     }
@@ -159,6 +165,7 @@ class AuthCubit extends Cubit<AuthStates> {
         emit(ErrorAuthState(res.errorMessage));
       } else {
         await successLogin(res, context);
+        await Authenitcations.signOut(context);
         emit(LoadedAuthState());
       }
     }
@@ -298,32 +305,5 @@ class AuthCubit extends Cubit<AuthStates> {
     if (name == null || name.isEmpty)
       return getWord("Name field can not be empty", context);
     return null;
-  }
-
-  Future<FacebookAuthModel> getFacebookAccount() async {
-    final loginRes = await FacebookAuth.instance.login(permissions: ['email']);
-    switch (loginRes.status) {
-      case LoginStatus.success:
-        final profile = await FacebookAuth.instance.getUserData();
-        print("AccessToken is ${loginRes.accessToken.token}");
-        print(profile);
-        return FacebookAuthModel.fromJson(loginRes.accessToken.token,
-            json: profile);
-        break;
-      case LoginStatus.failed:
-        print('Faild');
-        return null;
-        break;
-      case LoginStatus.cancelled:
-        print('Cancelled');
-        return null;
-        break;
-      case LoginStatus.operationInProgress:
-        print('InProgress');
-        return null;
-        break;
-      default:
-        return null;
-    }
   }
 }

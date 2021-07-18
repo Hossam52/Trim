@@ -11,7 +11,7 @@ class Authenitcations {
     return firebaseApp;
   }
 
-  static Future<GoogleProfileModel> signInWithGoogle(
+  static Future<SocialProfileModel> signInWithGoogle(
       BuildContext context) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User user;
@@ -48,8 +48,8 @@ class Authenitcations {
       }
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('signed in with ${user.displayName}')));
-      return GoogleProfileModel(
-          user: user, token: googleSignInAuthentication.idToken);
+      return SocialProfileModel(
+          user: user, token: googleSignInAuthentication.accessToken);
     }
     return null;
   }
@@ -57,17 +57,23 @@ class Authenitcations {
   static Future<void> signOut(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      GoogleSignIn().signOut();
+      if (await GoogleSignIn().isSignedIn()) {
+        print('logout google');
+        await GoogleSignIn().signOut();
+      }
+      if (await FacebookLogin().isLoggedIn) {
+        print('logout facebook');
+        await FacebookLogin().logOut();
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error when sign out')));
       print('Error singing out');
     }
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Successifully signed out')));
   }
 
-  static Future<User> signInWithFacebook(BuildContext context) async {
+  static Future<SocialProfileModel> signInWithFacebook(
+      BuildContext context) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
     final facebookLogin = FacebookLogin();
     final res = await facebookLogin.logIn(permissions: [
       FacebookPermission.publicProfile,
@@ -76,7 +82,11 @@ class Authenitcations {
     switch (res.status) {
       case FacebookLoginStatus.success:
         print(res.accessToken);
+        final cred = FacebookAuthProvider.credential(res.accessToken.token);
+        final profile = await auth.signInWithCredential(cred);
+        final user = profile.user;
         print('Success logging with facebook');
+        return SocialProfileModel(user: user, token: res.accessToken.token);
         break;
       case FacebookLoginStatus.cancel:
         print('cancel');

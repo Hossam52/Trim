@@ -10,31 +10,29 @@ class ErrorWarning extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return InfoWidget(
-        responsiveWidget: (_, deviceInfo) => Container(
-          padding: const EdgeInsets.all(10.0),
-          width: constraints.maxWidth,
-          decoration: BoxDecoration(
-              color: Colors.red.withAlpha(155),
-              borderRadius: BorderRadius.circular(50)),
-          child: Center(
-              child: Row(
-            children: [
-              Flexible(
-                child: Center(
-                  child: Text(text,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: getFontSizeVersion2(deviceInfo),
-                          color: Colors.white)),
-                ),
+    return InfoWidget(
+      responsiveWidget: (_, deviceInfo) => Container(
+        padding: const EdgeInsets.all(7.0),
+        decoration: BoxDecoration(
+            color: Colors.red.withAlpha(155),
+            borderRadius: BorderRadius.circular(50)),
+        child: Center(
+            child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Center(
+                child: Text(text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: getFontSizeVersion2(deviceInfo) * 0.8,
+                        color: Colors.white)),
               ),
-              if (widget != null) Expanded(child: widget),
-            ],
-          )),
-        ),
-      );
-    });
+            ),
+            if (widget != null) Expanded(child: widget),
+          ],
+        )),
+      ),
+    );
   }
 }
