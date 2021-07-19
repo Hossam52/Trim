@@ -3,7 +3,7 @@ import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/general_widgets/trim_cached_image.dart';
 
 class SalonOffers extends StatelessWidget {
   final DeviceInfo deviceInfo;

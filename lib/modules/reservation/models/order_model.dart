@@ -1,7 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-
 import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/modules/market/models/Product.dart';

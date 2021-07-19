@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
@@ -64,7 +65,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     BlocBuilder<AllCategoriesBloc, CategoriesStates>(
                         builder: (_, state) {
                       if (state is LoadingState || state is InitialState)
-                        return Center(child: CircularProgressIndicator());
+                        return TrimLoadingWidget();
                       else if (state is LoadedState) {
                         List<Category> categoriess = state.categories;
                         return Expanded(

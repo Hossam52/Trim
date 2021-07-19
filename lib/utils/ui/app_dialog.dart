@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/trim_text_field.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
@@ -15,7 +16,7 @@ import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
-import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/general_widgets/trim_cached_image.dart';
 import 'package:trim/modules/payment/cubits/address_cubit.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/general_widgets/cancel_reasons.dart';
@@ -48,7 +49,7 @@ void personDetailsDialog(
               builder: (_, state) {
                 if (state is LoadingSalonDetailState ||
                     state is LoadingAvilableDatesState)
-                  return Center(child: CircularProgressIndicator());
+                  return TrimLoadingWidget();
                 salon = SalonsCubit.getInstance(context).salonDetail;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -405,9 +406,7 @@ Future<void> loadingLogoutDialog(BuildContext context) async {
             children: [
               Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: TrimLoadingWidget(),
               ),
             ],
           ),

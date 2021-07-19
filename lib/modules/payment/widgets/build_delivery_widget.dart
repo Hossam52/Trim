@@ -140,9 +140,9 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                   children: [
                     Text(
                         getWord('Arrive between days', context) +
-                            deliveryStartDate +
+                            ' $deliveryStartDate ' +
                             getWord('and', context) +
-                            deliveryEndDate +
+                            ' $deliveryEndDate ' +
                             getWord(
                                 'Please checkout dates in payment coninue page',
                                 context),
@@ -184,11 +184,13 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
         SizedBox(
           height: 10,
         ),
-        DefaultButton(
-            text: getWord('Continue to pay', context),
-            onPressed: AddressCubit.getInstance(context).validateClassData()
-                ? widget.pressed
-                : null),
+        BlocBuilder<AddressCubit, AddressStates>(
+          builder: (_, state) => DefaultButton(
+              text: getWord('Continue to pay', context),
+              onPressed: AddressCubit.getInstance(context).validateClassData()
+                  ? widget.pressed
+                  : null),
+        ),
       ],
     );
   }

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/activate_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
 
 import '../widgets/frame_card_auth.dart';
 import '../../../general_widgets/trim_text_field.dart';
@@ -52,60 +54,66 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     MediaQuery.of(context)
         .removeViewInsets(removeBottom: true, removeTop: true);
-    return Scaffold(
-        // resizeToAvoidBottomInset: true,
-        // backgroundColor: Colors.transparent,
-        body: Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      child: BlocConsumer<AuthCubit, AuthStates>(
-        buildWhen: (old, newState) {
-          return newState is! ChangeGenderState;
-        },
-        listener: (_, state) async {
-          if (state is NotActivatedAccountState) {
-            ActivateCubit.getInstance(context).accessToken =
-                AuthCubit.getInstance(context).registerModel.accessToken;
-            await Navigator.of(context).pushNamed(
-                VerificationCodeScreen.routeName,
-                arguments:
-                    AuthCubit.getInstance(context).registerModel.accessToken);
-            Navigator.pushReplacementNamed(context, LoginScreen.routeName);
-          }
-        },
-        builder: (_, state) {
-          return CardLayout(
-            children: [
-              if (state is InvalidFieldState)
-                ErrorWarning(text: state.errorMessage),
-              if (state is ErrorRegisterState)
-                ErrorWarning(text: state.errorMessage),
-              buildFormFields(),
-              BlocBuilder<AuthCubit, AuthStates>(
-                buildWhen: (oldState, newState) {
-                  return newState is ChangeGenderState;
-                },
-                builder: (_, state) => GenderSelectionWidget(
-                    changeGender: AuthCubit.getInstance(context).changeGender,
-                    selectedGender:
-                        AuthCubit.getInstance(context).selectedGender),
-              ),
-              DefaultButton(
-                text: getWord('Register account', context),
-                widget: state is LoadingRegisterState
-                    ? Center(child: CircularProgressIndicator())
-                    : null,
-                onPressed: state is LoadingRegisterState
-                    ? null
-                    : () => onRegisteration(context),
-              ),
-              buildAlreadyHasAccount(),
-              // Text('أو يمكنك التسجيل من خلال'),
-              // SocialAuth(),
-            ],
-          );
-        },
-      ),
-    ));
+    return WillPopScope(
+      onWillPop: () async {
+        return await exitConfirmationDialog(
+            context, getWord('Are you sure to exit?', context));
+      },
+      child: Scaffold(
+          // resizeToAvoidBottomInset: true,
+          // backgroundColor: Colors.transparent,
+          body: Container(
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        child: BlocConsumer<AuthCubit, AuthStates>(
+          buildWhen: (old, newState) {
+            return newState is! ChangeGenderState;
+          },
+          listener: (_, state) async {
+            if (state is NotActivatedAccountState) {
+              ActivateCubit.getInstance(context).accessToken =
+                  AuthCubit.getInstance(context).registerModel.accessToken;
+              await Navigator.of(context).pushNamed(
+                  VerificationCodeScreen.routeName,
+                  arguments:
+                      AuthCubit.getInstance(context).registerModel.accessToken);
+              Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+            }
+          },
+          builder: (_, state) {
+            return CardLayout(
+              children: [
+                if (state is InvalidFieldState)
+                  ErrorWarning(text: state.errorMessage),
+                if (state is ErrorRegisterState)
+                  ErrorWarning(text: state.errorMessage),
+                buildFormFields(),
+                BlocBuilder<AuthCubit, AuthStates>(
+                  buildWhen: (oldState, newState) {
+                    return newState is ChangeGenderState;
+                  },
+                  builder: (_, state) => GenderSelectionWidget(
+                      changeGender: AuthCubit.getInstance(context).changeGender,
+                      selectedGender:
+                          AuthCubit.getInstance(context).selectedGender),
+                ),
+                DefaultButton(
+                  text: getWord('Register account', context),
+                  widget: state is LoadingRegisterState
+                      ? TrimLoadingWidget()
+                      : null,
+                  onPressed: state is LoadingRegisterState
+                      ? null
+                      : () => onRegisteration(context),
+                ),
+                buildAlreadyHasAccount(),
+                // Text('أو يمكنك التسجيل من خلال'),
+                // SocialAuth(),
+              ],
+            );
+          },
+        ),
+      )),
+    );
   }
 
   Widget buildFormFields() {

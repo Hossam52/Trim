@@ -3,7 +3,7 @@ import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
-import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/general_widgets/trim_cached_image.dart';
 
 class BuildSalonItemGrid extends StatelessWidget {
   final Salon salon;

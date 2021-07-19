@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/core/auth/register/validate.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
-import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/general_widgets/trim_cached_image.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -71,40 +72,42 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: InfoWidget(
-          responsiveWidget: (context, deviceInfo) => GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: Column(
-              children: [
-                Container(
-                  height: getSizeProfileStack(deviceInfo),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        height: getSizeProfileStack(deviceInfo) -
-                            (deviceInfo.type == deviceType.mobile ? 50 : 60),
-                        child: Stack(
-                          children: [
-                            _buildCoverPhoto(),
-                            _changeCoverButton(),
-                          ],
+          responsiveWidget: (context, deviceInfo) => SingleChildScrollView(
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Column(
+                children: [
+                  Container(
+                    height: getSizeProfileStack(deviceInfo),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: AlignmentDirectional.topStart,
+                      children: [
+                        Container(
+                          height: getSizeProfileStack(deviceInfo) -
+                              (deviceInfo.type == deviceType.mobile ? 50 : 60),
+                          child: Stack(
+                            alignment: AlignmentDirectional.bottomEnd,
+                            children: [
+                              _buildCoverPhoto(),
+                              _changeCoverButton(),
+                            ],
+                          ),
                         ),
-                      ),
-                      BuildBackButtonWidget(
-                        localHeight: 530,
-                      ),
-                      _buildPersonPhoto(deviceInfo),
-                    ],
+                        BuildBackButtonWidget(
+                          localHeight: 530,
+                        ),
+                        _buildPersonPhoto(deviceInfo),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                Expanded(
-                  // flex: 3,
-                  child: SingleChildScrollView(
+                  SizedBox(height: 10),
+                  SingleChildScrollView(
                     child: Card(
                       margin: const EdgeInsets.all(15.0),
                       elevation: 4,
@@ -118,8 +121,8 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
                           )),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -164,34 +167,36 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: CircleAvatar(
-        child: Stack(
-          alignment: AlignmentDirectional.bottomStart,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(1000),
-              child: Container(
-                child: image != null
-                    ? Image.file(
-                        image,
-                        fit: BoxFit.fill,
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                      )
-                    : TrimCachedImage(src: AppCubit.getInstance(context).image),
+          child: Stack(
+            alignment: AlignmentDirectional.bottomStart,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(1000),
+                child: Container(
+                  child: image != null
+                      ? Image.file(
+                          image,
+                          fit: BoxFit.fill,
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                        )
+                      : TrimCachedImage(
+                          src: AppCubit.getInstance(context).image),
+                ),
               ),
-            ),
-            IconButton(
-              icon: Icon((Icons.add_a_photo)),
-              onPressed: () async {
-                setState(() async {
+              //  Expanded()
+              IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon((Icons.add_a_photo)),
+                onPressed: () async {
                   image = await getImageFromGellary();
-                });
-              },
-            ),
-          ],
-        ),
-        radius: deviceInfo.type == deviceType.mobile ? 50 : 65,
-      ),
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+          radius: (deviceInfo.localWidth) *
+              (deviceInfo.orientation == Orientation.portrait ? 0.15 : 0.085)),
     );
   }
 
@@ -252,7 +257,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
               child: DefaultButton(
             text: getWord('Save', context),
             widget: state is UpdatingUserInformationState
-                ? CircularProgressIndicator()
+                ? TrimLoadingWidget()
                 : null,
             onPressed: state is UpdatingUserInformationState
                 ? null

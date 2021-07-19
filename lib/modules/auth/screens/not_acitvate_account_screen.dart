@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/activate_cubit.dart';
 import 'package:trim/modules/auth/cubits/activate_states.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
@@ -42,9 +43,7 @@ class ActivateAccountScreen extends StatelessWidget {
                         TextStyle(fontSize: getFontSizeVersion2(deviceInfo))),
                 DefaultButton(
                     text: getWord('Activate now', context),
-                    widget: requestingCode
-                        ? Center(child: CircularProgressIndicator())
-                        : null,
+                    widget: requestingCode ? TrimLoadingWidget() : null,
                     onPressed: requestingCode
                         ? null
                         : () async {

@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/general_widgets/no_data_widget.dart';
+import 'package:trim/general_widgets/trim_cached_image.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/cart_states.dart';
@@ -21,64 +22,81 @@ class BadgeScrren extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            Padding(
-              padding: kPadding,
-              child: InfoWidget(
-                responsiveWidget: (context, deviceInfo) {
-                  return BlocConsumer<CartBloc, CartStates>(
-                      listener: (ctx, state) {
-                    if (state is ErrorStateCartInBadge) {
-                      Fluttertoast.showToast(
-                          msg: getWord(
-                              'Please Make sure from internet connection',
-                              context));
-                    }
-                  }, builder: (_, state) {
-                    List<CartItem> cartItems =
-                        BlocProvider.of<CartBloc>(context).getCartList();
-                    return Column(
-                      children: [
-                        Expanded(
-                          flex: deviceInfo.orientation == Orientation.portrait
-                              ? 9
-                              : 7,
-                          child: ListView.builder(
-                            itemCount:
-                                BlocProvider.of<CartBloc>(context).items.length,
-                            itemBuilder: (context, index) {
-                              return ProductItem(
-                                deviceInfo: deviceInfo,
-                                cartItem: cartItems[index],
-                              );
-                            },
+        child: Padding(
+          padding: kPadding.copyWith(bottom: 2),
+          child: Column(
+            children: [
+              buildBackButton(context),
+              Expanded(
+                child: InfoWidget(
+                  responsiveWidget: (context, deviceInfo) {
+                    return BlocConsumer<CartBloc, CartStates>(
+                        listener: (ctx, state) {
+                      if (state is ErrorStateCartInBadge) {
+                        Fluttertoast.showToast(
+                            msg: getWord(
+                                'Please Make sure from internet connection',
+                                context));
+                      }
+                    }, builder: (_, state) {
+                      List<CartItem> cartItems =
+                          BlocProvider.of<CartBloc>(context).getCartList();
+                      if (cartItems.isEmpty) return EmptyDataWidget();
+                      return Column(
+                        children: [
+                          Expanded(
+                            flex: deviceInfo.orientation == Orientation.portrait
+                                ? 9
+                                : 7,
+                            child: ListView.separated(
+                              itemCount: BlocProvider.of<CartBloc>(context)
+                                  .items
+                                  .length,
+                              separatorBuilder: (context, index) => SizedBox(
+                                height: 10,
+                              ),
+                              itemBuilder: (context, index) {
+                                return ProductItem(
+                                  deviceInfo: deviceInfo,
+                                  cartItem: cartItems[index],
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: buildConfirmButton(deviceInfo, context),
-                        )
-                      ],
-                    );
-                  });
-                },
+                          Expanded(
+                            flex: 2,
+                            child: buildConfirmButton(deviceInfo, context),
+                          )
+                        ],
+                      );
+                    });
+                  },
+                ),
               ),
-            ),
-            buildBackButton(),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget buildBackButton() {
+  Widget buildBackButton(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: Colors.grey.withAlpha(150),
+      color: Colors.transparent,
       child: Align(
         heightFactor: 1,
         alignment: Alignment.centerLeft,
-        child: BackButton(color: Colors.black),
+        child: IconButton(
+          iconSize: MediaQuery.of(context).size.width * 0.07,
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () {
+            print('success');
+            Navigator.pop(context);
+          },
+        ), // BackButton(color: Colors.black),
       ),
     );
   }
@@ -126,10 +144,9 @@ class _ProductItemState extends State<ProductItem> {
     return Container(
       height: widget.deviceInfo.orientation == Orientation.portrait
           ? widget.deviceInfo.localHeight / 4
-          : widget.deviceInfo.localHeight / 2,
+          : widget.deviceInfo.localHeight / 1.9,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         child: Row(
           children: [
             Expanded(flex: 2, child: buildProductImage(widget.deviceInfo)),
@@ -158,10 +175,12 @@ class _ProductItemState extends State<ProductItem> {
     return Container(
       margin: EdgeInsets.only(right: 10),
       child: IconButton(
+        iconSize: deviceInfo.type == deviceType.mobile
+            ? deviceInfo.localWidth * 0.09
+            : deviceInfo.localWidth * 0.075,
         icon: Icon(
           Icons.delete_outline_sharp,
           color: Colors.redAccent,
-          size: deviceInfo.type == deviceType.mobile ? 40 : 55,
         ),
         onPressed: () async {
           bool isDeleted = true;

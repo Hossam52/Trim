@@ -2,25 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/confirm_cancel_buttons.dart';
-import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/empty_time_day.dart';
-import 'package:trim/general_widgets/no_more_items.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
-import 'package:trim/modules/home/models/salon_service.dart';
-import 'package:trim/modules/home/screens/reserve_screen.dart';
 import 'package:trim/modules/home/widgets/available_times.dart';
 import 'package:trim/modules/home/widgets/date_builder.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
-import 'package:trim/modules/payment/cubits/payment_cubit.dart';
-import 'package:trim/modules/payment/screens/payment_methods_screen.dart';
-import 'package:trim/modules/payment/widgets/payment_methods_widgets.dart';
 import 'package:trim/modules/reservation/cubits/update_order_cubit.dart';
 import 'package:trim/modules/reservation/cubits/update_order_states.dart';
+import 'package:trim/modules/reservation/models/UpdateArea.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
-import 'package:trim/utils/ui/app_dialog.dart';
 
 class ModifySalonOrder extends StatelessWidget {
   static String routeName = '/modify-salon-order';
@@ -54,8 +46,7 @@ class ModifySalonOrder extends StatelessWidget {
                   Fluttertoast.showToast(msg: state.error);
               },
               builder: (_, state) {
-                if (state is LoadingOrderData)
-                  return Center(child: CircularProgressIndicator());
+                if (state is LoadingOrderData) return TrimLoadingWidget();
                 if (state is ErrorOrderData)
                   return RetryWidget(
                       text: state.error,
@@ -113,10 +104,7 @@ class ModifySalonOrder extends StatelessWidget {
   Widget buildOrderActions(context) {
     return BlocBuilder<UpdateOrderCubit, UpdateOrderStates>(
       builder: (_, state) {
-        if (state is UpdatingOrder)
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+        if (state is UpdatingOrder) return TrimLoadingWidget();
         return ConfirmCancelButtons(
           onPressConfirm: () async =>
               await UpdateOrderCubit.getInstance(context).updateSalonOrder(),
@@ -147,7 +135,7 @@ class ModifySalonOrder extends StatelessWidget {
               BlocBuilder<UpdateOrderCubit, UpdateOrderStates>(
                   builder: (_, state) {
                 if (state is GettingAvilableTimes)
-                  return Center(child: CircularProgressIndicator());
+                  return TrimLoadingWidget();
                 else if (state is NoAvailableDates) return EmptyTimeAtDay();
                 return AvailableTimes(
                   dates: UpdateOrderCubit.getInstance(context).availableTimes,
@@ -161,16 +149,16 @@ class ModifySalonOrder extends StatelessWidget {
           )),
         ),
       ),
-      UpdateArea(
-          text: getWord('Change payment method', context),
-          contentWidget: PaymentMethodsWidget(
-            onChangeSelection: (val) {
-              UpdateOrderCubit.getInstance(context)
-                  .changeSelectedPaymentMethod(val);
-            },
-            paymentMethod: UpdateOrderCubit.getInstance(context).paymentMethod,
-            showCashMethod: true,
-          )),
+      // UpdateArea(
+      //     text: getWord('Change payment method', context),
+      //     contentWidget: PaymentMethodsWidget(
+      //       onChangeSelection: (val) {
+      //         UpdateOrderCubit.getInstance(context)
+      //             .changeSelectedPaymentMethod(val);
+      //       },
+      //       paymentMethod: UpdateOrderCubit.getInstance(context).paymentMethod,
+      //       showCashMethod: true,
+      //     )),
     ];
   }
 
@@ -180,23 +168,5 @@ class ModifySalonOrder extends StatelessWidget {
             UpdateOrderCubit.getInstance(context).changeSelectedDate(date),
         initialSelectedDate:
             UpdateOrderCubit.getInstance(context).selectedDate);
-  }
-}
-
-class UpdateArea {
-  final String text;
-  final Widget contentWidget;
-  Tab tabWidget;
-  UpdateArea({@required this.text, @required this.contentWidget}) {
-    tabWidget = Tab(
-      child: InfoWidget(
-        responsiveWidget: (_, deviceInfo) => Text(
-          text,
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: getFontSizeVersion2(deviceInfo) * 0.8),
-        ),
-      ),
-    );
   }
 }

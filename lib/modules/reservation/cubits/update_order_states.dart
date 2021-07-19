@@ -35,3 +35,7 @@ class FailedAvilableTimes extends UpdateOrderStates {}
 class NoAvailableDates extends UpdateOrderStates {}
 
 class ChangeTime extends UpdateOrderStates {}
+
+class ChangeQuantityProduct extends UpdateOrderStates {}
+
+class RemoveProduct extends UpdateOrderStates {}

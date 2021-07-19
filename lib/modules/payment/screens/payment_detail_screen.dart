@@ -6,6 +6,7 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/payment/cubits/payment_states.dart';
 
@@ -108,7 +109,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Center(child: CircularProgressIndicator()),
+                            TrimLoadingWidget(),
                           ],
                         ),
                       ),
@@ -165,7 +166,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                       DefaultButton(
                           text: getWord('Validate and pay', context),
                           widget: state is LoadingTokenState
-                              ? Center(child: CircularProgressIndicator())
+                              ? TrimLoadingWidget()
                               : null,
                           onPressed: () {
                             if (creditKey.currentState.validate())

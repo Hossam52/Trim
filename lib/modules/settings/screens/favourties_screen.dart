@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
+import 'package:trim/general_widgets/no_data_widget.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
@@ -70,9 +72,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                           listener: (oldState, newState) {},
                           builder: (_, state) {
                             if (state is LoadingSalonState)
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
+                              return TrimLoadingWidget();
                             else if (state is ErrorSalonState)
                               return Center(
                                   child: Text(
@@ -82,6 +82,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                             final favoriteList =
                                 SalonsCubit.getInstance(context)
                                     .getSalonsToDisplay(context);
+                            if (favoriteList.isEmpty) return EmptyDataWidget();
                             final pageNumber = SalonsCubit.getInstance(context)
                                 .getCurrentPage(context);
                             return RefreshIndicator(

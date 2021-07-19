@@ -1,4 +1,5 @@
-class CartItem {
+class CartItem 
+{
   final int rowId;
   final int id;
   final String nameAr;
@@ -8,8 +9,8 @@ class CartItem {
   final String imageName;
   CartItem(
       {
-        this.rowId,
-        this.id,
+      this.rowId,
+      this.id,
       this.nameAr,
       this.nameEn,
       this.price,

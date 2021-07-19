@@ -41,3 +41,4 @@ double getFontSizeVersion2(DeviceInfo deviceInfo) {
 
 final kPadding = const EdgeInsets.only(bottom: 8, left: 8, right: 8);
 bool isCategoryScreen = true;
+int connectionTimeOut = 15;

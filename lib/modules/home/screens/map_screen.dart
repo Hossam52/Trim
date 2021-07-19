@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
@@ -128,9 +129,7 @@ class _MapScreenState extends State<MapScreen> {
     List<Salon> mapSalons = [];
     return Scaffold(
         body: loadData
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? TrimLoadingWidget()
             : !canLoadMap
                 ? RetryWidget(
                     text: errorMessage,
@@ -144,9 +143,7 @@ class _MapScreenState extends State<MapScreen> {
                 : BlocBuilder<SalonsCubit, SalonStates>(
                     builder: (_, state) {
                       if (state is LoadingMapSalonState)
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return TrimLoadingWidget();
                       else if (state is ErrorMapSalonState)
                         return Center(
                           child: Column(

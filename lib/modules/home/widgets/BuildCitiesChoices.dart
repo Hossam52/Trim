@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
@@ -19,8 +20,7 @@ class BuildCitiesRadio extends StatelessWidget {
           Fluttertoast.showToast(msg: state.errorMessage);
       },
       builder: (_, state) {
-        if (state is LoadingCitiesState)
-          return Center(child: CircularProgressIndicator());
+        if (state is LoadingCitiesState) return TrimLoadingWidget();
         if (state is EmptyCitiesState)
           return Center(child: Text(getWord('No Cities Found', context)));
         if (state is ErrorCitiesState)
@@ -29,7 +29,6 @@ class BuildCitiesRadio extends StatelessWidget {
                   ': ${state.errorMessage}.'));
         final cities = CitiesCubit.getInstance(context).cities;
         int selectedId = CitiesCubit.getInstance(context).selectedCity.id;
-        final city = CitiesCubit.getInstance(context).cities[0];
         return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

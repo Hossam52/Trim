@@ -21,28 +21,35 @@ class NavigatePages extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: InfoWidget(
         responsiveWidget: (_, deviceInfo) => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            navigationButton(
-                getWord('Previous', context), () => prevPage(context)),
-            Text('$pageNumber',
-                style: TextStyle(
-                    fontSize: getFontSizeVersion2(deviceInfo),
-                    fontWeight: FontWeight.bold)),
-            navigationButton(getWord('Next', context), () => nextPage(context)),
+            Expanded(
+                child: navigationButton(
+                    Icons.navigate_before, () => prevPage(context))),
+            Expanded(
+              child: Center(
+                child: Text('$pageNumber',
+                    style: TextStyle(
+                        fontSize: getFontSizeVersion2(deviceInfo),
+                        fontWeight: FontWeight.bold)),
+              ),
+            ),
+            Expanded(
+                child: navigationButton(
+                    Icons.navigate_next, () => nextPage(context))),
           ],
         ),
       ),
     );
   }
 
-  Widget navigationButton(String text, VoidCallback onPressed) {
+  Widget navigationButton(IconData icon, VoidCallback onPressed) {
     return TextButton(
       onPressed: onPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Text(text),
-      ),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Icon(icon) //Text(text),
+          ),
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(primaryColor),
           foregroundColor: MaterialStateProperty.all(Colors.white)),

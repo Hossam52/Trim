@@ -6,6 +6,7 @@ import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/modules/market/screens/BadgeScreen.dart';
 import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/payment/screens/confirm_order_screen.dart';
+import 'package:trim/modules/reservation/screens/modify_products_screen.dart';
 import 'package:trim/modules/reservation/screens/modify_salon_order.dart';
 import 'package:trim/modules/settings/screens/favourties_screen.dart';
 import 'package:trim/modules/home/screens/reserve_screen.dart';
@@ -51,4 +52,5 @@ final Map<String, WidgetBuilder> routes = {
   PaymentDetailScreen.routeName: (_) => PaymentDetailScreen(),
   PaymentMethodsScreen.routeName: (_) => PaymentMethodsScreen(),
   ModifySalonOrder.routeName: (_) => ModifySalonOrder(),
+  ModifyProductsScreen.routeName: (_) => ModifyProductsScreen(),
 };

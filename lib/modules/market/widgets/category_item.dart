@@ -35,11 +35,9 @@ class CategoryItem extends StatelessWidget {
     return Text(
       isArabic ? category.nameAr : category.nameEn,
       textAlign: TextAlign.center,
-      style: TextStyle(
-          fontSize: deviceInfo.type == deviceType.mobile &&
-                  deviceInfo.screenWidth >= 530
-              ? getFontSizeVersion2(deviceInfo) + 4
-              : getFontSizeVersion2(deviceInfo)),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+      style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo) * 0.78),
     );
   }
 

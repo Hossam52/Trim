@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/modules/home/repositories/salons_repo.dart';
+import 'package:trim/modules/market/models/Product.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/reservation/cubits/update_order_states.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
@@ -11,6 +10,8 @@ import 'package:trim/modules/reservation/repositries/update_order_repo.dart';
 
 class UpdateOrderCubit extends Cubit<UpdateOrderStates> {
   final OrderModel order;
+  List<SalonService> allServices = [];
+  List<Product> products = [];
   UpdateOrderCubit({@required this.order}) : super(null) {
     if (order.paymentMethod.toLowerCase() ==
         getPaymentMethodString(PaymentMethod.Cash).toLowerCase())
@@ -23,7 +24,6 @@ class UpdateOrderCubit extends Cubit<UpdateOrderStates> {
   static UpdateOrderCubit getInstance(context) => BlocProvider.of(context);
 
   PaymentMethod paymentMethod = PaymentMethod.Cash;
-  List<SalonService> allServices = [];
   List<String> availableTimes = [];
   DateTime selectedDate;
   int selectedTimeIndex = 0;

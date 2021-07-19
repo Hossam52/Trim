@@ -5,7 +5,7 @@ import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/favorite_container.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
-import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/general_widgets/trim_cached_image.dart';
 
 class BarberItem extends StatelessWidget {
   final bool showFavoriteContainer;

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
+import 'package:trim/general_widgets/trim_cached_image.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/cart_states.dart';
@@ -95,7 +96,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                         builder: (_, state) {
                       if (state is InitialState ||
                           state is LoadingStateProductsCategory)
-                        return Center(child: CircularProgressIndicator());
+                        return TrimLoadingWidget();
                       else if (state is ErrorStateProductsCategory)
                         return Center(
                             child: buildRefershIndicatorProducts(
@@ -286,7 +287,9 @@ class _BuildProductItemState extends State<BuildProductItem> {
     return Text(
       isArabic ? widget.prodcut.nameAr : widget.prodcut.nameEn,
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+      style: TextStyle(fontSize: fontSize - 4, fontWeight: FontWeight.bold),
     );
   }
 }

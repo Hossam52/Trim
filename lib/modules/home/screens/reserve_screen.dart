@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/empty_time_day.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
@@ -12,7 +13,6 @@ import 'package:trim/modules/home/widgets/date_builder.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
-import 'package:trim/modules/payment/screens/payment_methods_screen.dart';
 import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -40,7 +40,6 @@ class _ReserveScreenState extends State<ReserveScreen> {
     final availableDatesWidget = model.showAvailableTimes;
     final servicesWidget = model.showServiceWidget;
     final offersWidget = model.showOffersWidget;
-    final copounWidget = model.showCopounWidget;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -71,7 +70,7 @@ class _ReserveScreenState extends State<ReserveScreen> {
                       BlocBuilder<SalonsCubit, SalonStates>(
                         builder: (_, state) {
                           if (state is LoadingAvilableDatesState) {
-                            return Center(child: CircularProgressIndicator());
+                            return TrimLoadingWidget();
                           } else if (state is EmptyAvialbleDatesState ||
                               SalonsCubit.getInstance(context)
                                   .availableDates
@@ -92,17 +91,16 @@ class _ReserveScreenState extends State<ReserveScreen> {
                       Divider(),
                     if (servicesWidget != false) buildServices(context),
                     if (offersWidget != false) buildOffers(deviceInfo, context),
-                    if (!copounWidget)
-                      CoupounTextField(
-                        controller: controller,
-                        enabled: correctCopon,
-                        updateUi: (bool isCorrectCopon, int coponDiscount) {
-                          setState(() {
-                            discount = coponDiscount;
-                            correctCopon = isCorrectCopon;
-                          });
-                        },
-                      ),
+                    CoupounTextField(
+                      controller: controller,
+                      enabled: correctCopon,
+                      updateUi: (bool isCorrectCopon, int coponDiscount) {
+                        setState(() {
+                          discount = coponDiscount;
+                          correctCopon = isCorrectCopon;
+                        });
+                      },
+                    ),
                     BlocBuilder<SalonsCubit, SalonStates>(
                       builder: (_, state) {
                         double totalAfterDiscount =
@@ -127,7 +125,7 @@ class _ReserveScreenState extends State<ReserveScreen> {
                           return DefaultButton(
                               text: getWord('Reserve now', context),
                               widget: state is LoadingMakeOrderState
-                                  ? Center(child: CircularProgressIndicator())
+                                  ? TrimLoadingWidget()
                                   : null,
                               onPressed: !canReserveSalon ||
                                       state is LoadingMakeOrderState
@@ -146,12 +144,15 @@ class _ReserveScreenState extends State<ReserveScreen> {
 
   VoidCallback reserveSalonFunction(BuildContext context) {
     return () async {
-      await Navigator.pushNamed(context, PaymentMethodsScreen.routeName,
-          arguments: {
-            'totalPrice': SalonsCubit.getInstance(context).totalPrice - discount
-          });
+      // await Navigator.pushNamed(context, PaymentMethodsScreen.routeName,
+      //     arguments: {
+      //       'totalPrice':
+      //           SalonsCubit.getInstance(context).totalPrice - discount,
+      //       'showCashMethod': false
+      //     });
 
-      if (PaymentCubit.getInstance(context).successPayment) {
+      // if (PaymentCubit.getInstance(context).successPayment)
+      {
         String paymentMethodString =
             PaymentCubit.getInstance(context).paymentMethod ==
                     PaymentMethod.Cash

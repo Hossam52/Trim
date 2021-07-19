@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:trim/constants/api_path.dart';
+import 'package:trim/constants/app_constant.dart';
 
 class DioHelper {
   static Dio dio;
@@ -12,6 +13,8 @@ class DioHelper {
   static void init({@required String accessToken}) {
     token = accessToken;
     dio = Dio(BaseOptions(
+        connectTimeout: connectionTimeOut *
+            1000, //15 seconds if excced then throw exception
         baseUrl: baseUrl,
         receiveDataWhenStatusError: true,
         headers: {

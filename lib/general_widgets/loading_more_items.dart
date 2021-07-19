@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 
 class LoadingMoreItemsIndicator extends StatelessWidget {
   @override
@@ -9,7 +10,7 @@ class LoadingMoreItemsIndicator extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(),
+          TrimLoadingWidget(),
           SizedBox(width: 10),
           Container(
             child: Text(getWord('Loading', context) + '.....'),

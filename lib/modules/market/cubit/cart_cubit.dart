@@ -93,7 +93,8 @@ class CartBloc extends Bloc<CartEvents, CartStates> {
   }
 
   Future<void> getCartItems() async {
-    try {
+    try 
+    {
       final response =
           await DioHelper.getData(methodUrl: getCartItemsUrl, queries: {});
       var cartItems = response.data['data'];

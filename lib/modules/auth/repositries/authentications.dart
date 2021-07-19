@@ -85,8 +85,13 @@ class Authenitcations {
         final cred = FacebookAuthProvider.credential(res.accessToken.token);
         final profile = await auth.signInWithCredential(cred);
         final user = profile.user;
+        final phototUrl =
+            await FacebookLogin().getProfileImageUrl(width: 400, height: 400);
+        print(phototUrl);
+        print(user);
         print('Success logging with facebook');
-        return SocialProfileModel(user: user, token: res.accessToken.token);
+        return SocialProfileModel(
+            user: user, photoUrl: phototUrl, token: res.accessToken.token);
         break;
       case FacebookLoginStatus.cancel:
         print('cancel');

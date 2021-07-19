@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/modules/home/cubit/app_states.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
-import 'package:trim/modules/home/widgets/trim_cached_image.dart';
+import 'package:trim/general_widgets/trim_cached_image.dart';
 import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
 import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/modules/settings/cubits/settings_states.dart';
@@ -45,7 +46,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: BlocBuilder<SettingCubit, SettingsStatates>(
               builder: (_, state) {
                 if (state is LoadingPersonalDataState)
-                  return Center(child: CircularProgressIndicator());
+                  return TrimLoadingWidget();
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

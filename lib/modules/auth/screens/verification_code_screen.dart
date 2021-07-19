@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/general_widgets/trim_text_field.dart';
 import 'package:trim/modules/auth/cubits/activate_cubit.dart';
@@ -58,7 +59,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
               },
               builder: (_, state) {
                 if (state is RequestingNewActivatationCodeState)
-                  return Center(child: CircularProgressIndicator());
+                  return TrimLoadingWidget();
                 if (state is ErrorRequestActivationCodeState)
                   return RetryWidget(text: state.error, onRetry: () {});
                 bool checking = state is CheckingActivateCodeState;
@@ -108,8 +109,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       ActivateCubit.getInstance(context)
                           .checkActivateCode(controller.text);
                   },
-            widget:
-                checking ? Center(child: CircularProgressIndicator()) : null,
+            widget: checking ? TrimLoadingWidget() : null,
           ),
         ),
         SizedBox(width: 20),

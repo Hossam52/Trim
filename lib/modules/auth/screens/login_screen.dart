@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
@@ -9,6 +8,7 @@ import 'package:trim/modules/auth/screens/not_acitvate_account_screen.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/auth/widgets/social.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/app_dialog.dart';
 import '../widgets/frame_card_auth.dart';
 import '../../../general_widgets/trim_text_field.dart';
 import '../widgets/not_correct_input.dart';
@@ -88,67 +88,74 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontSize: getFontSizeVersion2(deviceInfo) * 0.88)),
       ),
     );
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Center(
-        child: Container(
-          child: BlocConsumer<AuthCubit, AuthStates>(
-            listener: (_, state) async {
-              FocusScope.of(context).unfocus();
-              if (state is InvalidFieldState)
-                Fluttertoast.showToast(
-                    msg: state.errorMessage, backgroundColor: Colors.red);
-              if (state is NotActivatedAccountState) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(getWord('Account not activated', context))));
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => ActivateAccountScreen(
-                              emailOrPhone: _userNameController.text,
-                            )));
-              }
-              if (state is ErrorAuthState) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(state.errorMessage)));
-              }
-            },
-            builder: (_, state) {
-              return CardLayout(
-                children: [
-                  if (state is InvalidFieldState)
-                    ErrorWarning(text: state.errorMessage),
-                  if (state is ErrorAuthState)
-                    ErrorWarning(
-                      text: state.errorMessage,
+    return WillPopScope(
+      onWillPop: () async {
+        return await exitConfirmationDialog(
+            context, getWord('Are you sure to exit?', context));
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Center(
+          child: Container(
+            child: BlocConsumer<AuthCubit, AuthStates>(
+              listener: (_, state) async {
+                FocusScope.of(context).unfocus();
+                if (state is InvalidFieldState)
+                  Fluttertoast.showToast(
+                      msg: state.errorMessage, backgroundColor: Colors.red);
+                if (state is NotActivatedAccountState) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content:
+                          Text(getWord('Account not activated', context))));
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ActivateAccountScreen(
+                                emailOrPhone: _userNameController.text,
+                              )));
+                }
+                if (state is ErrorAuthState) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.errorMessage)));
+                }
+              },
+              builder: (_, state) {
+                return CardLayout(
+                  children: [
+                    if (state is InvalidFieldState)
+                      ErrorWarning(text: state.errorMessage),
+                    if (state is ErrorAuthState)
+                      ErrorWarning(
+                        text: state.errorMessage,
+                      ),
+                    formFields,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DefaultButton(
+                        widget: state is LoadingAuthState
+                            ? Center(child: CircularProgressIndicator())
+                            : null,
+                        text: getWord("Login", context),
+                        onPressed: state is LoadingAuthState
+                            ? null
+                            : () {
+                                FocusScope.of(context).unfocus();
+                                AuthCubit.getInstance(context).login(
+                                    context,
+                                    _userNameController.text,
+                                    _passwordController.text);
+                              },
+                      ),
                     ),
-                  formFields,
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DefaultButton(
-                      widget: state is LoadingAuthState
-                          ? Center(child: CircularProgressIndicator())
-                          : null,
-                      text: getWord("Login", context),
-                      onPressed: state is LoadingAuthState
-                          ? null
-                          : () {
-                              FocusScope.of(context).unfocus();
-                              AuthCubit.getInstance(context).login(
-                                  context,
-                                  _userNameController.text,
-                                  _passwordController.text);
-                            },
-                    ),
-                  ),
-                  forgotPassword,
-                  createAccount,
-                  Divider(),
-                  Text(getWord('Or Register using', context)),
-                  SocialAuth(),
-                ],
-              );
-            },
+                    forgotPassword,
+                    createAccount,
+                    Divider(),
+                    Text(getWord('Or Register using', context)),
+                    SocialAuth(),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

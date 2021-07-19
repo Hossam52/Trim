@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
+import 'package:trim/general_widgets/no_data_widget.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
@@ -68,10 +70,7 @@ class _PersonsGridViewState extends State<PersonsGridView> {
         child: BlocConsumer<PersonsCubit, PersonStates>(
           listener: (BuildContext context, state) {},
           builder: (BuildContext context, state) {
-            if (state is LoadingPersonsState)
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+            if (state is LoadingPersonsState) return TrimLoadingWidget();
             if (state is EmptyPersonListState)
               return Center(
                   child: Text(getWord('No Salons available', context)));
@@ -95,6 +94,7 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                   PersonsCubit.getInstance(context).getPersonToDisplay(context);
               int pageNumber =
                   PersonsCubit.getInstance(context).getCurrentPage(context);
+              if (trimStarList.isEmpty) return EmptyDataWidget();
               return Column(
                 children: [
                   Expanded(

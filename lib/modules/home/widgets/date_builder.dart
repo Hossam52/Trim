@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 
 class DateBuilder extends StatefulWidget {

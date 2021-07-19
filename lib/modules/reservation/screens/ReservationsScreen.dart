@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/no_data_widget.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/cubits/reservation_states.dart';
@@ -34,13 +36,9 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
       body: SafeArea(
         child: InfoWidget(responsiveWidget: (context, deviceInfo) {
           double fontSize = getFontSizeVersion2(deviceInfo);
-
           return BlocBuilder<ReservationCubit, ReservationStates>(
             builder: (_, state) {
-              if (state is LoadingReservationState)
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+              if (state is LoadingReservationState) return TrimLoadingWidget();
               if (state is ErrorReservationState)
                 return RetryWidget(
                     text: state.errorMessage,
@@ -48,6 +46,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                         .loadMyOrders(refreshPage: true));
               final List<OrderModel> reservations =
                   ReservationCubit.getInstance(context).reservations;
+              if (reservations.isEmpty) return EmptyDataWidget();
               return Column(
                 children: [
                   buildAppBar(

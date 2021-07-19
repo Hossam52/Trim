@@ -5,6 +5,7 @@ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
@@ -14,7 +15,6 @@ import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
-import 'package:trim/modules/home/widgets/trim_app_bar.dart';
 import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -37,10 +37,7 @@ class DetailsScreen extends StatelessWidget {
         child: BlocConsumer<SalonsCubit, SalonStates>(
           listener: (_, state) {},
           builder: (_, state) {
-            if (state is LoadingSalonDetailState)
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+            if (state is LoadingSalonDetailState) return TrimLoadingWidget();
             if (state is ErrorSalonState)
               return Center(
                   child:
@@ -245,20 +242,23 @@ class DetailsScreen extends StatelessWidget {
 
     Widget openWidget() {
       return FittedBox(
-        child: Column(children: [
-          Text(
-            getWord('Open', context),
-            style: TextStyle(
-              color: Colors.green,
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(children: [
+            Text(
+              getWord('Open', context),
+              style: TextStyle(
+                color: Colors.green,
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          Text('$openFrom $to $openTo',
-              textAlign: TextAlign.center,
-              style:
-                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-        ]),
+            Text('$openFrom $to $openTo',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.green, fontWeight: FontWeight.bold)),
+          ]),
+        ),
       );
     }
 
@@ -287,20 +287,25 @@ class Openions extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
+                flex: 3,
                 child: BuildStars(
                   stars: salon.rate,
                   width: MediaQuery.of(context).size.width / 2,
                 ),
               ),
-              Flexible(
-                child: Text(
-                  '${salon.commentsCount} ' + getWord('openions', context),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: getFontSizeVersion2(deviceInfo),
+              Expanded(child: Container()),
+              Expanded(
+                flex: 3,
+                child: FittedBox(
+                  child: Text(
+                    '${salon.commentsCount} ' + getWord('openions', context),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: getFontSizeVersion2(deviceInfo),
+                    ),
+                    softWrap: true,
                   ),
-                  softWrap: true,
                 ),
               ),
             ],

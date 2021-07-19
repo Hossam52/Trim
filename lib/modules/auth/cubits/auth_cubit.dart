@@ -5,11 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:trim/api_reponse.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
-import 'package:trim/modules/auth/models/facebook_auth_model.dart';
 import 'package:trim/modules/auth/models/login_model.dart';
 import 'package:trim/modules/auth/models/register_model.dart';
 import 'package:trim/modules/auth/models/token_model.dart';
@@ -287,7 +285,7 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   String validatePhone(String phone, BuildContext context) {
-    String p = '^(01)(1|0|2)[0-9]{8}\$';
+    String p = '^(01)(1|0|2|5)[0-9]{8}\$';
     RegExp regExp = RegExp(p);
     if (regExp.hasMatch(phone))
       return null;

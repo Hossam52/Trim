@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/cubits/reservation_states.dart';
 import 'package:trim/general_widgets/price_information.dart';
@@ -39,7 +40,7 @@ class ReservationDetailsScreen extends StatelessWidget {
             },
             builder: (_, state) {
               if (state is LoadingCancelReservationState)
-                return Center(child: CircularProgressIndicator());
+                return TrimLoadingWidget();
 
               return Column(
                 children: [
@@ -87,29 +88,30 @@ class ReservationDetailsScreen extends StatelessWidget {
     );
   }
 
-  Row buildReservationActions(
+  Widget buildReservationActions(
       OrderModel order, double fontSize, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Expanded(
-            child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: DefaultButton(
-            text: getWord('Modify order', context),
-            onPressed: () async {
-              if (order.services.isNotEmpty) {
-                final succssModified = await Navigator.of(context)
-                    .pushNamed(ModifySalonOrder.routeName, arguments: order);
-                if (succssModified != null && succssModified) {
-                  ReservationCubit.getInstance(context)
-                      .loadMyOrders(refreshPage: true);
-                  Navigator.pop(context);
+        if (order.type.toLowerCase() != 'products')
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DefaultButton(
+              text: getWord('Modify order', context),
+              onPressed: () async {
+                if (order.services.isNotEmpty) {
+                  final succssModified = await Navigator.of(context)
+                      .pushNamed(ModifySalonOrder.routeName, arguments: order);
+                  if (succssModified != null && succssModified) {
+                    ReservationCubit.getInstance(context)
+                        .loadMyOrders(refreshPage: true);
+                    Navigator.pop(context);
+                  }
                 }
-              }
-            },
-          ),
-        )),
+              },
+            ),
+          )),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(8.0),

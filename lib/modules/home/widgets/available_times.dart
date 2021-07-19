@@ -16,7 +16,6 @@ class AvailableTimes extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    ;
     return InfoWidget(
       responsiveWidget: (_, deviceInfo) => Padding(
         padding: const EdgeInsets.all(8.0),

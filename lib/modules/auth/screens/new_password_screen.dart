@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/trim_text_field.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
@@ -53,7 +54,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                     buildFields(),
                     DefaultButton(
                       widget: state is ChangingPasswordState
-                          ? Center(child: CircularProgressIndicator())
+                          ? TrimLoadingWidget()
                           : null,
                       text: getWord("Save", context),
                       onPressed: state is ChangingPasswordState

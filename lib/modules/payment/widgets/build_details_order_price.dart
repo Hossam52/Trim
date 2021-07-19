@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
@@ -84,10 +85,16 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                 controller: controller,
                 enabled: correctCopon,
                 updateUi: (bool coorectCopon, int discount) {
-                  setState(() {
-                    correctCopon = true;
-                    discountValue = discount;
-                  });
+                  if (discount == null || discount == 0)
+                    setState(() {
+                      correctCopon = false;
+                    });
+                  else {
+                    setState(() {
+                      correctCopon = true;
+                      discountValue = discount;
+                    });
+                  }
                 },
               ),
             BuildListTileCofirm(
@@ -121,11 +128,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: BlocConsumer<OrderCubit, OrderStates>(
-                listener: (_, state) {
-                  if (state is ErrorOrderState)
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text(state.error)));
-                },
+                listener: (_, state) {},
                 builder: (_, state) => DefaultButton(
                   onPressed: state is LoadingOrderState
                       ? null
@@ -138,9 +141,8 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                   text: widget.stepNumber == 2
                       ? getWord('Confirm order', context)
                       : getWord('continue to pay', context),
-                  widget: state is LoadingOrderState
-                      ? Center(child: CircularProgressIndicator())
-                      : null,
+                  widget:
+                      state is LoadingOrderState ? TrimLoadingWidget() : null,
                 ),
               ),
             )
@@ -180,11 +182,12 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
             paymentMethod: widget.paymentMethod == PaymentMethod.Cash
                 ? 'Cash'
                 : 'VisaMatercard');
-        if (productsOrderBloc.discount != 0 ||
-            productsOrderBloc.discount != null)
+        bool checkValue = productsOrderBloc.discount == null ? false : true;
+        if (checkValue && productsOrderBloc.discount != 0) {
           Fluttertoast.showToast(
               msg:
                   'we will apply discount with ${productsOrderBloc.discount} when paying');
+        }
 
         if (OrderCubit.getInstance(context).state is! ErrorOrderState) {
           cartBloc.add(DeleteAllItemsInCart());
@@ -218,7 +221,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                   : () async {
                       try {
                         FocusScope.of(context).unfocus();
-                        if (controller.text.isEmpty) {
+                        if (controller.text.isEmpty || controller.text == ' ') {
                           Fluttertoast.showToast(
                               msg:
                                   getWord('Pleas Enter coupoun code', context));
@@ -228,6 +231,9 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                               body: {
                                 'code': controller.text,
                               });
+                          Fluttertoast.showToast(
+                              msg: response.data['success'].toString() +
+                                  "هذا  ");
                           if (!response.data['success']) {
                             Fluttertoast.showToast(
                                 msg: isArabic

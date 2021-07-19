@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:trim/modules/auth/repositries/authentications.dart';
@@ -14,9 +15,7 @@ class SocialAuth extends StatelessWidget {
             icon: Image.asset(facebookImagePath),
             onPressed: () async {
               AuthCubit.getInstance(context).loginFacebook(context);
-              // await Authenitcations.signInWithFacebook(context);
               return;
-              await AuthCubit.getInstance(context).loginFacebook(context);
             }),
         FutureBuilder(
           future: Authenitcations.initializeFirebase(),
@@ -30,10 +29,7 @@ class SocialAuth extends StatelessWidget {
                     await AuthCubit.getInstance(context)
                         .loginWithGmail(context);
                   });
-            return CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-              Colors.orange,
-            ));
+            return TrimLoadingWidget();
           },
         ),
       ],

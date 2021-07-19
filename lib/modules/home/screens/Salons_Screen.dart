@@ -4,6 +4,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
+import 'package:trim/general_widgets/no_data_widget.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
@@ -232,8 +234,7 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
                   .showSnackBar(SnackBar(content: Text(state.error)));
           },
           builder: (_, state) {
-            if (state is LoadingSalonState)
-              return Center(child: CircularProgressIndicator());
+            if (state is LoadingSalonState) return TrimLoadingWidget();
             if (state is ErrorSalonState)
               return RetryWidget(
                   text: state.error,
@@ -243,6 +244,7 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
                   });
             final list =
                 SalonsCubit.getInstance(context).getSalonsToDisplay(context);
+            if (list.isEmpty) return EmptyDataWidget();
             final pageNumber =
                 SalonsCubit.getInstance(context).getCurrentPage(context);
             return StaggeredGridView.countBuilder(

@@ -1,4 +1,3 @@
-import 'package:http/http.dart';
 import 'package:trim/api_reponse.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/home/models/salon_model.dart';

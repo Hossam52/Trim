@@ -20,7 +20,7 @@ class ConfirmOrderScreen extends StatefulWidget {
 
 class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   int stepNumber = 1;
-  PaymentMethod paymentMethod = PaymentMethod.VisaMaster;
+  PaymentMethod paymentMethod = PaymentMethod.Cash;
   Color secondaryColor = Color(0xffCBCBCD);
   bool showDetails = true;
   TextEditingController addressController;
@@ -147,51 +147,8 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                   getWord('choice payment method', context),
                                   style: TextStyle(fontSize: fontSize),
                                 ),
-                                Card(
-                                  child: ListTile(
-                                    leading: Radio<PaymentMethod>(
-                                      value: PaymentMethod.VisaMaster,
-                                      groupValue: paymentMethod,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          paymentMethod = value;
-                                        });
-                                      },
-                                    ),
-                                    title: Text(
-                                      getWord('payment from card', context),
-                                      style: TextStyle(fontSize: fontSize),
-                                    ),
-                                    subtitle: paymentMethod !=
-                                            PaymentMethod.VisaMaster
-                                        ? Container()
-                                        : Text(getWord(
-                                            'one of the best payment way now',
-                                            context)),
-                                  ),
-                                ),
-                                Card(
-                                  child: ListTile(
-                                    leading: Radio<PaymentMethod>(
-                                      value: PaymentMethod.Cash,
-                                      groupValue: paymentMethod,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          paymentMethod = value;
-                                        });
-                                      },
-                                    ),
-                                    title: Text(
-                                        getWord(
-                                            'payment when recieving', context),
-                                        style: TextStyle(fontSize: fontSize)),
-                                    subtitle: paymentMethod !=
-                                            PaymentMethod.Cash
-                                        ? Container()
-                                        : Text(getWord(
-                                            'payment when recieving', context)),
-                                  ),
-                                ),
+                                // visaMasterChoice(context, fontSize),
+                                cachChoice(context, fontSize),
                                 BlocProvider(
                                   create: (_) => OrderCubit(),
                                   child: BuildDetailsOrderPrice(
@@ -217,6 +174,50 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
           ),
         );
       }),
+    );
+  }
+
+  Card cachChoice(BuildContext context, double fontSize) {
+    return Card(
+      child: ListTile(
+        leading: Radio<PaymentMethod>(
+          value: PaymentMethod.Cash,
+          groupValue: paymentMethod,
+          onChanged: (value) {
+            setState(() {
+              paymentMethod = value;
+            });
+          },
+        ),
+        title: Text(getWord('payment when recieving', context),
+            style: TextStyle(fontSize: fontSize)),
+        subtitle: paymentMethod != PaymentMethod.Cash
+            ? Container()
+            : Text(getWord('payment when recieving', context)),
+      ),
+    );
+  }
+
+  Card visaMasterChoice(BuildContext context, double fontSize) {
+    return Card(
+      child: ListTile(
+        leading: Radio<PaymentMethod>(
+          value: PaymentMethod.VisaMaster,
+          groupValue: paymentMethod,
+          onChanged: (value) {
+            setState(() {
+              paymentMethod = value;
+            });
+          },
+        ),
+        title: Text(
+          getWord('payment from card', context),
+          style: TextStyle(fontSize: fontSize),
+        ),
+        subtitle: paymentMethod != PaymentMethod.VisaMaster
+            ? Container()
+            : Text(getWord('one of the best payment way now', context)),
+      ),
     );
   }
 }

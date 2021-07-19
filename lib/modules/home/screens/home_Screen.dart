@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/appLocale/getWord.dart';
 import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
@@ -52,11 +53,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     HomeCubit.getInstance(context).loadHomeLayout(context);
   }
 
-  Future<bool> canLoadMap() async {
-    final res = await HomeCubit.getInstance(context).canUseLocationServices();
-    return res;
-  }
-
   @override
   void dispose() async {
     super.dispose();
@@ -89,8 +85,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       },
       child: BlocBuilder<HomeCubit, HomeStates>(
         builder: (_, state) {
-          if (state is LoadingHomeState)
-            return Center(child: CircularProgressIndicator());
+          if (state is LoadingHomeState) return TrimLoadingWidget();
           if (state is ErrorHomeState)
             return Material(
                 child: RetryWidget(
