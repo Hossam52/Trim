@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/payment/cubits/address_cubit.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/reservation/Bloc/order_cubit.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/modules/payment/widgets/build_delivery_widget.dart';
 import 'package:trim/modules/payment/widgets/build_details_order_price.dart';
 import 'package:trim/general_widgets/default_button.dart';
@@ -35,7 +35,8 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
       phoneController = TextEditingController(
           text: prefs.getString('phone') ?? '01111111111');
       addressController = TextEditingController(
-          text: prefs.getString('address') ?? getWord('address', context));
+          text:
+              prefs.getString('address') ?? translatedWord('address', context));
       setState(() {});
     });
   }
@@ -44,8 +45,8 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffF5F5F5),
-      body: InfoWidget(responsiveWidget: (context, deviceInfo) {
-        double fontSize = getFontSizeVersion2(deviceInfo);
+      body: ResponsiveWidget(responsiveWidget: (context, deviceInfo) {
+        double fontSize = defaultFontSize(deviceInfo);
         return SafeArea(
           child: BlocProvider(
             create: (_) => AddressCubit(),
@@ -71,7 +72,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                           icon: Icon(Icons.close),
                         ),
                         title: Text(
-                          getWord('Confirm order', context),
+                          translatedWord('Confirm order', context),
                           style: TextStyle(fontSize: fontSize),
                         ),
                       ),
@@ -88,7 +89,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                                     stepNumber = 1;
                                   });
                               },
-                              label: getWord('delivery', context),
+                              label: translatedWord('delivery', context),
                               textColor: stepNumber != 1
                                   ? secondaryColor
                                   : Colors.white,
@@ -101,7 +102,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                             SizedBox(width: 30),
                             BuildStepOrder(
                               onPressed: () {},
-                              label: getWord('payment', context),
+                              label: translatedWord('payment', context),
                               textColor: stepNumber != 2
                                   ? secondaryColor
                                   : Colors.white,
@@ -144,7 +145,8 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  getWord('choice payment method', context),
+                                  translatedWord(
+                                      'choice payment method', context),
                                   style: TextStyle(fontSize: fontSize),
                                 ),
                                 // visaMasterChoice(context, fontSize),
@@ -189,11 +191,11 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
             });
           },
         ),
-        title: Text(getWord('payment when recieving', context),
+        title: Text(translatedWord('payment when recieving', context),
             style: TextStyle(fontSize: fontSize)),
         subtitle: paymentMethod != PaymentMethod.Cash
             ? Container()
-            : Text(getWord('payment when recieving', context)),
+            : Text(translatedWord('payment when recieving', context)),
       ),
     );
   }
@@ -211,12 +213,12 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
           },
         ),
         title: Text(
-          getWord('payment from card', context),
+          translatedWord('payment from card', context),
           style: TextStyle(fontSize: fontSize),
         ),
         subtitle: paymentMethod != PaymentMethod.VisaMaster
             ? Container()
-            : Text(getWord('one of the best payment way now', context)),
+            : Text(translatedWord('one of the best payment way now', context)),
       ),
     );
   }

@@ -41,7 +41,7 @@ class _ModifyProductsScreenState extends State<ModifyProductsScreen> {
 // //                         labelColor: Theme.of(context).primaryColor,
 // //                         tabs: tabs.map((e) => e.tabWidget).toList()),
 // //                     Expanded(
-// //                       child: InfoWidget(
+// //                       child: ResponsiveWidget(
 // //                         responsiveWidget: (context, deviceInfo) => TabBarView(
 // //                             children:
 // //                                 tabs.map((e) => e.contentWidget).toList()),
@@ -66,8 +66,8 @@ class _ModifyProductsScreenState extends State<ModifyProductsScreen> {
 // // List<UpdateArea> allTabsProducts(BuildContext context, OrderModel products) {
 // //   return [
 // //     UpdateArea(
-// //       text: getWord('Modify', context),
-// //       contentWidget: InfoWidget(responsiveWidget: (context, deviceInfo) {
+// //       text: translatedWord('Modify', context),
+// //       contentWidget: ResponsiveWidget(responsiveWidget: (context, deviceInfo) {
 // //         UpdateOrderCubit updateOrderCubit =
 // //             UpdateOrderCubit.getInstance(context);
 // //         return BlocConsumer<UpdateOrderCubit, UpdateOrderStates>(
@@ -171,7 +171,7 @@ class _ModifyProductsScreenState extends State<ModifyProductsScreen> {
 //       productName,
 //       //   isArabic ? widget.cartItem.nameAr : widget.cartItem.nameEn,
 //       style: TextStyle(
-//           fontSize: getFontSizeVersion2(deviceInfo) - 10,
+//           fontSize: defaultFontSize(deviceInfo) - 10,
 //           color: Colors.lightBlue),
 //     ),
 //   );
@@ -181,9 +181,9 @@ class _ModifyProductsScreenState extends State<ModifyProductsScreen> {
 //     DeviceInfo deviceInfo, BuildContext context, double totalPrice) {
 //   return FittedBox(
 //     child: Text(
-//       getWord('total price', context) + ': ${totalPrice.toStringAsFixed(1)}',
+//       translatedWord('total price', context) + ': ${totalPrice.toStringAsFixed(1)}',
 //       style: TextStyle(
-//           fontSize: getFontSizeVersion2(deviceInfo) - 13, color: Colors.green),
+//           fontSize: defaultFontSize(deviceInfo) - 13, color: Colors.green),
 //     ),
 //   );
 // }
@@ -205,7 +205,7 @@ class _ModifyProductsScreenState extends State<ModifyProductsScreen> {
 //       ),
 //       Text(
 //         '${product.productQuantity}',
-//         style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo) - 5),
+//         style: TextStyle(fontSize: defaultFontSize(deviceInfo) - 5),
 //       ),
 //       BuildRawMaterialButton(
 //         icon: Icons.remove,

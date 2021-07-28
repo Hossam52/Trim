@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/modules/payment/cubits/address_cubit.dart';
@@ -63,10 +63,10 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
             onPressed: () async {
               await changeAddress(context, formKey);
             },
-            child: Text(getWord('change', context)),
+            child: Text(translatedWord('change', context)),
           ),
           trailing: Text(
-            getWord('address details', context),
+            translatedWord('address details', context),
             style: TextStyle(
                 fontSize: widget.fontSize - 5, color: widget.secondaryColor),
           ),
@@ -91,16 +91,16 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                   Text(AppCubit.getInstance(context).name,
                       style: TextStyle(
                           fontSize: widget.fontSize, color: Colors.black)),
-                  buildAddressRow(getWord('City', context),
+                  buildAddressRow(translatedWord('City', context),
                       AddressCubit.getInstance(context).getCity(context)),
                   Divider(),
-                  buildAddressRow(getWord('Country', context),
+                  buildAddressRow(translatedWord('Country', context),
                       AddressCubit.getInstance(context).getCountry(context)),
                   Divider(),
-                  buildAddressRow(getWord('Street', context),
+                  buildAddressRow(translatedWord('Street', context),
                       AddressCubit.getInstance(context).getStreet(context)),
                   Divider(),
-                  buildAddressRow(getWord('Phone', context),
+                  buildAddressRow(translatedWord('Phone', context),
                       AddressCubit.getInstance(context).getPhone(context)),
                 ],
               ),
@@ -110,7 +110,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Text(
-            getWord('choice deliver method', context),
+            translatedWord('choice deliver method', context),
             style: TextStyle(
                 fontSize: widget.fontSize - 5, color: Color(0xffCBCBCD)),
           ),
@@ -130,7 +130,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                 onChanged: (val) {},
               ),
               title: Text(
-                getWord('delivery to home', context),
+                translatedWord('delivery to home', context),
                 style: TextStyle(fontSize: widget.fontSize - 3),
               ),
               subtitle: SingleChildScrollView(
@@ -139,11 +139,11 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                        getWord('Arrive between days', context) +
+                        translatedWord('Arrive between days', context) +
                             ' $deliveryStartDate ' +
-                            getWord('and', context) +
+                            translatedWord('and', context) +
                             ' $deliveryEndDate ' +
-                            getWord(
+                            translatedWord(
                                 'Please checkout dates in payment coninue page',
                                 context),
                         style: TextStyle(
@@ -155,7 +155,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
                     Row(
                       children: [
                         Text(
-                          getWord('Shipping expenses', context) + ' :',
+                          translatedWord('Shipping expenses', context) + ' :',
                           style: TextStyle(
                             fontSize: widget.deviceInfo.orientation ==
                                     Orientation.portrait
@@ -186,7 +186,7 @@ class _DeliveryWidgetState extends State<DeliveryWidget> {
         ),
         BlocBuilder<AddressCubit, AddressStates>(
           builder: (_, state) => DefaultButton(
-              text: getWord('Continue to pay', context),
+              text: translatedWord('Continue to pay', context),
               onPressed: AddressCubit.getInstance(context).validateClassData()
                   ? widget.pressed
                   : null),

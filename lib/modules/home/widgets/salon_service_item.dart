@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class SalonServiceItem extends StatelessWidget {
@@ -14,7 +14,7 @@ class SalonServiceItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => ListTile(
         onTap: () {
           onItemToggled(service.id);
@@ -22,7 +22,7 @@ class SalonServiceItem extends StatelessWidget {
         title: Text(
           getTranslatedName(service),
           style: TextStyle(
-              fontSize: getFontSizeVersion2(deviceInfo),
+              fontSize: defaultFontSize(deviceInfo),
               fontWeight: FontWeight.bold),
         ),
         subtitle: serviceDiscription(
@@ -32,7 +32,7 @@ class SalonServiceItem extends StatelessWidget {
         trailing: Text(
           service.price.toString(),
           style: TextStyle(
-              fontSize: getFontSizeVersion2(deviceInfo),
+              fontSize: defaultFontSize(deviceInfo),
               fontWeight: FontWeight.bold),
         ),
         leading: Checkbox(
@@ -46,7 +46,7 @@ class SalonServiceItem extends StatelessWidget {
   }
 
   Widget serviceDiscription(SalonService service, DeviceInfo deviceInfo) {
-    double fontSize = getFontSizeVersion2(deviceInfo) * 0.65;
+    double fontSize = defaultFontSize(deviceInfo) * 0.65;
     if (service.descriptionEn == null && service.descriptionAr == null)
       return null;
     else

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:trim/utils/ui/Core/Methods/getDeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
-class InfoWidget extends StatelessWidget {
+class ResponsiveWidget extends StatelessWidget {
   final Widget Function(BuildContext context, DeviceInfo deviceInfo)
       responsiveWidget;
-  InfoWidget({this.responsiveWidget});
+  ResponsiveWidget({this.responsiveWidget});
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(

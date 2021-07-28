@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/CanceledReasons.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
@@ -32,7 +32,7 @@ class _CancelReasonsState extends State<CancelReasons> {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = getFontSize(widget.deviceInfo) * 0.8;
+    double fontSize = defaultFontSize(widget.deviceInfo) * 0.8;
     final canceledReasons = getCancelReasons(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -73,7 +73,7 @@ class _CancelReasonsState extends State<CancelReasons> {
             Navigator.pop(context, selectedvalue);
           } else {
             final verifyCancel = await exitConfirmationDialog(context,
-                getWord('Are you sure to cancel this order?', context));
+                translatedWord('Are you sure to cancel this order?', context));
             if (verifyCancel == true) {
               // String cancelReason = canceledReasons[canceledReasons.length - 1];
               if (selectedvalue !=

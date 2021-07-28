@@ -10,10 +10,12 @@ class NoMoreItems extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(label,
-          style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo))),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(label,
+            style: TextStyle(fontSize: defaultFontSize(deviceInfo))),
+      ),
     );
   }
 }

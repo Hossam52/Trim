@@ -5,7 +5,7 @@ import 'dart:io' show Platform;
 
 import 'package:trim/basic_data_model.dart';
 
-String getWord(String key, BuildContext context) {
+String translatedWord(String key, BuildContext context) {
   return AppLocale.of(context).getTranslatedWord(key) ?? "N/A";
 }
 

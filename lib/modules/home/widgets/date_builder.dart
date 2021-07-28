@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
+import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class DateBuilder extends StatefulWidget {
   final void Function(DateTime selectedDate) onChangeDate;
@@ -51,12 +52,13 @@ class _DateBuilderState extends State<DateBuilder> {
     itemScrollController.jumpTo(index: index);
   }
 
-  Widget buildDay(DateTime date, [bool selected = false]) {
+  Widget buildDay(DeviceInfo deviceInfo, DateTime date,
+      [bool selected = false]) {
     final String dayName = DateFormat('EEE').format(date);
     final String dayNumber = date.day.toString();
     final selectedColor = selected ? Colors.black : Colors.white;
     final TextStyle style =
-        TextStyle(color: selectedColor, fontSize: defaultFontSize);
+        TextStyle(color: selectedColor, fontSize: defaultFontSize(deviceInfo));
     return InkWell(
       onTap: () {
         setState(() {
@@ -113,57 +115,58 @@ class _DateBuilderState extends State<DateBuilder> {
           color: Theme.of(context).primaryColor,
           borderRadius:
               BorderRadius.vertical(bottom: Radius.circular(roundedRadius))),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          InfoWidget(
-            responsiveWidget: (_, deviceInfo) => Row(
+      child: ResponsiveWidget(
+        responsiveWidget: (_, deviceInfo) => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  getWord('Select a suitable date', context),
+                  translatedWord('Select a suitable date', context),
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: getFontSizeVersion2(deviceInfo)),
+                      fontSize: defaultFontSize(deviceInfo)),
                 ),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back_ios_sharp, color: Colors.white),
-                onPressed: previousMonth,
-              ),
-              Text('$month  $year',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: defaultFontSize)),
-              IconButton(
-                  disabledColor: Colors.red,
-                  icon:
-                      Icon(Icons.arrow_forward_ios_sharp, color: Colors.white),
-                  onPressed: nextMonth)
-            ],
-          ),
-          Expanded(
-            child: ScrollablePositionedList.builder(
-              itemScrollController: itemScrollController,
-              itemCount: daysInMonth.length,
-              itemBuilder: (_, index) {
-                final dateFormat = DateFormat(
-                    'DDMMYYYY'); //To format both displaed and reservation date and know if specific date selected or not
-                if (dateFormat.format(daysInMonth[index]) ==
-                    dateFormat.format(selectedDate))
-                  return buildDay(selectedDate, true);
-                return buildDay(daysInMonth[index]);
-              },
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios_sharp, color: Colors.white),
+                  onPressed: previousMonth,
+                ),
+                Text('$month  $year',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: defaultFontSize(deviceInfo))),
+                IconButton(
+                    disabledColor: Colors.red,
+                    icon: Icon(Icons.arrow_forward_ios_sharp,
+                        color: Colors.white),
+                    onPressed: nextMonth)
+              ],
             ),
-          )
-        ],
+            Expanded(
+              child: ScrollablePositionedList.builder(
+                itemScrollController: itemScrollController,
+                itemCount: daysInMonth.length,
+                itemBuilder: (_, index) {
+                  final dateFormat = DateFormat(
+                      'DDMMYYYY'); //To format both displaed and reservation date and know if specific date selected or not
+                  if (dateFormat.format(daysInMonth[index]) ==
+                      dateFormat.format(selectedDate))
+                    return buildDay(deviceInfo, selectedDate, true);
+                  return buildDay(deviceInfo, daysInMonth[index]);
+                },
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
@@ -8,7 +8,7 @@ import 'package:trim/modules/reservation/cubits/reservation_states.dart';
 import 'package:trim/general_widgets/price_information.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
 import 'package:trim/modules/reservation/screens/modify_salon_order.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 import 'package:trim/general_widgets/BuildAppBar.dart';
 import 'package:trim/modules/reservation/widgets/BuildCardWidget.dart';
@@ -23,18 +23,19 @@ class ReservationDetailsScreen extends StatelessWidget {
     OrderModel reservationData =
         ModalRoute.of(context).settings.arguments as OrderModel;
     return Scaffold(
-      body: SafeArea(child: InfoWidget(
+      body: SafeArea(child: ResponsiveWidget(
         responsiveWidget: (context, deviceInfo) {
-          double fontSize = getFontSizeVersion2(deviceInfo);
+          double fontSize = defaultFontSize(deviceInfo);
           return BlocConsumer<ReservationCubit, ReservationStates>(
             listener: (_, state) {
               if (state is LoadedCancedReservationState) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(getWord('The reservaion number', context) +
+                    content: Text(translatedWord(
+                            'The reservaion number', context) +
                         ' ' +
                         reservationData.id.toString() +
                         ' ' +
-                        getWord('cancelled successifully', context))));
+                        translatedWord('cancelled successifully', context))));
                 Navigator.pop(context);
               }
             },
@@ -47,7 +48,8 @@ class ReservationDetailsScreen extends StatelessWidget {
                   buildAppBar(
                       localHeight: deviceInfo.localHeight,
                       fontSize: fontSize,
-                      screenName: getWord('Reservation details', context)),
+                      screenName:
+                          translatedWord('Reservation details', context)),
                   Expanded(
                     child: SingleChildScrollView(
                       child: TrimCard(
@@ -98,7 +100,7 @@ class ReservationDetailsScreen extends StatelessWidget {
               child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: DefaultButton(
-              text: getWord('Modify order', context),
+              text: translatedWord('Modify order', context),
               onPressed: () async {
                 if (order.services.isNotEmpty) {
                   final succssModified = await Navigator.of(context)
@@ -116,7 +118,7 @@ class ReservationDetailsScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: DefaultButton(
-              text: getWord('Cancel order', context),
+              text: translatedWord('Cancel order', context),
               color: Colors.black,
               onPressed: () async {
                 await showReasonCancelled(context);

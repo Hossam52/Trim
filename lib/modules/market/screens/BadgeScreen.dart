@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/no_data_widget.dart';
 import 'package:trim/general_widgets/trim_cached_image.dart';
@@ -10,7 +10,7 @@ import 'package:trim/modules/market/cubit/cart_events.dart';
 import 'package:trim/modules/market/cubit/cart_states.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/payment/screens/confirm_order_screen.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/BuildRawMaterialButton.dart';
@@ -28,13 +28,13 @@ class BadgeScrren extends StatelessWidget {
             children: [
               buildBackButton(context),
               Expanded(
-                child: InfoWidget(
+                child: ResponsiveWidget(
                   responsiveWidget: (context, deviceInfo) {
                     return BlocConsumer<CartBloc, CartStates>(
                         listener: (ctx, state) {
                       if (state is ErrorStateCartInBadge) {
                         Fluttertoast.showToast(
-                            msg: getWord(
+                            msg: translatedWord(
                                 'Please Make sure from internet connection',
                                 context));
                       }
@@ -111,12 +111,12 @@ class BadgeScrren extends StatelessWidget {
         onPressed: () async {
           if (BlocProvider.of<CartBloc>(context).items.length == 0)
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-                    getWord('The cart is empty please enter items', context))));
+                content: Text(translatedWord(
+                    'The cart is empty please enter items', context))));
           else
             Navigator.pushNamed(context, ConfirmOrderScreen.routeName);
         },
-        text: getWord('Confirm order', context),
+        text: translatedWord('Confirm order', context),
       ),
     );
   }
@@ -185,10 +185,11 @@ class _ProductItemState extends State<ProductItem> {
         onPressed: () async {
           bool isDeleted = true;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(getWord('Are you sure to remove item ?', context)),
+            content:
+                Text(translatedWord('Are you sure to remove item ?', context)),
             duration: Duration(seconds: 3),
             action: SnackBarAction(
-              label: getWord('undo', context),
+              label: translatedWord('undo', context),
               onPressed: () {
                 isDeleted = false;
               },
@@ -232,7 +233,7 @@ class _ProductItemState extends State<ProductItem> {
         ),
         Text(
           '${widget.cartItem.quantity}',
-          style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo) - 5),
+          style: TextStyle(fontSize: defaultFontSize(deviceInfo) - 5),
         ),
         BuildRawMaterialButton(
           icon: Icons.remove,
@@ -251,11 +252,10 @@ class _ProductItemState extends State<ProductItem> {
   Widget buildTotalPrice(DeviceInfo deviceInfo) {
     return FittedBox(
       child: Text(
-        getWord('total price', context) +
+        translatedWord('total price', context) +
             ': ${double.parse(widget.cartItem.price) * double.parse(widget.cartItem.quantity)}',
         style: TextStyle(
-            fontSize: getFontSizeVersion2(deviceInfo) - 13,
-            color: Colors.green),
+            fontSize: defaultFontSize(deviceInfo) - 13, color: Colors.green),
       ),
     );
   }
@@ -265,7 +265,7 @@ class _ProductItemState extends State<ProductItem> {
       child: Text(
         isArabic ? widget.cartItem.nameAr : widget.cartItem.nameEn,
         style: TextStyle(
-            fontSize: getFontSizeVersion2(deviceInfo) - 10,
+            fontSize: defaultFontSize(deviceInfo) - 10,
             color: Colors.lightBlue),
       ),
     );

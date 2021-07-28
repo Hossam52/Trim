@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/auth/screens/forgot_password_screen.dart';
 import 'package:trim/modules/auth/screens/not_acitvate_account_screen.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/auth/widgets/social.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 import '../widgets/frame_card_auth.dart';
 import '../../../general_widgets/trim_text_field.dart';
@@ -43,12 +43,12 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           TrimTextField(
             controller: _userNameController,
-            placeHolder: getWord('Email or phone', context),
+            placeHolder: translatedWord('Email or phone', context),
             validator: null,
           ),
           TrimTextField(
               controller: _passwordController,
-              placeHolder: getWord('Password', context),
+              placeHolder: translatedWord('Password', context),
               password: true,
               validator: null),
         ],
@@ -64,11 +64,11 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushNamed(context, ForgotPassword.routeName);
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: InfoWidget(
+      child: ResponsiveWidget(
         responsiveWidget: (_, deviceInfo) => Text(
-            getWord('Forgot password', context),
+            translatedWord('Forgot password', context),
             style: TextStyle(
-                color: Colors.grey, fontSize: getFontSizeVersion2(deviceInfo))),
+                color: Colors.grey, fontSize: defaultFontSize(deviceInfo))),
       ),
     );
 
@@ -80,18 +80,18 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () =>
           AuthCubit.getInstance(context).navigateToRegister(context),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: InfoWidget(
+      child: ResponsiveWidget(
         responsiveWidget: (_, deviceInfo) => Text(
-            getWord('Create account', context),
+            translatedWord('Create account', context),
             style: TextStyle(
                 color: Colors.grey,
-                fontSize: getFontSizeVersion2(deviceInfo) * 0.88)),
+                fontSize: defaultFontSize(deviceInfo) * 0.88)),
       ),
     );
     return WillPopScope(
       onWillPop: () async {
         return await exitConfirmationDialog(
-            context, getWord('Are you sure to exit?', context));
+            context, translatedWord('Are you sure to exit?', context));
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -105,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       msg: state.errorMessage, backgroundColor: Colors.red);
                 if (state is NotActivatedAccountState) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content:
-                          Text(getWord('Account not activated', context))));
+                      content: Text(
+                          translatedWord('Account not activated', context))));
                   await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         widget: state is LoadingAuthState
                             ? Center(child: CircularProgressIndicator())
                             : null,
-                        text: getWord("Login", context),
+                        text: translatedWord("Login", context),
                         onPressed: state is LoadingAuthState
                             ? null
                             : () {
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     forgotPassword,
                     createAccount,
                     Divider(),
-                    Text(getWord('Or Register using', context)),
+                    Text(translatedWord('Or Register using', context)),
                     SocialAuth(),
                   ],
                 );

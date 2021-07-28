@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/constants/asset_path.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class WalletScreen extends StatelessWidget {
   static const routeName = '/wallet';
@@ -9,13 +10,13 @@ class WalletScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(getWord('My wallet', context),
+          title: Text(translatedWord('My wallet', context),
               style: TextStyle(color: Colors.black)),
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: BackButton(color: Colors.black),
         ),
-        body: InfoWidget(
+        body: ResponsiveWidget(
           responsiveWidget: (context, deviceInfo) {
             bool isPortrait =
                 deviceInfo.orientation == Orientation.portrait ? true : false;
@@ -33,7 +34,7 @@ class WalletScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 4),
                       height: deviceInfo.localHeight * (isPortrait ? 0.3 : 0.4),
                       child: Image.asset(
-                        'assets/icons/wallet-pro.png',
+                        walletIcon,
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -52,20 +53,21 @@ class WalletScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          InfoWidget(
+                          ResponsiveWidget(
                             responsiveWidget: (_, deviceInfo) => Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 FittedBox(
                                     child: Text(
-                                        getWord('Total amount in your wallet',
+                                        translatedWord(
+                                            'Total amount in your wallet',
                                             context),
                                         style: TextStyle(
                                             fontSize:
-                                                getFontSize(deviceInfo)))),
+                                                defaultFontSize(deviceInfo)))),
                                 Text('${0.0} EGP',
                                     style: TextStyle(
-                                        fontSize: getFontSize(deviceInfo),
+                                        fontSize: defaultFontSize(deviceInfo),
                                         color: Colors.white)),
                               ],
                             ),

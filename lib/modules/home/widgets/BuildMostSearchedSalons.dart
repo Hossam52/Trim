@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/general_widgets/trim_cached_image.dart';
 
 class BuildMostSearchedSalons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mostSearcedList = HomeCubit.getInstance(context).mostSearchedSalons;
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (context, deviceInfo) {
         return GridView.builder(
           physics: NeverScrollableScrollPhysics(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/confirm_cancel_buttons.dart';
 import 'package:trim/general_widgets/empty_time_day.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
@@ -31,14 +31,15 @@ class ModifySalonOrder extends StatelessWidget {
               listener: (_, state) {
                 if (state is UpdatedOrder) {
                   Fluttertoast.showToast(
-                      msg: getWord('Order updated successifully', context),
+                      msg: translatedWord(
+                          'Order updated successifully', context),
                       backgroundColor: Colors.green);
                   Navigator.pop(context, true);
                 }
 
                 if (state is NoSelectedServices)
                   Fluttertoast.showToast(
-                      msg: getWord(
+                      msg: translatedWord(
                           'You should select at least one service', context),
                       backgroundColor: Colors.red);
 
@@ -116,7 +117,7 @@ class ModifySalonOrder extends StatelessWidget {
   List<UpdateArea> allTabs(BuildContext context) {
     return [
       UpdateArea(
-          text: getWord('Modify', context),
+          text: translatedWord('Modify', context),
           contentWidget: SingleChildScrollView(
             child: SalonServices(
                 services: UpdateOrderCubit.getInstance(context).allServices,
@@ -124,7 +125,7 @@ class ModifySalonOrder extends StatelessWidget {
                     .toggleSelectedService),
           )),
       UpdateArea(
-        text: getWord('Change date', context),
+        text: translatedWord('Change date', context),
         contentWidget: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
@@ -150,7 +151,7 @@ class ModifySalonOrder extends StatelessWidget {
         ),
       ),
       // UpdateArea(
-      //     text: getWord('Change payment method', context),
+      //     text: translatedWord('Change payment method', context),
       //     contentWidget: PaymentMethodsWidget(
       //       onChangeSelection: (val) {
       //         UpdateOrderCubit.getInstance(context)

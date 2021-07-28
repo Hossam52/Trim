@@ -1,7 +1,8 @@
 //In this file we keep the card layout for login and registration as both are same
 
 import 'package:flutter/material.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/constants/asset_path.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import '../../../constants/app_constant.dart';
 
 class CardLayout extends StatelessWidget {
@@ -10,7 +11,7 @@ class CardLayout extends StatelessWidget {
   const CardLayout({Key key, @required this.children}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +57,7 @@ class CardLayout extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Center(child: Image.asset(logoImagePath)),
+                              Center(child: Image.asset(logo)),
                             ],
                           ),
                         ),

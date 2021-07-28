@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/modules/settings/models/notification_model.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
@@ -20,7 +20,7 @@ class NotificationItem extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              notification.data ?? getWord('Unknown', context),
+              notification.data ?? translatedWord('Unknown', context),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -30,7 +30,8 @@ class NotificationItem extends StatelessWidget {
         ),
         Expanded(
           child: FittedBox(
-            child: Text(notification.createdAt ?? getWord('Unknown', context)),
+            child: Text(
+                notification.createdAt ?? translatedWord('Unknown', context)),
           ),
         )
       ],

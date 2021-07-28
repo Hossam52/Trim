@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/api_path.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class CoupounTextField extends StatelessWidget {
   final bool enabled;
@@ -19,12 +19,12 @@ class CoupounTextField extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Row(
           children: [
-            Expanded(child: Text(getWord('Coupone', context))),
+            Expanded(child: Text(translatedWord('Coupone', context))),
             Expanded(
               flex: 3,
               child: Padding(
@@ -36,7 +36,8 @@ class CoupounTextField extends StatelessWidget {
                       FocusScope.of(context).unfocus();
                       if (controller.text.isEmpty || controller.text == ' ') {
                         Fluttertoast.showToast(
-                            msg: getWord('Please Enter coupoun code', context));
+                            msg: translatedWord(
+                                'Please Enter coupoun code', context));
                       } else {
                         final response =
                             await DioHelper.postData(url: couponeUrl, body: {
@@ -56,16 +57,16 @@ class CoupounTextField extends StatelessWidget {
                       }
                     } catch (e) {
                       Fluttertoast.showToast(
-                          msg: getWord(
+                          msg: translatedWord(
                               'Please Make sure from internet connection',
                               context));
                     }
                   },
                   controller: controller,
                   decoration: InputDecoration(
-                      hintText: getWord('coupon code', context),
+                      hintText: translatedWord('coupon code', context),
                       hintStyle: TextStyle(
-                          fontSize: getFontSizeVersion2(deviceInfo) * 0.6)),
+                          fontSize: defaultFontSize(deviceInfo) * 0.6)),
                 ),
               ),
             ),

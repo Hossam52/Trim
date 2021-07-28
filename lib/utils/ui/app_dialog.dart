@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/trim_text_field.dart';
@@ -22,7 +23,7 @@ import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/general_widgets/cancel_reasons.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
-import 'Core/BuilderWidget/InfoWidget.dart';
+import 'Core/BuilderWidget/responsive_widget.dart';
 
 void personDetailsDialog(
     DeviceInfo deviceInfo, BuildContext context, Salon salon) async {
@@ -77,15 +78,14 @@ void personDetailsDialog(
                                   salon.name,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize:
-                                          getFontSizeVersion2(deviceInfo)),
+                                      fontSize: defaultFontSize(deviceInfo)),
                                 ),
                                 BuildStars(
                                     stars: salon.rate,
                                     width:
                                         MediaQuery.of(context).size.width / 2),
                                 Text(
-                                    '${salon.commentsCount} ${getWord('openions', context)}')
+                                    '${salon.commentsCount} ${translatedWord('openions', context)}')
                               ],
                             ),
                           ),
@@ -95,7 +95,7 @@ void personDetailsDialog(
                     SizedBox(height: 10),
                     Divider(),
                     elevatedButton(
-                      text: getWord('Reserve now', context),
+                      text: translatedWord('Reserve now', context),
                       onPressed: () async {
                         print(
                             SalonsCubit.getInstance(context).salonDetail.name);
@@ -112,7 +112,7 @@ void personDetailsDialog(
                       },
                     ),
                     elevatedButton(
-                      text: getWord('Reserve appointment', context),
+                      text: translatedWord('Reserve appointment', context),
                       onPressed: () async {
                         Navigator.pop(context);
                         Navigator.pushNamed(context, ReserveScreen.routeName,
@@ -139,18 +139,18 @@ Future<bool> exitConfirmationDialog(
   return await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-            title: Text(getWord('Alert', context)),
+            title: Text(translatedWord('Alert', context)),
             actions: [
               TextButton(
                   onPressed: () {
                     Navigator.pop(context, false);
                   },
-                  child: Text(getWord('Cancel', context))),
+                  child: Text(translatedWord('Cancel', context))),
               TextButton(
                   onPressed: () {
                     Navigator.pop(context, true);
                   },
-                  child: Text(getWord('Yes', context),
+                  child: Text(translatedWord('Yes', context),
                       style: TextStyle(color: Colors.red))),
             ],
             content: Text(alertMessage),
@@ -165,7 +165,7 @@ Future<void> showReasonCancelled(BuildContext context) async {
   return showDialog(
       context: context,
       builder: (context) {
-        return InfoWidget(
+        return ResponsiveWidget(
           responsiveWidget: (context, deviceInfo) => Dialog(
             insetPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -197,7 +197,7 @@ Future<void> showReasonCancelled(BuildContext context) async {
                     heightFactor: 1,
                     alignment: Alignment.topCenter,
                     child: Image.asset(
-                      'assets/images/logo.png',
+                      logo,
                       width: MediaQuery.of(context).size.width /
                           (deviceInfo.orientation == Orientation.portrait
                               ? 5
@@ -219,7 +219,7 @@ Future<bool> openLocationSetting(BuildContext context) async {
   await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-            content: Text(getWord(
+            content: Text(translatedWord(
                 'Location settings is disabled Open settings?', context)),
             actions: [
               TextButton(
@@ -228,13 +228,13 @@ Future<bool> openLocationSetting(BuildContext context) async {
                     res = await Geolocator.isLocationServiceEnabled();
                     Navigator.pop(context, true);
                   },
-                  child: Text(getWord('OK', context))),
+                  child: Text(translatedWord('OK', context))),
               TextButton(
                   onPressed: () {
                     res = false;
                     Navigator.pop(context, true);
                   },
-                  child: Text(getWord('NO', context),
+                  child: Text(translatedWord('NO', context),
                       style: TextStyle(color: Colors.red))),
             ],
           ));
@@ -246,8 +246,8 @@ Future<bool> confirmReservation(BuildContext context) async {
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: Text(getWord('Reserve this salon?', context)),
-          content: Text(getWord(
+          title: Text(translatedWord('Reserve this salon?', context)),
+          content: Text(translatedWord(
               'You are about to reserve this salon are you sure to contiue?',
               context)),
           actions: [
@@ -255,12 +255,12 @@ Future<bool> confirmReservation(BuildContext context) async {
                 onPressed: () {
                   Navigator.pop<bool>(context, true);
                 },
-                child: Text(getWord('Yes', context))),
+                child: Text(translatedWord('Yes', context))),
             TextButton(
                 onPressed: () {
                   Navigator.pop<bool>(context, false);
                 },
-                child: Text(getWord('NO', context),
+                child: Text(translatedWord('NO', context),
                     style: TextStyle(color: Colors.red))),
           ],
         );
@@ -271,19 +271,19 @@ Future<bool> confirmLogout(BuildContext context) async {
   return await showDialog(
     context: context,
     builder: (_) => AlertDialog(
-      title: Text(getWord('Warning', context)),
-      content: Text(getWord('Are you sure to log out?', context)),
+      title: Text(translatedWord('Warning', context)),
+      content: Text(translatedWord('Are you sure to log out?', context)),
       actions: [
         TextButton(
             onPressed: () {
               Navigator.pop<bool>(context, true);
             },
-            child: Text(getWord('Yes', context))),
+            child: Text(translatedWord('Yes', context))),
         TextButton(
             onPressed: () {
               Navigator.pop<bool>(context, false);
             },
-            child: Text(getWord('NO', context),
+            child: Text(translatedWord('NO', context),
                 style: TextStyle(color: Colors.red))),
       ],
     ),
@@ -309,35 +309,35 @@ Future<void> changeAddress(
                 children: [
                   TrimTextField(
                     controller: cityController,
-                    placeHolder: getWord('City', context),
+                    placeHolder: translatedWord('City', context),
                     validator: (address) {
                       if (address.isEmpty)
-                        return getWord('Enter your address', context);
+                        return translatedWord('Enter your address', context);
                       return null;
                     },
                   ),
                   TrimTextField(
                     controller: streetController,
-                    placeHolder: getWord('Sreet', context),
+                    placeHolder: translatedWord('Sreet', context),
                     validator: (address) {
                       if (address.isEmpty)
-                        return getWord('Enter your address', context);
+                        return translatedWord('Enter your address', context);
                       return null;
                     },
                   ),
                   TrimTextField(
                     controller: countryController,
-                    placeHolder: getWord('Country', context),
+                    placeHolder: translatedWord('Country', context),
                     validator: (address) {
                       if (address.isEmpty)
-                        return getWord('Enter your address', context);
+                        return translatedWord('Enter your address', context);
                       return null;
                     },
                   ),
                   TrimTextField(
                     controller: phoneController,
                     textInputType: TextInputType.phone,
-                    placeHolder: getWord('Enter your phone', context),
+                    placeHolder: translatedWord('Enter your phone', context),
                     validator: (phone) {
                       return AuthCubit.getInstance(context)
                           .validatePhone(phone, context);
@@ -348,7 +348,7 @@ Future<void> changeAddress(
                       Expanded(
                         child: DefaultButton(
                           color: Colors.black,
-                          text: getWord('Cancel', context),
+                          text: translatedWord('Cancel', context),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -357,7 +357,7 @@ Future<void> changeAddress(
                       SizedBox(width: 20),
                       Expanded(
                         child: DefaultButton(
-                          text: getWord('save', context),
+                          text: translatedWord('save', context),
                           onPressed: () async {
                             if (formKey.currentState.validate()) {
                               await AddressCubit.getInstance(context)
@@ -398,7 +398,8 @@ Future<void> loadingLogoutDialog(BuildContext context) async {
               Navigator.pop(context);
             if (state is LoadedLogoutState)
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(getWord('Logged out successifully', context))));
+                  content: Text(
+                      translatedWord('Logged out successifully', context))));
           },
           builder: (_, state) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -420,18 +421,18 @@ Future<bool> confirmBack(BuildContext context) async {
   return await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-            content: Text(getWord(
+            content: Text(translatedWord(
                 'You will lose current modifications are you sure to back ?',
                 context)),
             actions: [
               TextButton(
-                child: Text(getWord('Yes', context)),
+                child: Text(translatedWord('Yes', context)),
                 onPressed: () {
                   Navigator.pop(context, true);
                 },
               ),
               TextButton(
-                child: Text(getWord('NO', context)),
+                child: Text(translatedWord('NO', context)),
                 onPressed: () {
                   Navigator.pop(context, false);
                 },

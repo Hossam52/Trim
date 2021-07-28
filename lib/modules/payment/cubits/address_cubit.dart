@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/modules/payment/cubits/address_states.dart';
 import 'package:trim/utils/services/sercure_storage_service.dart';
 
@@ -68,10 +68,12 @@ class AddressCubit extends Cubit<AddressStates> {
     }
   }
 
-  String getCity(BuildContext context) => city ?? getWord('Unknown', context);
+  String getCity(BuildContext context) =>
+      city ?? translatedWord('Unknown', context);
   String getStreet(BuildContext context) =>
-      street ?? getWord('Unknown', context);
-  String getPhone(BuildContext context) => phone ?? getWord('Unknown', context);
+      street ?? translatedWord('Unknown', context);
+  String getPhone(BuildContext context) =>
+      phone ?? translatedWord('Unknown', context);
   String getCountry(BuildContext context) =>
-      country ?? getWord('Unknown', context);
+      country ?? translatedWord('Unknown', context);
 }

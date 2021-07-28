@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 const defaultColor = Color(0xff2B72A6);
 
@@ -20,7 +20,7 @@ class DefaultButton extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Center(
         child: Container(
           width: double.infinity,
@@ -28,7 +28,7 @@ class DefaultButton extends StatelessWidget {
             child: widget ??
                 Text(text,
                     style: TextStyle(
-                        fontSize: getFontSizeVersion2(deviceInfo) * 0.8,
+                        fontSize: defaultFontSize(deviceInfo) * 0.8,
                         color: textColor)),
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(

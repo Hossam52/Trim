@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/trim_text_field.dart';
@@ -32,10 +32,9 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         return Future.value(false);
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         appBar: AppBar(
             centerTitle: true,
-            title: Text(getWord('Change password', context))),
+            title: Text(translatedWord('Change password', context))),
         body: Center(
           child: Container(
             height: ResponsiveFlutter.of(context).scale(460),
@@ -56,7 +55,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                       widget: state is ChangingPasswordState
                           ? TrimLoadingWidget()
                           : null,
-                      text: getWord("Save", context),
+                      text: translatedWord("Save", context),
                       onPressed: state is ChangingPasswordState
                           ? null
                           : () {
@@ -84,25 +83,25 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         children: [
           TrimTextField(
             controller: passwordController,
-            placeHolder: getWord('Password', context),
+            placeHolder: translatedWord('Password', context),
             validator: (val) {
               if (val.isEmpty)
-                return getWord('Password can not be empty', context);
+                return translatedWord('Password can not be empty', context);
               else if (val.length < 5)
-                return getWord(
+                return translatedWord(
                     'Password can not be less than 6 characters', context);
               return null;
             },
           ),
           TrimTextField(
               controller: passwordConfirmationController,
-              placeHolder: getWord('Password Confirmation', context),
+              placeHolder: translatedWord('Password Confirmation', context),
               validator: (val) {
                 if (val.isEmpty)
-                  return getWord(
+                  return translatedWord(
                       'Password confirmation can not be empty', context);
                 if (passwordController.text != val)
-                  return getWord('Two password not the same', context);
+                  return translatedWord('Two password not the same', context);
                 return null;
               }),
         ],

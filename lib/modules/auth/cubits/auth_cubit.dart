@@ -6,7 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trim/api_reponse.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
+import 'package:trim/modules/auth/cubits/activate_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/auth/models/login_model.dart';
 import 'package:trim/modules/auth/models/register_model.dart';
@@ -48,10 +49,10 @@ class AuthCubit extends Cubit<AuthStates> {
           emit(NotActivatedAccountState());
         else
           emit(ErrorAuthState(
-              getWord('Email or password not correct', context)));
+              translatedWord('Email or password not correct', context)));
       } else {
         //Use shared prefrences
-        successLogin(response, context);
+        successLogin(response.data, context);
 
         emit(LoadedAuthState());
       }
@@ -60,10 +61,9 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-  Future successLogin(
-      APIResponse<TokenModel> response, BuildContext context) async {
-    await TrimShared.storeProfileData(response.data);
-    await AppCubit.getInstance(context).intializeDio(response.data.token);
+  Future successLogin(TokenModel response, BuildContext context) async {
+    await TrimShared.storeProfileData(response);
+    await AppCubit.getInstance(context).intializeDio(response.token);
 
     Navigator.pushReplacementNamed(context, HomeScreen.routeName);
   }
@@ -98,6 +98,8 @@ class AuthCubit extends Cubit<AuthStates> {
         registerModel = response.data;
         print(response.data.accessToken);
         emit(NotActivatedAccountState());
+        ActivateCubit.getInstance(context).accessToken =
+            AuthCubit.getInstance(context).registerModel.accessToken;
       }
     }
   }
@@ -130,7 +132,7 @@ class AuthCubit extends Cubit<AuthStates> {
     final user = await Authenitcations.signInWithFacebook(context);
     emit(IntialAuthLoginState());
     if (user == null) {
-      emit(ErrorAuthState(getWord('Login failed', context)));
+      emit(ErrorAuthState(translatedWord('Login failed', context)));
     } else {
       emit(LoadingAuthState());
       var body = user.toMap();
@@ -142,7 +144,7 @@ class AuthCubit extends Cubit<AuthStates> {
       if (res.error) {
         emit(ErrorAuthState(res.errorMessage));
       } else {
-        await successLogin(res, context);
+        await successLogin(res.data, context);
         await Authenitcations.signOut(context);
         emit(LoadedAuthState());
       }
@@ -153,7 +155,7 @@ class AuthCubit extends Cubit<AuthStates> {
     final user = await Authenitcations.signInWithGoogle(context);
     emit(IntialAuthLoginState());
     if (user == null) {
-      emit(ErrorAuthState(getWord('Login failed', context)));
+      emit(ErrorAuthState(translatedWord('Login failed', context)));
     } else {
       emit(LoadingAuthState());
       var body = user.toMap();
@@ -162,7 +164,7 @@ class AuthCubit extends Cubit<AuthStates> {
       if (res.error) {
         emit(ErrorAuthState(res.errorMessage));
       } else {
-        await successLogin(res, context);
+        await successLogin(res.data, context);
         await Authenitcations.signOut(context);
         emit(LoadedAuthState());
       }
@@ -226,7 +228,7 @@ class AuthCubit extends Cubit<AuthStates> {
     @required String password,
     @required String phone,
   }) {
-    String validateEamilStatus = _validateEmail(email, context);
+    String validateEamilStatus = validateEmail(email, context);
     String validatePhoneStatus = validatePhone(phone, context);
     String validatePasswordStatus = validatePassword(password, context);
     String validateNameStatus = validateName(name, context);
@@ -234,7 +236,7 @@ class AuthCubit extends Cubit<AuthStates> {
     if (validateEamilStatus != null && validateEamilStatus.isNotEmpty)
       return validateEamilStatus;
     if (validateEamilStatus != null && validateEamilStatus.isEmpty) {
-      return getWord('Email entered is not correct', context);
+      return translatedWord('Email entered is not correct', context);
     }
     if (validatePhoneStatus != null) return validatePhoneStatus;
     if (validatePasswordStatus != null) return validatePasswordStatus;
@@ -255,9 +257,9 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-  String _validateEmail(String email, BuildContext context) {
+  String validateEmail(String email, BuildContext context) {
     if (email == null || email.isEmpty)
-      return getWord("Email field can not be empty", context);
+      return translatedWord("Email field can not be empty", context);
     String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
         "\\@" +
         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
@@ -274,12 +276,12 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   String validateLogin(String login, BuildContext context) {
-    String emailValidation = _validateEmail(login, context);
+    String emailValidation = validateEmail(login, context);
     if (emailValidation == null || emailValidation != '')
       return emailValidation;
     if (validatePhone(login, context) != null) {
       print(true);
-      return getWord('Email or phone is not on correct format', context);
+      return translatedWord('Email or phone is not on correct format', context);
     }
     return null;
   }
@@ -290,18 +292,18 @@ class AuthCubit extends Cubit<AuthStates> {
     if (regExp.hasMatch(phone))
       return null;
     else
-      return getWord('Phone not correct', context);
+      return translatedWord('Phone not correct', context);
   }
 
   String validatePassword(String password, BuildContext context) {
     if (password == null || password.isEmpty)
-      return getWord("Password field can not be empty", context);
+      return translatedWord("Password field can not be empty", context);
     return null;
   }
 
   String validateName(String name, BuildContext context) {
     if (name == null || name.isEmpty)
-      return getWord("Name field can not be empty", context);
+      return translatedWord("Name field can not be empty", context);
     return null;
   }
 }

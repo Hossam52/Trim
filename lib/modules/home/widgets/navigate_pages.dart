@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/colors.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class NavigatePages extends StatelessWidget {
-  final Function(BuildContext) nextPage;
-  final Function(BuildContext) prevPage;
+  final void Function(BuildContext) nextPage;
+  final void Function(BuildContext) prevPage;
   final int pageNumber;
 
   const NavigatePages(
@@ -19,7 +19,7 @@ class NavigatePages extends StatelessWidget {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.ltr,
-      child: InfoWidget(
+      child: ResponsiveWidget(
         responsiveWidget: (_, deviceInfo) => Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -30,7 +30,7 @@ class NavigatePages extends StatelessWidget {
               child: Center(
                 child: Text('$pageNumber',
                     style: TextStyle(
-                        fontSize: getFontSizeVersion2(deviceInfo),
+                        fontSize: defaultFontSize(deviceInfo),
                         fontWeight: FontWeight.bold)),
               ),
             ),

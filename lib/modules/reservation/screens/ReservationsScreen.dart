@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/no_data_widget.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
@@ -8,7 +8,7 @@ import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/cubits/reservation_states.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/general_widgets/BuildAppBar.dart';
 import 'package:trim/modules/reservation/widgets/BuildCardWidget.dart';
 import 'package:trim/modules/reservation/widgets/reservation_item.dart';
@@ -34,8 +34,8 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: InfoWidget(responsiveWidget: (context, deviceInfo) {
-          double fontSize = getFontSizeVersion2(deviceInfo);
+        child: ResponsiveWidget(responsiveWidget: (context, deviceInfo) {
+          double fontSize = defaultFontSize(deviceInfo);
           return BlocBuilder<ReservationCubit, ReservationStates>(
             builder: (_, state) {
               if (state is LoadingReservationState) return TrimLoadingWidget();
@@ -52,7 +52,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                   buildAppBar(
                       localHeight: deviceInfo.localHeight,
                       fontSize: fontSize,
-                      screenName: getWord('my reservations', context)),
+                      screenName: translatedWord('my reservations', context)),
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {

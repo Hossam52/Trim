@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class SettingItem extends StatelessWidget {
   final String label;
   final Function function;
-  final String imagename;
-  SettingItem({this.function, this.imagename, this.label});
+  final String iconPath;
+  SettingItem({this.function, this.iconPath, this.label});
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (context, deviceInfo) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: ListTile(
             onTap: function,
             leading: Image.asset(
-              'assets/icons/$imagename.png',
-              height: getFontSizeVersion2(deviceInfo),
-              width: getFontSizeVersion2(deviceInfo),
+              iconPath,
+              height: defaultFontSize(deviceInfo),
+              width: defaultFontSize(deviceInfo),
             ),
             title: Text(
               label,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: getFontSizeVersion2(deviceInfo) * 0.85),
+                  fontSize: defaultFontSize(deviceInfo) * 0.85),
             ),
           ),
         );

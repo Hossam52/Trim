@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trim/general_widgets/transparent_appbar.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/widgets/rater_item.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/rater_model.dart';
 
@@ -16,14 +16,13 @@ class RatersScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: kPadding,
-          child: InfoWidget(
+          child: ResponsiveWidget(
             responsiveWidget: (context, deviceInfo) {
               return rates.isEmpty
                   ? Center(
                       child: Text(
                       'No Raters up till now',
-                      style:
-                          TextStyle(fontSize: getFontSizeVersion2(deviceInfo)),
+                      style: TextStyle(fontSize: defaultFontSize(deviceInfo)),
                     ))
                   : ListView.builder(
                       physics: BouncingScrollPhysics(),

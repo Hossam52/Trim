@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/constants/asset_path.dart';
+import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_states.dart';
@@ -15,7 +16,7 @@ import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/modules/home/widgets/salon_logo.dart';
 import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
@@ -39,11 +40,16 @@ class DetailsScreen extends StatelessWidget {
           builder: (_, state) {
             if (state is LoadingSalonDetailState) return TrimLoadingWidget();
             if (state is ErrorSalonState)
-              return Center(
-                  child:
-                      Text(getWord('Error happened', context) + state.error));
+              return RetryWidget(
+                  text: translatedWord('Error happened', context) +
+                      ' : ' +
+                      state.error,
+                  onRetry: () => SalonsCubit.getInstance(context)
+                      .getSalonDetails(
+                          id: SalonsCubit.getInstance(context).lastSalonId));
+
             Salon salon = SalonsCubit.getInstance(context).salonDetail;
-            return InfoWidget(
+            return ResponsiveWidget(
               responsiveWidget: (context, deviceInfo) {
                 return SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
@@ -120,7 +126,7 @@ class DetailsScreen extends StatelessWidget {
           color: Colors.black,
           textColor: Colors.white,
           onPressed: () => reserveSalon(context, deviceInfo),
-          text: getWord('Reserve now', context), //'Reserve now',
+          text: translatedWord('Reserve now', context), //'Reserve now',
         ));
   }
 
@@ -153,7 +159,7 @@ class DetailsScreen extends StatelessWidget {
               Expanded(
                   child: Text(
                 address.isEmpty
-                    ? getWord("No Address is provided", context)
+                    ? translatedWord("No Address is provided", context)
                     : address,
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -163,7 +169,7 @@ class DetailsScreen extends StatelessWidget {
                 style: TextStyle(
                   color: address.isEmpty ? Colors.red : null,
                   fontWeight: FontWeight.bold,
-                  fontSize: getFontSizeVersion2(deviceInfo),
+                  fontSize: defaultFontSize(deviceInfo),
                 ),
               )),
             ],
@@ -201,12 +207,12 @@ class DetailsScreen extends StatelessWidget {
                 ),
                 FittedBox(
                   child: Text(
-                    getWord('Get directions', context),
+                    translatedWord('Get directions', context),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: getFontSizeVersion2(deviceInfo)),
+                        fontSize: defaultFontSize(deviceInfo)),
                   ),
                 ),
               ],
@@ -223,7 +229,7 @@ class DetailsScreen extends StatelessWidget {
         (deviceInfo.type == deviceType.mobile ? 0.14 * 0.25 : 0.11 * 0.25);
     final openFrom = salon.openFrom == "" ? 'N/A' : salon.openFrom;
     final openTo = salon.openTo == "" ? "N/A" : salon.openTo;
-    final to = getWord('To', context);
+    final to = translatedWord('To', context);
 
     final String openingStatus = salon.status;
     final bool isClosed = openingStatus.toLowerCase() == 'closed';
@@ -233,7 +239,7 @@ class DetailsScreen extends StatelessWidget {
           openingStatus,
           style: TextStyle(
             color: Colors.red,
-            fontSize: getFontSizeVersion2(deviceInfo) * 0.85,
+            fontSize: defaultFontSize(deviceInfo) * 0.85,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -246,7 +252,7 @@ class DetailsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(children: [
             Text(
-              getWord('Open', context),
+              translatedWord('Open', context),
               style: TextStyle(
                 color: Colors.green,
                 fontSize: fontSize,
@@ -298,11 +304,12 @@ class Openions extends StatelessWidget {
                 flex: 3,
                 child: FittedBox(
                   child: Text(
-                    '${salon.commentsCount} ' + getWord('openions', context),
+                    '${salon.commentsCount} ' +
+                        translatedWord('openions', context),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: getFontSizeVersion2(deviceInfo),
+                      fontSize: defaultFontSize(deviceInfo),
                     ),
                     softWrap: true,
                   ),

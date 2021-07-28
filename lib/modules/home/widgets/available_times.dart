@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class AvailableTimes extends StatelessWidget {
@@ -16,16 +16,16 @@ class AvailableTimes extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(getWord('Available Dates', context),
+            Text(translatedWord('Available Dates', context),
                 style: TextStyle(
-                    fontSize: getFontSizeVersion2(deviceInfo) * 0.8,
+                    fontSize: defaultFontSize(deviceInfo) * 0.8,
                     fontWeight: FontWeight.bold)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -59,7 +59,7 @@ class AvailableTimes extends StatelessWidget {
             borderRadius: BorderRadius.circular(roundedRadius)),
         child: Text(date,
             style: TextStyle(
-                fontSize: getFontSizeVersion2(deviceInfo) * 0.7, color: color)),
+                fontSize: defaultFontSize(deviceInfo) * 0.7, color: color)),
       ),
     );
   }

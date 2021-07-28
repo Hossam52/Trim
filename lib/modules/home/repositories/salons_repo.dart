@@ -4,11 +4,10 @@ import 'package:trim/constants/api_path.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/models/all_salons_model.dart';
 import 'package:trim/api_reponse.dart';
-import '../models/all_persons_model.dart';
+// import '../models/all_persons_model.dart';
 import '../models/salon_model.dart';
 import 'package:trim/utils/services/call_api.dart';
 import '../models/available_dates_model.dart';
-import '../models/favorites_model.dart';
 import '../models/cities_model.dart';
 
 Future<APIResponse<AllSalonsModel>> loadAllSalonsFromServer(int pageCount,

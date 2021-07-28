@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
@@ -13,7 +14,7 @@ import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
 import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/modules/settings/cubits/settings_states.dart';
 import 'package:trim/modules/settings/widgets/setting_item.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/modules/auth/screens/personal_detail_screen.dart';
 import 'package:trim/modules/settings/screens/customer_serviceScreen.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
@@ -61,36 +62,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     Divider(),
                     SettingItem(
-                      imagename: 'calendar',
-                      label: getWord("my reservations", context),
+                      iconPath: calendarIcon,
+                      label: translatedWord("my reservations", context),
                       function: () async {
                         Navigator.of(context)
                             .pushNamed(ReservationsScreen.routeName);
                       },
                     ),
                     SettingItem(
-                      imagename: 'bell',
-                      label: getWord("notifications", context),
+                      iconPath: bellIcon,
+                      label: translatedWord("notifications", context),
                       function: () => SettingCubit.getInstance(context)
                           .navigateToNotificationsScreen(context),
                     ),
                     SettingItem(
-                      imagename: 'user',
-                      label: getWord("personal profile", context),
+                      iconPath: userIcon,
+                      label: translatedWord("personal profile", context),
                       function: () {
                         Navigator.pushNamed(
                             context, PersonDetailScreen.routeName);
                       },
                     ),
                     SettingItem(
-                      imagename: 'favourite',
-                      label: getWord("my favorites", context),
+                      iconPath: favouriteIcon,
+                      label: translatedWord("my favorites", context),
                       function: () => HomeCubit.getInstance(context)
                           .navigateToFavoriets(context),
                     ),
                     SettingItem(
-                      imagename: 'support',
-                      label: getWord("support", context),
+                      iconPath: supportIcon,
+                      label: translatedWord("support", context),
                       function: () {
                         if (SettingCubit.getInstance(context).emails.isEmpty ||
                             SettingCubit.getInstance(context).phones.isEmpty)
@@ -104,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     )));
                       },
                     ),
-                    InfoWidget(
+                    ResponsiveWidget(
                       responsiveWidget: (context, deviceInfo) {
                         return ListTile(
                           onTap: () async {
@@ -120,11 +121,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           },
                           leading: Icon(Icons.logout, color: Colors.red),
                           title: Text(
-                            getWord("log out", context),
+                            translatedWord("log out", context),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red,
-                                fontSize: getFontSizeVersion2(deviceInfo)),
+                                fontSize: defaultFontSize(deviceInfo)),
                           ),
                         );
                       },
@@ -141,7 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget buildPersonWidget(BuildContext context) {
     return BlocBuilder<AppCubit, AppStates>(
-      builder: (_, state) => InfoWidget(
+      builder: (_, state) => ResponsiveWidget(
         responsiveWidget: (_, deviceInfo) => Row(
           children: [
             ClipRRect(
@@ -161,12 +162,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     FittedBox(
                         child: Text(AppCubit.getInstance(context).name,
                             style: TextStyle(
-                                fontSize: getFontSizeVersion2(deviceInfo),
+                                fontSize: defaultFontSize(deviceInfo),
                                 fontWeight: FontWeight.bold))),
                     FittedBox(
                       child: Text(AppCubit.getInstance(context).email,
                           style: TextStyle(
-                              fontSize: getFontSizeVersion2(deviceInfo),
+                              fontSize: defaultFontSize(deviceInfo),
                               fontWeight: FontWeight.bold)),
                     ),
                   ],

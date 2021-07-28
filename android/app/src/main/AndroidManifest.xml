@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!-- This Line -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Added thid line For location-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Added thid line For location-->
-    <application android:label="Trim" android:icon="@mipmap/ic_launcher">
+    <application android:label="Trim" android:icon="@mipmap/launcher_icon">
         android:requestLegacyExternalStorage="true"
         <!--for permissions images-->
         android:usesCleartextTraffic="true"

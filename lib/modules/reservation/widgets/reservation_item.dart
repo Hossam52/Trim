@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/modules/reservation/cubits/reservation_cubit.dart';
 import 'package:trim/modules/reservation/models/order_model.dart';
 import 'package:trim/modules/reservation/screens/ReservationDetailsScreen.dart';
@@ -26,7 +26,7 @@ class ReservationItem extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  '${getWord('Reservation no', context)} : ${reservation.id} ',
+                  '${translatedWord('Reservation no', context)} : ${reservation.id} ',
                   style: TextStyle(fontSize: fontSize * 0.8),
                 ),
               ),
@@ -46,47 +46,52 @@ class ReservationItem extends StatelessWidget {
             children: [
               if (reservation.barberId != null)
                 reservationRowItem(
-                  key: getWord('Salon name', context),
+                  key: translatedWord('Salon name', context),
                   values: [
-                    reservation.barberName ?? getWord('Unknown', context)
+                    reservation.barberName ?? translatedWord('Unknown', context)
                   ],
                 ),
               reservationRowItem(
-                  key: getWord('Reservation time', context),
+                  key: translatedWord('Reservation time', context),
                   values: [
-                    '${reservation.reservationTime ?? getWord('Unknown', context)}',
-                    '${reservation.reservationDay ?? getWord('Unknown', context)}',
+                    '${reservation.reservationTime ?? translatedWord('Unknown', context)}',
+                    '${reservation.reservationDay ?? translatedWord('Unknown', context)}',
                   ]),
               if (!showMoreDetails)
                 reservationRowItem(
-                    key: getWord('Created at', context),
+                    key: translatedWord('Created at', context),
                     values: [
-                      '${reservation.createdAt ?? getWord('Unknown', context)}',
+                      '${reservation.createdAt ?? translatedWord('Unknown', context)}',
                     ]),
               if (!showMoreDetails)
                 reservationRowItem(
-                    key: getWord('Payment method', context),
+                    key: translatedWord('Payment method', context),
                     values: [
-                      '${reservation.paymentMethod ?? getWord('Unknown', context)}',
+                      '${reservation.paymentMethod ?? translatedWord('Unknown', context)}',
                     ]),
               reservationRowItem(
-                  key: getWord('Address', context),
-                  values: [reservation.address ?? getWord('Unknown', context)]),
+                  key: translatedWord('Address', context),
+                  values: [
+                    reservation.address ?? translatedWord('Unknown', context)
+                  ]),
               reservationRowItem(
-                  key: getWord('Service type', context),
+                  key: translatedWord('Service type', context),
                   values: [reservation.type]),
               if (!showMoreDetails)
                 reservationRowItem(
                     key: '${reservation.type}',
                     values: getWhatToDisplayAccordingToType(reservation)),
-              reservationRowItem(key: getWord('Status', context), values: [
-                reservation.statusEn ?? getWord('Unknown', context)
-              ]),
+              reservationRowItem(
+                  key: translatedWord('Status', context),
+                  values: [
+                    reservation.statusEn ?? translatedWord('Unknown', context)
+                  ]),
               if (!showMoreDetails && reservation.statusId == "2")
                 reservationRowItem(
-                    key: getWord('Cancel reason', context),
+                    key: translatedWord('Cancel reason', context),
                     values: [
-                      reservation.cancelReason ?? getWord('Unknown', context)
+                      reservation.cancelReason ??
+                          translatedWord('Unknown', context)
                     ]),
             ],
           ),
@@ -121,7 +126,7 @@ class ReservationItem extends StatelessWidget {
               arguments: reservation);
         },
         child: Text(
-          getWord('More details', context),
+          translatedWord('More details', context),
           style: TextStyle(fontSize: fontSize * 0.8, color: Colors.green),
         ),
       ),

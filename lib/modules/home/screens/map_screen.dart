@@ -8,8 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
@@ -17,7 +18,7 @@ import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 
 import 'package:location/location.dart' as LocationManager;
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/modules/home/widgets/BuildSalonItemGrid.dart';
 
@@ -117,8 +118,9 @@ class _MapScreenState extends State<MapScreen> {
           backgroundColor: MaterialStateProperty.all(Colors.black),
           foregroundColor: MaterialStateProperty.all(Colors.white),
         ),
-        label: Text(title, style: TextStyle(fontSize: getFontSize(deviceInfo))),
-        icon: Icon(icon, size: getFontSize(deviceInfo)),
+        label: Text(title,
+            style: TextStyle(fontSize: defaultFontSize(deviceInfo))),
+        icon: Icon(icon, size: defaultFontSize(deviceInfo)),
       ),
     );
   }
@@ -150,7 +152,7 @@ class _MapScreenState extends State<MapScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(getWord('Error happened', context) +
+                              Text(translatedWord('Error happened', context) +
                                   ': ${state.error}'),
                               TextButton(
                                   onPressed: () {
@@ -177,7 +179,7 @@ class _MapScreenState extends State<MapScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8.0, vertical: 30),
-                                  child: InfoWidget(
+                                  child: ResponsiveWidget(
                                     responsiveWidget: (_, deviceInfo) =>
                                         showSalonsWidget == false
                                             ? actionButton(
@@ -321,8 +323,7 @@ class _MapScreenState extends State<MapScreen> {
   void makeSalonsMarkers() async {
     List<Salon> mapSalons = SalonsCubit.getInstance(context).nearestSalons;
     final iconWidth = MediaQuery.of(context).size.width * 0.4;
-    final markerIconBytes = await getBytesFromAsset(
-        'assets/icons/map-scissor.png', iconWidth.ceil());
+    final markerIconBytes = await getBytesFromAsset(mapIcon, iconWidth.ceil());
 
     for (int i = 0; i < mapSalons.length; i++) {
       Marker f = Marker(
@@ -345,9 +346,7 @@ class _MapScreenState extends State<MapScreen> {
     if (customIcon1 == null) {
       ImageConfiguration configuration = createLocalImageConfiguration(context);
 
-      BitmapDescriptor.fromAssetImage(
-              configuration, 'assets/icons/map-scissor.png')
-          .then((value) {
+      BitmapDescriptor.fromAssetImage(configuration, mapIcon).then((value) {
         setState(() {
           customIcon1 = value;
         });

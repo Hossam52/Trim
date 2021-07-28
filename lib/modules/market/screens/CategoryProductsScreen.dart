@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/general_widgets/no_data_widget.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/trim_cached_image.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
@@ -14,7 +15,7 @@ import 'package:trim/modules/market/cubit/search_bloc.dart';
 import 'package:trim/modules/market/models/Product.dart';
 import 'package:trim/modules/market/models/cartItem.dart';
 import 'package:trim/modules/market/widgets/cart.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/BuildRawMaterialButton.dart';
 import 'package:trim/general_widgets/BuildSearchWidget.dart';
@@ -82,7 +83,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: InfoWidget(
+            child: ResponsiveWidget(
               responsiveWidget: (context, deviceInfo) {
                 return Column(
                   children: [
@@ -92,31 +93,31 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                             categoryId: categoryId, searchedWord: value));
                       },
                     ),
-                    BlocBuilder<ProductsCategoryBloc, ProductsCategoryStates>(
-                        builder: (_, state) {
-                      if (state is InitialState ||
-                          state is LoadingStateProductsCategory)
-                        return TrimLoadingWidget();
-                      else if (state is ErrorStateProductsCategory)
-                        return Center(
-                            child: buildRefershIndicatorProducts(
-                                child: SingleChildScrollView(
-                                    physics: AlwaysScrollableScrollPhysics(),
-                                    child: Container(
-                                      height: deviceInfo.localHeight * 0.5,
-                                      child: Text(getWord(
-                                          'Please Make sure from internet connection',
-                                          context)),
-                                    ))));
-                      return Expanded(
-                        child: Padding(
+                    Expanded(
+                      child: BlocBuilder<ProductsCategoryBloc,
+                          ProductsCategoryStates>(builder: (_, state) {
+                        if (state is InitialState ||
+                            state is LoadingStateProductsCategory)
+                          return TrimLoadingWidget();
+                        else if (state is ErrorStateProductsCategory)
+                          return Center(
+                              child: buildRefershIndicatorProducts(
+                                  child: SingleChildScrollView(
+                                      physics: AlwaysScrollableScrollPhysics(),
+                                      child: Container(
+                                        height: deviceInfo.localHeight * 0.5,
+                                        child: Text(translatedWord(
+                                            'Please Make sure from internet connection',
+                                            context)),
+                                      ))));
+                        return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: buildRefershIndicatorProducts(
                             child: buildProducts(deviceInfo),
                           ),
-                        ),
-                      );
-                    })
+                        );
+                      }),
+                    )
                   ],
                 );
               },
@@ -142,31 +143,34 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
           if (isCategoryScreen) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(getWord(
+                content: Text(translatedWord(
                     'Please Make sure from internet connection', context)),
               ),
             );
           }
         }
       },
-      builder: (_, state) => GridView.builder(
-          itemCount: isSearch
-              ? productsBloc.products.length
-              : searchBloc.searchedProducts.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 7,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.47,
-          ),
-          itemBuilder: (context, index) {
-            return BuildProductItem(
-              deviceInfo: deviceInfo,
-              prodcut: isSearch
-                  ? productsBloc.products[index]
-                  : searchBloc.searchedProducts[index],
-            );
-          }),
+      builder: (_, state) {
+        if (productsBloc.products.length == 0) return EmptyDataWidget();
+        return GridView.builder(
+            itemCount: isSearch
+                ? productsBloc.products.length
+                : searchBloc.searchedProducts.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 7,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.47,
+            ),
+            itemBuilder: (context, index) {
+              return BuildProductItem(
+                deviceInfo: deviceInfo,
+                prodcut: isSearch
+                    ? productsBloc.products[index]
+                    : searchBloc.searchedProducts[index],
+              );
+            });
+      },
     );
   }
 }
@@ -191,7 +195,7 @@ class _BuildProductItemState extends State<BuildProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    fontSize = getFontSizeVersion2(widget.deviceInfo);
+    fontSize = defaultFontSize(widget.deviceInfo);
     cartCubit = BlocProvider.of<CartBloc>(context);
     return Container(
       padding: const EdgeInsets.only(bottom: 5),
@@ -207,15 +211,10 @@ class _BuildProductItemState extends State<BuildProductItem> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-            flex: 3,
-            child: buildProductImage(),
-          ),
+          Expanded(flex: 3, child: buildProductImage()),
           Expanded(flex: 2, child: buildProductName()),
           Expanded(child: buildProductPrice()),
-          Expanded(
-            child: buildProductActions(),
-          ),
+          Expanded(child: buildProductActions()),
         ],
       ),
     );

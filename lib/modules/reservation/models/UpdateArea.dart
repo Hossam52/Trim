@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class UpdateArea {
   final String text;
@@ -8,12 +8,12 @@ class UpdateArea {
   Tab tabWidget;
   UpdateArea({@required this.text, @required this.contentWidget}) {
     tabWidget = Tab(
-      child: InfoWidget(
+      child: ResponsiveWidget(
         responsiveWidget: (_, deviceInfo) => Text(
           text,
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: getFontSizeVersion2(deviceInfo) * 0.8),
+              fontSize: defaultFontSize(deviceInfo) * 0.8),
         ),
       ),
     );

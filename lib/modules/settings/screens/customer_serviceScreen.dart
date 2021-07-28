@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/settings/cubits/settings_cubit.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/modules/settings/cubits/settings_states.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class CustomerServiceScreen extends StatelessWidget {
   static const routeName = '/customer-service';
@@ -13,7 +14,7 @@ class CustomerServiceScreen extends StatelessWidget {
     print('Customer');
     return Scaffold(
       appBar: AppBar(
-        title: Text(getWord('customer service', context),
+        title: Text(translatedWord('customer service', context),
             style: TextStyle(color: Colors.black)),
         leading: BackButton(color: Colors.black),
         elevation: 0,
@@ -28,7 +29,7 @@ class CustomerServiceScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/icons/customer-services.png'),
+                Image.asset(customerServiceIcon),
                 Container(
                     padding: const EdgeInsets.all(10.0),
                     width: double.infinity,
@@ -47,7 +48,7 @@ class CustomerServiceScreen extends StatelessWidget {
   Widget _buildContactInformation(BuildContext context) {
     final phones = SettingCubit.getInstance(context).phones;
     final emails = SettingCubit.getInstance(context).emails;
-    return InfoWidget(responsiveWidget: (_, deviceInfo) {
+    return ResponsiveWidget(responsiveWidget: (_, deviceInfo) {
       return Column(
         children: [
           Row(
@@ -55,7 +56,7 @@ class CustomerServiceScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
-                child: Text(getWord('Customer service numbers', context),
+                child: Text(translatedWord('Customer service numbers', context),
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               Column(
@@ -71,7 +72,7 @@ class CustomerServiceScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
-                  child: Text(getWord('Email', context),
+                  child: Text(translatedWord('Email', context),
                       style: TextStyle(fontWeight: FontWeight.bold))),
               Column(
                 mainAxisSize: MainAxisSize.min,

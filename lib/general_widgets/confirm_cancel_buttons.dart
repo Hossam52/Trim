@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 
@@ -19,7 +19,7 @@ class ConfirmCancelButtons extends StatelessWidget {
         Expanded(
             flex: 2,
             child: DefaultButton(
-              text: getWord('Confirm', context),
+              text: translatedWord('Confirm', context),
               onPressed: onPressConfirm,
               color: Colors.green,
             )),
@@ -27,7 +27,7 @@ class ConfirmCancelButtons extends StatelessWidget {
         Expanded(
             flex: 2,
             child: DefaultButton(
-                text: getWord('Cancel', context),
+                text: translatedWord('Cancel', context),
                 onPressed: () async {
                   final goBack = await confirmBack(context);
                   if (goBack) Navigator.pop(context);

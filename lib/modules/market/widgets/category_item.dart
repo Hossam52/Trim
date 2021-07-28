@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/market/models/Category.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
@@ -37,7 +37,7 @@ class CategoryItem extends StatelessWidget {
       textAlign: TextAlign.center,
       overflow: TextOverflow.ellipsis,
       maxLines: 2,
-      style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo) * 0.78),
+      style: TextStyle(fontSize: defaultFontSize(deviceInfo) * 0.78),
     );
   }
 

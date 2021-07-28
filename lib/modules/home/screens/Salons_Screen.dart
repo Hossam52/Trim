@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_data_widget.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
@@ -16,7 +17,7 @@ import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/widgets/persons_grid_view.dart';
 import 'package:trim/modules/home/widgets/salons_persons_widget.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/general_widgets/BuildAlertDialog.dart';
 import 'package:trim/modules/home/widgets/BuildCitiesChoices.dart';
 import 'package:trim/modules/home/widgets/BuildSalonItemGrid.dart';
@@ -119,15 +120,15 @@ class _SalonsScreenState extends State<SalonsScreen> {
 
     return Row(
       children: [
-        InfoWidget(
+        ResponsiveWidget(
           responsiveWidget: (_, deviceInfo) => ElevatedButton(
             onPressed: () async {
               await showCities(context);
             },
             child: Image.asset(
-              'assets/icons/settings-icon.png',
-              height: getFontSizeVersion2(deviceInfo),
-              width: getFontSizeVersion2(deviceInfo),
+              changeCityIcon,
+              height: defaultFontSize(deviceInfo),
+              width: defaultFontSize(deviceInfo),
               color: Theme.of(context).primaryColor,
             ),
             style: ButtonStyle(
@@ -166,8 +167,8 @@ class _SalonsScreenState extends State<SalonsScreen> {
             backgroundColor: Colors.blue[800],
             title: BlocBuilder<HomeCubit, HomeStates>(
                 builder: (_, state) => state is TrimStarState
-                    ? Text(getWord('Trim stars', context))
-                    : Text(getWord('Most serch salons', context))),
+                    ? Text(translatedWord('Trim stars', context))
+                    : Text(translatedWord('Most serch salons', context))),
             centerTitle: true,
           )
         : null;
@@ -208,7 +209,7 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => RefreshIndicator(
         onRefresh: () async {
           await SalonsCubit.getInstance(context)
@@ -261,7 +262,7 @@ class _BuildGridViewSalonsState extends State<BuildGridViewSalons> {
                   if (state is NoMoreSalonState)
                     return NoMoreItems(
                       deviceInfo: deviceInfo,
-                      label: getWord('No More Salons', context),
+                      label: translatedWord('No More Salons', context),
                     );
                   return NavigatePages(
                     nextPage: SalonsCubit.getInstance(context).getNextPage,

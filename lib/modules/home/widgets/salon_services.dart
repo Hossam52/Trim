@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/models/salon_service.dart';
 import 'package:trim/modules/home/widgets/salon_service_item.dart';
@@ -44,13 +44,13 @@ class SalonServices extends StatelessWidget {
   }
 
   Container noServicesContainer(BuildContext context) {
-    double fontSize = getFontSizeVersion2(deviceInfo);
+    double fontSize = defaultFontSize(deviceInfo);
 
     return Container(
       padding: const EdgeInsets.all(10),
       width: double.infinity,
       child: Text(
-        getWord("No Services is added yet", context),
+        translatedWord("No Services is added yet", context),
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
       ),

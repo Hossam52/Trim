@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/activate_cubit.dart';
@@ -8,7 +8,7 @@ import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 
 import '../widgets/frame_card_auth.dart';
@@ -57,7 +57,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
     return WillPopScope(
       onWillPop: () async {
         return await exitConfirmationDialog(
-            context, getWord('Are you sure to exit?', context));
+            context, translatedWord('Are you sure to exit?', context));
       },
       child: Scaffold(
           // resizeToAvoidBottomInset: true,
@@ -70,13 +70,19 @@ class RegistrationScreenState extends State<RegistrationScreen> {
           },
           listener: (_, state) async {
             if (state is NotActivatedAccountState) {
-              ActivateCubit.getInstance(context).accessToken =
-                  AuthCubit.getInstance(context).registerModel.accessToken;
-              await Navigator.of(context).pushNamed(
+              final isValidCode = await Navigator.of(context).pushNamed(
                   VerificationCodeScreen.routeName,
                   arguments:
                       AuthCubit.getInstance(context).registerModel.accessToken);
-              Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+              if (isValidCode == null || isValidCode == false)
+                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+              else {
+                //Mean that user entered the activation code correctly so we go to home directly
+                AuthCubit.getInstance(context).successLogin(
+                  ActivateCubit.getInstance(context).activationTokenModel,
+                  context,
+                );
+              }
             }
           },
           builder: (_, state) {
@@ -97,7 +103,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                           AuthCubit.getInstance(context).selectedGender),
                 ),
                 DefaultButton(
-                  text: getWord('Register account', context),
+                  text: translatedWord('Register account', context),
                   widget: state is LoadingRegisterState
                       ? TrimLoadingWidget()
                       : null,
@@ -123,24 +129,24 @@ class RegistrationScreenState extends State<RegistrationScreen> {
         children: [
           TrimTextField(
             controller: _nameController,
-            placeHolder: getWord('Name', context),
+            placeHolder: translatedWord('Name', context),
             validator: null,
           ),
           TrimTextField(
             controller: _emailController,
-            placeHolder: getWord('Email', context),
+            placeHolder: translatedWord('Email', context),
             validator: null,
             textInputType: TextInputType.emailAddress,
           ),
           TrimTextField(
             controller: _phoneController,
-            placeHolder: getWord('Phone', context),
+            placeHolder: translatedWord('Phone', context),
             validator: null,
             textInputType: TextInputType.phone,
           ),
           TrimTextField(
             controller: _passwordController,
-            placeHolder: getWord('Password', context),
+            placeHolder: translatedWord('Password', context),
             validator: null,
             password: true,
           ),
@@ -150,15 +156,14 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Widget buildAlreadyHasAccount() {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => TextButton(
         onPressed: () =>
             AuthCubit.getInstance(context).navigateToLogin(context),
         child: Text(
-          getWord('Already has account?', context),
+          translatedWord('Already has account?', context),
           style: TextStyle(
-              color: Colors.grey,
-              fontSize: getFontSizeVersion2(deviceInfo) * 0.8),
+              color: Colors.grey, fontSize: defaultFontSize(deviceInfo) * 0.8),
         ),
       ),
     );

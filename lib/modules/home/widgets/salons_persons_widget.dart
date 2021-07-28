@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/choice_button.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
@@ -26,7 +26,7 @@ class SalonsPersonsWidget extends StatelessWidget {
           ChoiceButton(
               directionRoundedRight: false,
               icon: hairIcon,
-              name: getWord('Salons', context),
+              name: translatedWord('Salons', context),
               active: displaySalons,
               pressed: () {
                 final state = HomeCubit.getInstance(context).state;
@@ -39,7 +39,7 @@ class SalonsPersonsWidget extends StatelessWidget {
           ChoiceButton(
               directionRoundedRight: true,
               icon: marketIcon,
-              name: getWord('Persons', context),
+              name: translatedWord('Persons', context),
               active: !displaySalons,
               pressed: () {
                 final state = HomeCubit.getInstance(context).state;

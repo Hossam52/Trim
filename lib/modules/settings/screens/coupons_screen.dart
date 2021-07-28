@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/utils/services/rest_api_service.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class CouponsScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class CouponsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(getWord('Coupons', context),
+        title: Text(translatedWord('Coupons', context),
             style: TextStyle(color: Colors.black)),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -64,23 +65,25 @@ class CouponsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text('${20} %', style: Theme.of(context).textTheme.headline2),
-          InfoWidget(
+          ResponsiveWidget(
             responsiveWidget: (_, deviceInfo) => Text(
                 'Dicsount of your invoice',
                 style: TextStyle(
-                    color: Colors.white, fontSize: getFontSize(deviceInfo))),
+                    color: Colors.white,
+                    fontSize: defaultFontSize(deviceInfo))),
           ),
           SizedBox(height: 50),
           Image.asset(
-            'assets/icons/horizontal.png',
+            horizontalIcon,
             width: double.infinity,
             fit: BoxFit.fitWidth,
           ),
-          InfoWidget(
+          ResponsiveWidget(
             responsiveWidget: (_, deviceInfo) => Text(
-                getWord('Discount code', context),
+                translatedWord('Discount code', context),
                 style: TextStyle(
-                    fontSize: getFontSize(deviceInfo), color: Colors.white)),
+                    fontSize: defaultFontSize(deviceInfo),
+                    color: Colors.white)),
           ),
           _buildDiscountAmount(),
           _buildAvailableUntil(),
@@ -90,7 +93,7 @@ class CouponsScreen extends StatelessWidget {
   }
 
   Widget _buildInvoiceBackground() {
-    return Image.asset('assets/icons/color-ingeridants.png',
+    return Image.asset(colorIngeridents,
         width: double.infinity, height: double.infinity, fit: BoxFit.fill);
   }
 
@@ -106,7 +109,7 @@ class CouponsScreen extends StatelessWidget {
           child: Center(
               child: FittedBox(
             child: Text('#######',
-                style: TextStyle(fontSize: getFontSize(DeviceInfo()))),
+                style: TextStyle(fontSize: defaultFontSize(DeviceInfo()))),
           )),
         ),
       );
@@ -114,11 +117,11 @@ class CouponsScreen extends StatelessWidget {
   }
 
   Widget _buildAvailableUntil() {
-    return InfoWidget(
+    return ResponsiveWidget(
         responsiveWidget: (_, deviceInfo) => Text(
             'This code valid until: ${1}/${9}',
             style: TextStyle(
-                fontSize: getFontSize(deviceInfo), color: Colors.white)));
+                fontSize: defaultFontSize(deviceInfo), color: Colors.white)));
   }
 
   Widget backgroundGradient() {
@@ -142,17 +145,16 @@ class CouponsScreen extends StatelessWidget {
       },
       child: Row(
         children: [
-          Image.asset('assets/icons/team.png',
-              width: 100, height: 100, fit: BoxFit.fill),
+          Image.asset(teamIcon, width: 100, height: 100, fit: BoxFit.fill),
           SizedBox(width: 10),
           Flexible(
-            child: InfoWidget(
+            child: ResponsiveWidget(
                 responsiveWidget: (_, deviceInfo) => Text(
                     'Share App with your firends and get copouns',
                     softWrap: true,
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: getFontSize(deviceInfo)))),
+                        fontSize: defaultFontSize(deviceInfo)))),
           )
         ],
       ),

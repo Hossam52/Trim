@@ -66,7 +66,7 @@ class FavoriteItem extends StatelessWidget {
       favoriteSalon.name,
       style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: getFontSizeVersion2(deviceInfo),
+          fontSize: defaultFontSize(deviceInfo),
           color: Colors.white),
     );
   }

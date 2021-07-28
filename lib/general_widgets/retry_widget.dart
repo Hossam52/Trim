@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class RetryWidget extends StatelessWidget {
   final String text;
@@ -11,7 +11,7 @@ class RetryWidget extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -19,11 +19,11 @@ class RetryWidget extends StatelessWidget {
             Flexible(
               child: Text(
                 text,
-                style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo)),
+                style: TextStyle(fontSize: defaultFontSize(deviceInfo)),
               ),
             ),
             TextButton(
-              child: Text(getWord('Retry now', context)),
+              child: Text(translatedWord('Retry now', context)),
               onPressed: onRetry,
             ),
           ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 
 class LoadingMoreItemsIndicator extends StatelessWidget {
@@ -13,7 +13,7 @@ class LoadingMoreItemsIndicator extends StatelessWidget {
           TrimLoadingWidget(),
           SizedBox(width: 10),
           Container(
-            child: Text(getWord('Loading', context) + '.....'),
+            child: Text(translatedWord('Loading', context) + '.....'),
           ),
         ],
       ),

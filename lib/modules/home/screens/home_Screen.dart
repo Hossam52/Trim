@@ -1,11 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart' as constants;
 import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
+import 'package:trim/modules/auth/cubits/auth_cubit.dart';
+import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
@@ -16,7 +18,7 @@ import 'package:trim/modules/home/widgets/BuildButtonViewHome.dart';
 import 'package:trim/modules/home/widgets/BuildListOffers.dart';
 import 'package:trim/modules/home/widgets/BuildMostSearchedSalons.dart';
 import 'package:trim/modules/home/widgets/BuildStarsPersonsList.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 import 'package:trim/modules/market/screens/ShoppingScreen.dart';
@@ -39,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     pagesBuilder
-        .add(PageWidget(imageIcon: settingsIcon, page: SettingsScreen()));
+        .add(PageWidget(imageIcon: appSettingsIcon, page: SettingsScreen()));
     pagesBuilder.add(PageWidget(imageIcon: marketIcon, page: ShoppingScreen()));
     pagesBuilder.add(PageWidget(imageIcon: locationIcon, page: MapScreen()));
     pagesBuilder.add(PageWidget(imageIcon: hairIcon, page: SalonsScreen()));
@@ -72,56 +74,42 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (initialIndex != 4) {
-          setState(() {
-            initialIndex = 4;
-          });
-          return false;
-        } else {
-          return await exitConfirmationDialog(
-              context, getWord('Are you sure to exit?', context));
-        }
-      },
-      child: BlocBuilder<HomeCubit, HomeStates>(
-        builder: (_, state) {
-          if (state is LoadingHomeState) return TrimLoadingWidget();
-          if (state is ErrorHomeState)
-            return Material(
-                child: RetryWidget(
-                    text: state.error,
-                    onRetry: () async {
-                      HomeCubit.getInstance(context).loadHomeLayout(context);
-                    }));
-          return Scaffold(
-            bottomNavigationBar: Directionality(
-              textDirection: TextDirection.ltr,
-              child: CurvedNavigationBar(
-                index: initialIndex,
-                height: 50,
-                color: Colors.grey[300],
-                backgroundColor: Colors.white,
-                items: bottomBarItems(),
-                onTap: (index) {
-                  if (index == 2) {
-                    SalonsCubit.getInstance(context)
-                        .loadNearestSalons(31, 31.5);
-                  }
-                  if (index == 3) {
-                    //All Salons set type
-                    HomeCubit.getInstance(context).emit(AllSalonsState());
-                  }
-                  setState(() {
-                    initialIndex = index;
-                  });
-                },
-              ),
-            ),
-            body: SafeArea(child: pagesBuilder[initialIndex].page),
-          );
+        onWillPop: () async {
+          if (initialIndex != 4) {
+            setState(() {
+              initialIndex = 4;
+            });
+            return false;
+          } else {
+            return await exitConfirmationDialog(
+                context, translatedWord('Are you sure to exit?', context));
+          }
         },
-      ),
-    );
+        child: Scaffold(
+          bottomNavigationBar: Directionality(
+            textDirection: TextDirection.ltr,
+            child: CurvedNavigationBar(
+              index: initialIndex,
+              height: 50,
+              color: Colors.grey[300],
+              backgroundColor: Colors.white,
+              items: bottomBarItems(),
+              onTap: (index) {
+                if (index == 2) {
+                  SalonsCubit.getInstance(context).loadNearestSalons(31, 31.5);
+                }
+                if (index == 3) {
+                  //All Salons set type
+                  HomeCubit.getInstance(context).emit(AllSalonsState());
+                }
+                setState(() {
+                  initialIndex = index;
+                });
+              },
+            ),
+          ),
+          body: SafeArea(child: pagesBuilder[initialIndex].page),
+        ));
   }
 }
 
@@ -133,49 +121,87 @@ class BuildHomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
-      responsiveWidget: (context, deviceInfo) {
-        double fontSize = constants.getFontSizeVersion2(deviceInfo) * 0.8;
-        return Container(
-          height: deviceInfo.localHeight,
-          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-          child: Center(
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  buildMainListOffers(deviceInfo),
-                  BuildButtonView(
-                    function:
-                        HomeCubit.getInstance(context).navigateToMostSearch,
-                    label: getWord('Most search', context),
-                    textSize: fontSize,
-                  ),
-                  Container(
-                    height: deviceInfo.orientation == Orientation.portrait
-                        ? deviceInfo.localHeight / 3
-                        : deviceInfo.localHeight,
-                    child: BuildMostSearchedSalons(),
-                  ),
-                  BuildButtonView(
-                    function:
-                        HomeCubit.getInstance(context).navigateToTrimStars,
-                    label: getWord('Trim stars', context),
-                    textSize: fontSize,
-                  ),
-                  Container(
-                    height: deviceInfo.orientation == Orientation.portrait
-                        ? deviceInfo.localHeight / 3
-                        : deviceInfo.localHeight / 2,
-                    child: BuildStarsPersonsWidget(
-                        heightNavigationBar: heightNavigationBar),
-                  ),
-                ],
+    return BlocBuilder<HomeCubit, HomeStates>(builder: (_, state) {
+      if (state is LoadingHomeState) return TrimLoadingWidget();
+      if (state is ErrorHomeState)
+        return Material(child: retryWidget(state.error, context));
+      if (HomeCubit.getInstance(context).homeModel == null)
+        return Material(
+            child: retryWidget(
+                translatedWord('Un expected error happened', context),
+                context));
+      return ResponsiveWidget(
+        responsiveWidget: (context, deviceInfo) {
+          double fontSize = constants.defaultFontSize(deviceInfo) * 0.8;
+          return Container(
+            height: deviceInfo.localHeight,
+            margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            child: Center(
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    buildMainListOffers(deviceInfo),
+                    BuildButtonView(
+                      function:
+                          HomeCubit.getInstance(context).navigateToMostSearch,
+                      label: translatedWord('Most search', context),
+                      textSize: fontSize,
+                    ),
+                    Container(
+                      height: deviceInfo.orientation == Orientation.portrait
+                          ? deviceInfo.localHeight / 3
+                          : deviceInfo.localHeight,
+                      child: BuildMostSearchedSalons(),
+                    ),
+                    BuildButtonView(
+                      function:
+                          HomeCubit.getInstance(context).navigateToTrimStars,
+                      label: translatedWord('Trim stars', context),
+                      textSize: fontSize,
+                    ),
+                    Container(
+                      height: deviceInfo.orientation == Orientation.portrait
+                          ? deviceInfo.localHeight / 3
+                          : deviceInfo.localHeight / 2,
+                      child: BuildStarsPersonsWidget(
+                          heightNavigationBar: heightNavigationBar),
+                    ),
+                  ],
+                ),
               ),
             ),
+          );
+        },
+      );
+    });
+  }
+
+  Widget retryWidget(String errorMessage, BuildContext context) {
+    return ResponsiveWidget(
+      responsiveWidget: (_, deviceInfo) => Column(
+        children: [
+          Expanded(
+            child: RetryWidget(
+                text: errorMessage,
+                onRetry: () async {
+                  HomeCubit.getInstance(context).loadHomeLayout(context);
+                }),
           ),
-        );
-      },
+          TextButton(
+            onPressed: () async {
+              await AuthCubit.getInstance(context).logout();
+              Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+            },
+            child: Text(
+              'Logout',
+              style: TextStyle(fontSize: constants.defaultFontSize(deviceInfo)),
+            ),
+            style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(Colors.red)),
+          )
+        ],
+      ),
     );
   }
 
@@ -184,7 +210,7 @@ class BuildHomeWidget extends StatelessWidget {
       height: deviceInfo.orientation == Orientation.portrait
           ? deviceInfo.localHeight / 3
           : deviceInfo.localHeight / 2,
-      child: InfoWidget(
+      child: ResponsiveWidget(
         responsiveWidget: (context, de) {
           return Container(
             child: BuildOffersWidgetItem(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
@@ -22,10 +22,11 @@ class BuildCitiesRadio extends StatelessWidget {
       builder: (_, state) {
         if (state is LoadingCitiesState) return TrimLoadingWidget();
         if (state is EmptyCitiesState)
-          return Center(child: Text(getWord('No Cities Found', context)));
+          return Center(
+              child: Text(translatedWord('No Cities Found', context)));
         if (state is ErrorCitiesState)
           return Center(
-              child: Text(getWord('Error happened', context) +
+              child: Text(translatedWord('Error happened', context) +
                   ': ${state.errorMessage}.'));
         final cities = CitiesCubit.getInstance(context).cities;
         int selectedId = CitiesCubit.getInstance(context).selectedCity.id;
@@ -53,7 +54,7 @@ class BuildCitiesRadio extends StatelessWidget {
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: DefaultButton(
-                      text: getWord('Search now', context),
+                      text: translatedWord('Search now', context),
                       onPressed: () async {
                         if (HomeCubit.getInstance(context).state
                             is AllSalonsState)

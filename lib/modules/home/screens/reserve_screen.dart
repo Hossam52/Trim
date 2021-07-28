@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/empty_time_day.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
@@ -14,7 +14,7 @@ import 'package:trim/modules/home/widgets/salon_offers.dart';
 import 'package:trim/modules/home/widgets/salon_services.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 import 'package:trim/modules/reservation/screens/ReservationsScreen.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/home/models/salon_detail_model.dart';
@@ -50,7 +50,7 @@ class _ReserveScreenState extends State<ReserveScreen> {
             if (state is ErrorMakeOrderState)
               Fluttertoast.showToast(msg: state.error);
           },
-          builder: (_, state) => InfoWidget(
+          builder: (_, state) => ResponsiveWidget(
             responsiveWidget: (context, deviceInfo) => SafeArea(
                 child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
@@ -123,7 +123,7 @@ class _ReserveScreenState extends State<ReserveScreen> {
                               SalonsCubit.getInstance(context)
                                   .canReserveSalon();
                           return DefaultButton(
-                              text: getWord('Reserve now', context),
+                              text: translatedWord('Reserve now', context),
                               widget: state is LoadingMakeOrderState
                                   ? TrimLoadingWidget()
                                   : null,
@@ -185,7 +185,7 @@ class _ReserveScreenState extends State<ReserveScreen> {
   }
 
   Widget buildServices(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<SalonsCubit, SalonStates>(

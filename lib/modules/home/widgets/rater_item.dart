@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
 import 'package:trim/general_widgets/trim_cached_image.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import '../models/rater_model.dart';
 
 class RaterItem extends StatelessWidget {
@@ -14,7 +14,7 @@ class RaterItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (context, deviceInfo) {
         return Card(
           margin: EdgeInsets.symmetric(vertical: 5),
@@ -48,7 +48,7 @@ class RaterItem extends StatelessWidget {
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.bold,
-                                fontSize: getFontSizeVersion2(deviceInfo)),
+                                fontSize: defaultFontSize(deviceInfo)),
                           ),
                         ],
                       ),
@@ -59,7 +59,8 @@ class RaterItem extends StatelessWidget {
                         child: SingleChildScrollView(
                           child: Text(
                             rater.comment,
-                            style: TextStyle(fontSize: getFontSize(deviceInfo)),
+                            style: TextStyle(
+                                fontSize: defaultFontSize(deviceInfo)),
                             textDirection: TextDirection.rtl,
                           ),
                         ),

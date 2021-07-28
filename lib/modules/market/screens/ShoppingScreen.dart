@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/cart_events.dart';
@@ -11,7 +11,7 @@ import 'package:trim/modules/market/models/Category.dart';
 import 'package:trim/modules/market/screens/CategoryProductsScreen.dart';
 import 'package:trim/modules/market/widgets/cart.dart';
 import 'package:trim/modules/market/widgets/category_item.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/BuildSearchWidget.dart';
@@ -50,7 +50,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: InfoWidget(
+          child: ResponsiveWidget(
             responsiveWidget: (context, deviceInfo) {
               print(deviceInfo.type);
               return Container(
@@ -62,33 +62,33 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                           horizontal: 10, vertical: 20),
                       child: buildHeader(),
                     ),
-                    BlocBuilder<AllCategoriesBloc, CategoriesStates>(
-                        builder: (_, state) {
-                      if (state is LoadingState || state is InitialState)
-                        return TrimLoadingWidget();
-                      else if (state is LoadedState) {
-                        List<Category> categoriess = state.categories;
-                        return Expanded(
-                          child: Padding(
+                    Expanded(
+                      child: BlocBuilder<AllCategoriesBloc, CategoriesStates>(
+                          builder: (_, state) {
+                        if (state is LoadingState || state is InitialState)
+                          return TrimLoadingWidget();
+                        else if (state is LoadedState) {
+                          List<Category> categoriess = state.categories;
+                          return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: buildRefershIndicatorCategories(
                               child: buildCategories(deviceInfo, categoriess),
                             ),
-                          ),
-                        );
-                      } else
-                        return buildRefershIndicatorCategories(
-                            child: Center(
-                                child: SingleChildScrollView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          child: Container(
-                            height: deviceInfo.localHeight * 0.5,
-                            child: Text(getWord(
-                                'Please Make sure from internet connection',
-                                context)),
-                          ),
-                        )));
-                    }),
+                          );
+                        } else
+                          return buildRefershIndicatorCategories(
+                              child: Center(
+                                  child: SingleChildScrollView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            child: Container(
+                              height: deviceInfo.localHeight * 0.5,
+                              child: Text(translatedWord(
+                                  'Please Make sure from internet connection',
+                                  context)),
+                            ),
+                          )));
+                      }),
+                    ),
                   ],
                 ),
               );

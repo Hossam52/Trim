@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/modules/payment/widgets/payment_methods_widgets.dart';
 import '../cubits/payment_cubit.dart';
@@ -29,7 +29,7 @@ class PaymentMethodsScreen extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          title: Text(getWord('Select Payment Methods', context)),
+          title: Text(translatedWord('Select Payment Methods', context)),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -50,7 +50,8 @@ class PaymentMethodsScreen extends StatelessWidget {
                       paymentMethod: paymentMethod),
                   Spacer(),
                   DefaultButton(
-                      text: getWord('Pay Now', context) + ' $totalPrice EGP',
+                      text: translatedWord('Pay Now', context) +
+                          ' $totalPrice EGP',
                       onPressed: () {
                         if (paymentMethod == PaymentMethod.Cash) {
                           PaymentCubit.getInstance(context).successPayment =

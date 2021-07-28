@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
 
 class PaymentMethodsWidget extends StatelessWidget {
@@ -20,11 +21,11 @@ class PaymentMethodsWidget extends StatelessWidget {
         if (showCashMethod)
           RadioListTile<PaymentMethod>(
             onChanged: onChangeSelection,
-            title: Text(getWord('Pay with cach', context)),
+            title: Text(translatedWord('Pay with cach', context)),
             groupValue: paymentMethod,
             value: PaymentMethod.Cash,
             selected: true,
-            secondary: Image.asset('assets/icons/cash.png'),
+            secondary: Image.asset(cashIcon),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           ),
@@ -32,8 +33,8 @@ class PaymentMethodsWidget extends StatelessWidget {
           decoration: BoxDecoration(border: Border.symmetric()),
           child: RadioListTile<PaymentMethod>(
             onChanged: onChangeSelection,
-            title: Text(getWord('Pay with VISA/MASTERCARD', context)),
-            secondary: Image.asset('assets/icons/visa.png'),
+            title: Text(translatedWord('Pay with VISA/MASTERCARD', context)),
+            secondary: Image.asset(visaIcon),
             groupValue: paymentMethod,
             value: PaymentMethod.VisaMaster,
             selected: true,

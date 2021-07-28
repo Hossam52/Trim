@@ -7,6 +7,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:location/location.dart' as LocationManager;
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/modules/home/repositories/directions_repositry.dart';
 
 class DirectionMapScreen extends StatefulWidget {
@@ -76,9 +77,9 @@ class _DirectionMapScreenState extends State<DirectionMapScreen> {
   void setPolyLines() async {}
 
   Future<void> afterFirstLayout() async {
-    await getBitmapDesciptiorFromAssetBytes('assets/icons/shop.png', 130)
+    await getBitmapDesciptiorFromAssetBytes(shopIcon, 130)
         .then((value) => marketLocationIcon = value);
-    await getBitmapDesciptiorFromAssetBytes('assets/icons/pin.png', 130)
+    await getBitmapDesciptiorFromAssetBytes(pinIcon, 130)
         .then((value) => userLocationIcon = value);
     await getUserLocation().then((value) => setState(() {
           markers.add(Marker(
@@ -141,14 +142,13 @@ class _DirectionMapScreenState extends State<DirectionMapScreen> {
   Future<void> initMarkerIcon(context) async {
     ImageConfiguration configuration = createLocalImageConfiguration(context);
 
-    BitmapDescriptor.fromAssetImage(configuration, 'assets/icons/pin.png')
-        .then((value) {
+    BitmapDescriptor.fromAssetImage(configuration, pinIcon).then((value) {
       setState(() {
         userLocationIcon = value;
       });
     });
 
-    BitmapDescriptor.fromAssetImage(configuration, 'assets/icons/shop.png')
+    BitmapDescriptor.fromAssetImage(configuration, shopIcon)
         .then((value) => marketLocationIcon = value);
   }
 

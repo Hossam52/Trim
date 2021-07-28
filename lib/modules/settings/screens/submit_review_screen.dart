@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
+import 'package:trim/constants/asset_path.dart';
 
 class SubmitReviewScreen extends StatefulWidget {
   @override
@@ -42,7 +43,7 @@ class _SubmitReviewScreenState extends State<SubmitReviewScreen> {
     return Container(
       margin: const EdgeInsets.all(15.0),
       child: Text(
-          getWord(
+          translatedWord(
               'Please tell us your review for enhance the service', context),
           style: Theme.of(context).textTheme.headline5),
     );
@@ -50,7 +51,7 @@ class _SubmitReviewScreenState extends State<SubmitReviewScreen> {
 
   Widget _buildImage(double width, double height) {
     return Image.asset(
-      'assets/icons/online-review.png',
+      reviewIcon,
       width: width / 1.5,
       height: height / 4,
       fit: BoxFit.fill,

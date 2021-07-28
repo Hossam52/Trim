@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 
 class PriceInformation extends StatelessWidget {
@@ -17,16 +17,17 @@ class PriceInformation extends StatelessWidget {
       : super(key: key);
 
   Widget reservationDetails(BuildContext context, DeviceInfo deviceInfo) {
-    TextStyle style = TextStyle(fontSize: getFontSizeVersion2(deviceInfo));
+    TextStyle style = TextStyle(fontSize: defaultFontSize(deviceInfo));
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(getWord('total', context) + ': $total', style: style),
-          Text(getWord('Discount', context) + ': $discount', style: style),
+          Text(translatedWord('total', context) + ': $total', style: style),
+          Text(translatedWord('Discount', context) + ': $discount',
+              style: style),
           Text(
-              getWord('Total after discount', context) +
+              translatedWord('Total after discount', context) +
                   ': $totalAfterDiscount',
               style: style)
         ],
@@ -36,7 +37,7 @@ class PriceInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:trim/modules/home/models/Salon.dart';
 import 'package:trim/modules/home/widgets/build_stars.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/app_dialog.dart';
 import 'package:trim/general_widgets/trim_cached_image.dart';
 
@@ -14,7 +14,7 @@ class BuildStarPersonItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => InkWell(
         onTap: () {
           personDetailsDialog(deviceInfo, context, trimStarItem);

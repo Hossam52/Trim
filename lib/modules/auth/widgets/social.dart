@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -12,7 +13,7 @@ class SocialAuth extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
-            icon: Image.asset(facebookImagePath),
+            icon: Image.asset(facebookIcon),
             onPressed: () async {
               AuthCubit.getInstance(context).loginFacebook(context);
               return;
@@ -24,7 +25,7 @@ class SocialAuth extends StatelessWidget {
               print('Error on future builder');
             else if (snapshot.connectionState == ConnectionState.done)
               return IconButton(
-                  icon: Image.asset(googleImagePath),
+                  icon: Image.asset(googlePlusIcon),
                   onPressed: () async {
                     await AuthCubit.getInstance(context)
                         .loginWithGmail(context);

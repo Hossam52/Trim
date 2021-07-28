@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_data_widget.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
@@ -12,7 +12,7 @@ import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/person_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
 import 'package:trim/modules/home/widgets/barber_item.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/modules/home/widgets/navigate_pages.dart';
 
 class PersonsGridView extends StatefulWidget {
@@ -61,7 +61,7 @@ class _PersonsGridViewState extends State<PersonsGridView> {
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => RefreshIndicator(
         onRefresh: () async {
           await PersonsCubit.getInstance(context)
@@ -73,7 +73,7 @@ class _PersonsGridViewState extends State<PersonsGridView> {
             if (state is LoadingPersonsState) return TrimLoadingWidget();
             if (state is EmptyPersonListState)
               return Center(
-                  child: Text(getWord('No Salons available', context)));
+                  child: Text(translatedWord('No Salons available', context)));
             if (state is ErrorMorePersonState) {
               return RetryWidget(
                   text: state.error,
@@ -112,7 +112,7 @@ class _PersonsGridViewState extends State<PersonsGridView> {
                           if (state is NoMorePersonState)
                             return NoMoreItems(
                               deviceInfo: deviceInfo,
-                              label: getWord('No More Salons', context),
+                              label: translatedWord('No More Salons', context),
                             );
                           return NavigatePages(
                             nextPage:

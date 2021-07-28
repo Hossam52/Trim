@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class EmptyTimeAtDay extends StatelessWidget {
   const EmptyTimeAtDay({
@@ -10,12 +10,12 @@ class EmptyTimeAtDay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Text(
-          getWord('No Times for this salon at this date', context),
+          translatedWord('No Times for this salon at this date', context),
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: getFontSizeVersion2(deviceInfo) * 0.8)),
+              fontSize: defaultFontSize(deviceInfo) * 0.8)),
     );
   }
 }

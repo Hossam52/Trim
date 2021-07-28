@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../models/google_auth_model.dart';
+import '../models/social_profile_model.dart';
 
 class Authenitcations {
   static Future<FirebaseApp> initializeFirebase() async {

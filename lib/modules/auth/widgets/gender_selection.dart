@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 
 class GenderSelectionWidget extends StatelessWidget {
@@ -14,14 +14,14 @@ class GenderSelectionWidget extends StatelessWidget {
       children: [
         Expanded(
           child: RadioListTile(
-              title: Text(getWord('Female', context)),
+              title: Text(translatedWord('Female', context)),
               value: Gender.Female,
               groupValue: selectedGender,
               onChanged: changeGender),
         ),
         Expanded(
           child: RadioListTile(
-              title: Text(getWord('Male', context)),
+              title: Text(translatedWord('Male', context)),
               value: Gender.Male,
               groupValue: selectedGender,
               onChanged: changeGender),

@@ -21,7 +21,7 @@
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
-		<true />
+		<true/>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>we need permission from you to picked image from gellary</string>
 		<key>UILaunchStoryboardName</key>
@@ -50,11 +50,10 @@
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 		<string>This app needs access to location when open and in the background.</string>
 		<!-- End Added these lines for location-->
-		<false />
+		<false/>
 		<key>UIStatusBarHidden</key>
-		<false />
+		<false/>
 		<!-- Start Added these for facebook sdk-->
-
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
@@ -70,7 +69,6 @@
 		<string>Trim</string>
 		<key>FacebookDisplayName</key>
 		<string>Trim</string>
-
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>fbapi</string>
@@ -90,7 +88,6 @@
 			<string>fbshareextension</string>
 		</array>
 		<!-- End Added facebook sdk -->
-
 		<!-- Google Sign-In section -->
 		<key>CFBundleURLTypes</key>
 		<array>

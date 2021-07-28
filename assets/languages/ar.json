@@ -187,6 +187,8 @@
     "Modify":"تعديل",
    "Change date":"تغيير التاريخ",
    "Change payment method":"تغيير طريقة الدفع",
-   "Order updated successifully":"تم تعديل الطلب بنجاح"
+   "Order updated successifully":"تم تعديل الطلب بنجاح",
+   "Un expected error happened":"لقد حدث خطأ يرجي اعادة المحاولة"
+
 
 }

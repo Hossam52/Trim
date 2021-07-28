@@ -64,7 +64,7 @@ class _SalonLogoState extends State<SalonLogo> {
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: getFontSize(widget.deviceInfo))),
+                fontSize: defaultFontSize(widget.deviceInfo))),
       ),
     );
   }

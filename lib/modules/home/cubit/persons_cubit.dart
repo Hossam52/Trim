@@ -46,9 +46,9 @@ class PersonsCubit extends Cubit<PersonStates> {
     } else {
       loadAllPersonsForFirstTime = false;
       if (_allPersons.isEmpty)
-        _allPersons.add(response.data.allPersons);
+        _allPersons.add(response.data.allData);
       else if (refreshPage) {
-        _allPersons[_currentAllPersonsPage - 1] = response.data.allPersons;
+        _allPersons[_currentAllPersonsPage - 1] = response.data.allData;
       }
       emit(LoadedPersonsState());
     }
@@ -61,13 +61,13 @@ class PersonsCubit extends Cubit<PersonStates> {
     if (response.error) {
       emit(ErrorMorePersonState(error: response.errorMessage));
     } else {
-      if (response.data.allPersons.isEmpty) {
+      if (response.data.allData.isEmpty) {
         emit(NoMorePersonState());
         await Future.delayed(Duration(seconds: 1));
         emit(LoadedMorePersonState());
       } else {
         _currentAllPersonsPage++;
-        _allPersons.add(response.data.allPersons);
+        _allPersons.add(response.data.allData);
         emit(LoadedMorePersonState());
       }
     }
@@ -122,10 +122,9 @@ class PersonsCubit extends Cubit<PersonStates> {
     } else {
       loadFavoritesForFirstTime = false;
       if (_favoritePersons.isEmpty)
-        _favoritePersons.add(response.data.favoriteList);
+        _favoritePersons.add(response.data.allData);
       else if (refreshPage) {
-        _favoritePersons[_currentFavoritePersons - 1] =
-            response.data.favoriteList;
+        _favoritePersons[_currentFavoritePersons - 1] = response.data.allData;
       }
       emit(LoadedPersonsState());
     }
@@ -138,13 +137,13 @@ class PersonsCubit extends Cubit<PersonStates> {
     if (response.error) {
       emit(ErrorMorePersonState(error: response.errorMessage));
     } else {
-      if (response.data.favoriteList.isEmpty) {
+      if (response.data.allData.isEmpty) {
         emit(NoMorePersonState());
         await Future.delayed(Duration(seconds: 1));
         emit(LoadedMorePersonState());
       } else {
         _currentFavoritePersons++;
-        _favoritePersons.add(response.data.favoriteList);
+        _favoritePersons.add(response.data.allData);
         emit(LoadedMorePersonState());
       }
     }

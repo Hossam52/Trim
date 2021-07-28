@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/no_data_widget.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
@@ -9,7 +9,7 @@ import 'package:trim/modules/home/widgets/navigate_pages.dart';
 import 'package:trim/modules/settings/cubits/settings_cubit.dart';
 import 'package:trim/modules/settings/cubits/settings_states.dart';
 import 'package:trim/modules/settings/widgets/notification_item.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class NotificationScreen extends StatelessWidget {
   static const routeName = '/notification';
@@ -17,7 +17,7 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(getWord('notifications', context),
+        title: Text(translatedWord('notifications', context),
             style: TextStyle(color: Colors.black)),
         leading: BackButton(color: Colors.black),
         elevation: 0,
@@ -38,7 +38,7 @@ class NotificationScreen extends StatelessWidget {
           return Column(
             children: [
               Expanded(
-                child: InfoWidget(
+                child: ResponsiveWidget(
                     responsiveWidget: (context, deviceInfo) => Column(
                           children: [
                             Expanded(

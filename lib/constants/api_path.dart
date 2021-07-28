@@ -1,21 +1,3 @@
-final String _url = "https://trim.style/public/api/";
-
-String get registerApi {
-  return _url + "register";
-}
-
-String get loginApi {
-  return _url + "login";
-}
-
-String get activateApi {
-  return _url + "user/activate";
-}
-
-String get getVerificationCodeApi {
-  return _url + "getVerificationCode";
-}
-
 final String paymentUrl = 'https://api.sandbox.checkout.com/';
 final String publicPaymentKey = 'pk_test_77f93e40-cbe9-4c38-9774-0b8a6ee1d7e5';
 final String secretPaymentKey = 'sk_test_4625df5f-b796-40d5-96d1-e34859bbf6c0';

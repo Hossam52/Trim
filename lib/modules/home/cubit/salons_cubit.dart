@@ -41,7 +41,7 @@ class SalonsCubit extends Cubit<SalonStates> {
   Salon salonDetail;
   DateTime reservationDate = DateTime.now();
   List<String> availableDates = [];
-  int salonIdToDisplay;
+  int lastSalonId;
 
   bool loadAllSalonsForFirstTime = true;
   bool loadFavoriteSalonsForFirstTime = true;
@@ -61,10 +61,10 @@ class SalonsCubit extends Cubit<SalonStates> {
     else {
       loadAllSalonsForFirstTime = false;
       if (_allSalons.isEmpty)
-        _allSalons.add(response.data.allSalons);
+        _allSalons.add(response.data.allData);
       else if (refreshPage) {
         _allSalons[_currentPageAllSalonsIndex - 1] =
-            response.data.allSalons; //update the current data o specific index
+            response.data.allData; //update the current data o specific index
       }
       emit(LoadedSalonState());
     }
@@ -79,13 +79,13 @@ class SalonsCubit extends Cubit<SalonStates> {
     if (response.error) {
       emit(ErrorSalonState(error: response.errorMessage));
     } else {
-      if (response.data.allSalons.isEmpty) {
+      if (response.data.allData.isEmpty) {
         emit(NoMoreSalonState());
         await Future.delayed(Duration(seconds: 1));
         emit(LoadedMoreSalonState());
       } else {
         _currentPageAllSalonsIndex++;
-        _allSalons.add(response.data.allSalons);
+        _allSalons.add(response.data.allData);
 
         emit(LoadedMoreSalonState());
       }
@@ -157,6 +157,7 @@ class SalonsCubit extends Cubit<SalonStates> {
   }
 
   Future<void> getSalonDetails({@required int id}) async {
+    lastSalonId = id;
     emit(LoadingSalonDetailState());
     final response = await getSalonDetailFromServer(salonId: id);
     if (response.error)
@@ -195,10 +196,10 @@ class SalonsCubit extends Cubit<SalonStates> {
     } else {
       loadFavoriteSalonsForFirstTime = false;
       if (_favoriteSalons.isEmpty)
-        _favoriteSalons.add(response.data.favoriteList);
+        _favoriteSalons.add(response.data.allData);
       else if (refreshPage) {
-        _favoriteSalons[_currentPageFavoritesIndex - 1] = response
-            .data.favoriteList; //update the current data o specific index
+        _favoriteSalons[_currentPageFavoritesIndex - 1] =
+            response.data.allData; //update the current data o specific index
       }
       emit(LoadedSalonState());
     }
@@ -211,13 +212,13 @@ class SalonsCubit extends Cubit<SalonStates> {
     if (response.error) {
       emit(ErrorSalonState(error: response.errorMessage));
     } else {
-      if (response.data.favoriteList.isEmpty) {
+      if (response.data.allData.isEmpty) {
         emit(NoMoreSalonState());
         await Future.delayed(Duration(seconds: 1));
         emit(LoadedMoreSalonState());
       } else {
         _currentPageFavoritesIndex++;
-        _favoriteSalons.add(response.data.favoriteList);
+        _favoriteSalons.add(response.data.allData);
 
         emit(LoadedMoreSalonState());
       }
@@ -266,7 +267,7 @@ class SalonsCubit extends Cubit<SalonStates> {
       print(response.errorMessage);
       emit(ErrorMapSalonState(error: response.errorMessage));
     } else {
-      nearestSalons = response.data.allSalons;
+      nearestSalons = response.data.allData;
       emit(LoadedMapSalonState());
     }
   }

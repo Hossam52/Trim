@@ -187,6 +187,7 @@
    "Modify":"Modify",
    "Change date":"Change date",
    "Change payment method":"Change payment method",
-   "Order updated successifully":"Order updated successifully"
+   "Order updated successifully":"Order updated successifully",
+   "Un expected error happened":"Un expected error happened"
 
 }

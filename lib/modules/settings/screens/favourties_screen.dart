@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/loading_more_items.dart';
 import 'package:trim/general_widgets/no_data_widget.dart';
+import 'package:trim/general_widgets/retry_widget.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/no_more_items.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
@@ -11,7 +12,7 @@ import 'package:trim/modules/home/cubit/salons_states.dart';
 import 'package:trim/modules/home/widgets/salons_persons_widget.dart';
 import 'package:trim/modules/settings/widgets/favorite_item.dart';
 import 'package:trim/modules/home/widgets/persons_grid_view.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import '../../home/widgets/navigate_pages.dart';
 
@@ -36,10 +37,10 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[900],
-        title: Text(getWord('my favorites', context)),
+        title: Text(translatedWord('my favorites', context)),
         centerTitle: true,
       ),
-      body: InfoWidget(
+      body: ResponsiveWidget(
         responsiveWidget: (context, deviceInfo) {
           final width = deviceInfo.localWidth;
           return SafeArea(
@@ -74,10 +75,12 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                             if (state is LoadingSalonState)
                               return TrimLoadingWidget();
                             else if (state is ErrorSalonState)
-                              return Center(
-                                  child: Text(
-                                      getWord('Error happened', context) +
-                                          state.error));
+                              return RetryWidget(
+                                  text: state.error,
+                                  onRetry: () {
+                                    SalonsCubit.getInstance(context)
+                                        .loadFavoriteSalons(refreshPage: true);
+                                  });
 
                             final favoriteList =
                                 SalonsCubit.getInstance(context)
@@ -121,7 +124,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
             if (state is NoMoreSalonState)
               return NoMoreItems(
                 deviceInfo: deviceInfo,
-                label: getWord('No More Salons', context),
+                label: translatedWord('No More Salons', context),
               );
             return NavigatePages(
               pageNumber: pageNumber,

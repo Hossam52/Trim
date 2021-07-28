@@ -8,8 +8,10 @@ import 'package:trim/modules/auth/screens/login_screen.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/modules/home/cubit/app_states.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
+import 'package:trim/modules/home/cubit/home_states.dart';
 import 'package:trim/modules/home/cubit/persons_cubit.dart';
 import 'package:trim/modules/home/cubit/salons_cubit.dart';
+import 'package:trim/modules/home/screens/Salons_Screen.dart';
 import 'package:trim/modules/home/screens/home_Screen.dart';
 import 'package:trim/modules/market/cubit/cart_cubit.dart';
 import 'package:trim/modules/market/cubit/categories_cubit.dart';
@@ -65,18 +67,19 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => HomeCubit()),
         BlocProvider(create: (_) => AllCategoriesBloc()),
         BlocProvider(create: (_) => ProductsCategoryBloc()),
-        BlocProvider(create: (context) => CartBloc()),
-        BlocProvider(create: (context) => SearchBloc()),
+        BlocProvider(create: (_) => CartBloc()),
+        BlocProvider(create: (_) => SearchBloc()),
         BlocProvider(create: (_) => SalonsCubit()),
         BlocProvider(create: (_) => PersonsCubit()),
         BlocProvider(create: (_) => ProductsCategoryCubit()),
-        BlocProvider(create: (context) => AuthCubit()),
-        BlocProvider(create: (context) => ReservationCubit()),
-        BlocProvider(create: (context) => PaymentCubit()),
-        BlocProvider(create: (context) => ProductsOrderBloc()),
-        BlocProvider<ActivateCubit>(create: (_) => ActivateCubit())
+        BlocProvider(create: (_) => AuthCubit()),
+        BlocProvider(create: (_) => ReservationCubit()),
+        BlocProvider(create: (_) => PaymentCubit()),
+        BlocProvider(create: (_) => ProductsOrderBloc()),
+        BlocProvider(create: (_) => ActivateCubit())
       ],
       child: MaterialApp(
+          title: 'Trim',
           debugShowCheckedModeBanner: false,
           localizationsDelegates: [
             AppLocale.delegate,
@@ -103,11 +106,18 @@ class _MyAppState extends State<MyApp> {
               primaryColor: primaryColor,
               accentColor: secondaryColor,
               fontFamily: 'Cairo',
-              textTheme:
-                  TextTheme(button: TextStyle(fontSize: defaultFontSize))),
+              textTheme: TextTheme(button: TextStyle(fontSize: 20))),
           builder: DevicePreview.appBuilder,
-          home: widget.token == null ? LoginScreen() : HomeScreen(),
+          home: Builder(builder: (ctx) => fetchFirstScreen(ctx)),
           routes: routes),
     );
+  }
+
+  Widget fetchFirstScreen(BuildContext ctx) {
+    if (widget.token == null) {
+      return LoginScreen();
+    } else {
+      return HomeScreen();
+    }
   }
 }

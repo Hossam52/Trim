@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/widgets/BuildStarPersonItem.dart';
 
@@ -36,7 +36,7 @@ class BuildStarsPersonsWidget extends StatelessWidget {
         height: double.infinity,
         child: Row(
           children: [
-            Text(getWord('More', context)),
+            Text(translatedWord('More', context)),
             Icon(Icons.navigate_next_sharp)
           ],
         ),

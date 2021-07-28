@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/constants/app_constant.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
@@ -8,7 +8,7 @@ import 'package:trim/modules/auth/cubits/activate_cubit.dart';
 import 'package:trim/modules/auth/cubits/activate_states.dart';
 import 'package:trim/modules/auth/screens/verification_code_screen.dart';
 import 'package:trim/modules/auth/widgets/frame_card_auth.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class ActivateAccountScreen extends StatelessWidget {
   final String emailOrPhone;
@@ -19,8 +19,9 @@ class ActivateAccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          centerTitle: true, title: Text(getWord('Activate account', context))),
-      body: InfoWidget(
+          centerTitle: true,
+          title: Text(translatedWord('Activate account', context))),
+      body: ResponsiveWidget(
         responsiveWidget: (_, deviceInfo) => Center(
           child: BlocConsumer<ActivateCubit, ActivateStates>(
             listener: (_, state) async {
@@ -36,13 +37,12 @@ class ActivateAccountScreen extends StatelessWidget {
                   state is RequestingNewActivatationCodeState;
               return CardLayout(children: [
                 Text(
-                    getWord(
+                    translatedWord(
                         'You need to activate account to continue using app',
                         context),
-                    style:
-                        TextStyle(fontSize: getFontSizeVersion2(deviceInfo))),
+                    style: TextStyle(fontSize: defaultFontSize(deviceInfo))),
                 DefaultButton(
-                    text: getWord('Activate now', context),
+                    text: translatedWord('Activate now', context),
                     widget: requestingCode ? TrimLoadingWidget() : null,
                     onPressed: requestingCode
                         ? null

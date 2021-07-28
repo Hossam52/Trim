@@ -3,14 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/core/auth/register/validate.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/auth_cubit.dart';
 import 'package:trim/modules/auth/cubits/auth_states.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
 import 'package:trim/general_widgets/trim_cached_image.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import 'package:trim/utils/ui/Core/Enums/DeviceType.dart';
 import 'package:trim/utils/ui/Core/Models/DeviceInfo.dart';
 import 'package:trim/general_widgets/BuildBackButtonWidget.dart';
@@ -74,7 +73,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: InfoWidget(
+        child: ResponsiveWidget(
           responsiveWidget: (context, deviceInfo) => SingleChildScrollView(
             child: GestureDetector(
               onTap: () {
@@ -155,7 +154,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.camera_alt, color: Colors.white),
-                Text(getWord('Change cover photo', context),
+                Text(translatedWord('Change cover photo', context),
                     style: TextStyle(color: Colors.white)),
               ],
             )),
@@ -207,27 +206,30 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
         children: [
           TrimTextField(
             controller: _nameController,
-            placeHolder: 'Hossam Hassan',
+            placeHolder: 'Name',
             prefix: Icon(Icons.mode_edit),
-            validator: validateName,
+            validator: (name) =>
+                AuthCubit.getInstance(context).validateName(name, context),
           ),
           TrimTextField(
-            controller: _emailController,
-            placeHolder: 'hossam.fcis@gmail.com',
-            prefix: Icon(Icons.mode_edit),
-            validator: validateEmail,
-          ),
+              controller: _emailController,
+              placeHolder: 'Email',
+              prefix: Icon(Icons.mode_edit),
+              validator: (email) =>
+                  AuthCubit.getInstance(context).validateEmail(email, context)),
           TrimTextField(
             controller: _phoneController,
-            placeHolder: '01115425561',
+            placeHolder: 'Phone',
+            validator: (phone) =>
+                AuthCubit.getInstance(context).validatePhone(phone, context),
             prefix: Icon(Icons.mode_edit),
           ),
-          TrimTextField(
-            controller: _passwordController,
-            placeHolder: '#############',
-            prefix: Icon(Icons.mode_edit),
-            validator: validatePassword,
-          ),
+          // TrimTextField(
+          //   controller: _passwordController,
+          //   placeHolder: '#############',
+          //   prefix: Icon(Icons.mode_edit),
+          //   validator: validatePassword,
+          // ),
         ],
       ),
     );
@@ -241,13 +243,13 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
               .showSnackBar(SnackBar(content: Text(state.error)));
         if (state is NoUpdatingUserInformationState)
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(getWord('You dont modify any thing', context)),
+            content: Text(translatedWord('You dont modify any thing', context)),
             duration: Duration(seconds: 1),
           ));
 
         if (state is SuccessUpdatingUserInformationState)
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(getWord('Modify Done', context)),
+            content: Text(translatedWord('Modify Done', context)),
             duration: Duration(seconds: 1),
           ));
       },
@@ -255,7 +257,7 @@ class _PersonDetailScreenState extends State<PersonDetailScreen> {
         children: [
           Expanded(
               child: DefaultButton(
-            text: getWord('Save', context),
+            text: translatedWord('Save', context),
             widget: state is UpdatingUserInformationState
                 ? TrimLoadingWidget()
                 : null,

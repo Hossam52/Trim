@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trim/constants/app_constant.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class ChoiceButton extends StatelessWidget {
   final VoidCallback pressed;
@@ -45,10 +45,9 @@ class ChoiceButton extends StatelessWidget {
           height: 25,
           width: 25,
         ),
-        label: InfoWidget(
+        label: ResponsiveWidget(
             responsiveWidget: (_, deviceInfo) => Text(name,
-                style: TextStyle(
-                    fontSize: getFontSizeVersion2(deviceInfo) * 0.8))),
+                style: TextStyle(fontSize: defaultFontSize(deviceInfo) * 0.8))),
       ),
     );
   }

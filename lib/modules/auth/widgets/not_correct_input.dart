@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import '../../../constants/app_constant.dart';
 
 class ErrorWarning extends StatelessWidget {
@@ -10,7 +10,7 @@ class ErrorWarning extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Container(
         padding: const EdgeInsets.all(7.0),
         decoration: BoxDecoration(
@@ -25,7 +25,7 @@ class ErrorWarning extends StatelessWidget {
                 child: Text(text,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: getFontSizeVersion2(deviceInfo) * 0.8,
+                        fontSize: defaultFontSize(deviceInfo) * 0.8,
                         color: Colors.white)),
               ),
             ),

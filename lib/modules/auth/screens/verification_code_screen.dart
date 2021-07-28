@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
+import 'package:trim/constants/app_constant.dart';
+import 'package:trim/constants/asset_path.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/general_widgets/retry_widget.dart';
@@ -47,7 +49,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
         },
         child: Scaffold(
             appBar: AppBar(
-              title: Text(getWord('Verify account', context)),
+              title: Text(translatedWord('Verify account', context)),
               centerTitle: true,
             ),
             body: BlocConsumer<ActivateCubit, ActivateStates>(
@@ -70,14 +72,14 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/logo.png'),
+                          backgroundImage: AssetImage(logo),
                           radius: 70,
                         ),
                         if (state is ErrorActivateStates)
                           Container(
                               margin: const EdgeInsets.all(15.0),
                               child: ErrorWarning(text: state.error)),
-                        Text(getWord('Enter verification code', context),
+                        Text(translatedWord('Enter verification code', context),
                             style: Theme.of(context).textTheme.button),
                         buildCodeField(),
                         Padding(
@@ -101,7 +103,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
       children: [
         Expanded(
           child: DefaultButton(
-            text: getWord('Submit', context),
+            text: translatedWord('Submit', context),
             onPressed: checking
                 ? null
                 : () {
@@ -115,7 +117,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
         SizedBox(width: 20),
         Expanded(
           child: DefaultButton(
-            text: getWord('Reset', context),
+            text: translatedWord('Reset', context),
             onPressed: checking
                 ? null
                 : () {
@@ -133,16 +135,17 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
       key: formKey,
       child: TrimTextField(
         controller: controller,
-        placeHolder: getWord('Recieved code', context),
+        placeHolder: translatedWord('Recieved code', context),
         maxLength: maxDigits,
         inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         textInputType:
             TextInputType.numberWithOptions(signed: false, decimal: false),
         validator: (val) {
           if (val.isEmpty)
-            return getWord('Recieved code can not be empty', context);
+            return translatedWord('Recieved code can not be empty', context);
           if (val.length != maxDigits)
-            return getWord('Code should be', context) + maxDigits.toString();
+            return translatedWord('Code should be', context) +
+                maxDigits.toString();
           return null;
         },
       ),

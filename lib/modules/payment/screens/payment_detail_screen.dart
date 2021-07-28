@@ -4,7 +4,7 @@ import 'package:flutter_credit_card/credit_card_form.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/payment/cubits/payment_cubit.dart';
@@ -42,7 +42,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                   Navigator.pop(context);
                 },
               ),
-              title: Text(getWord('CREDITCARD DATA', context)),
+              title: Text(translatedWord('CREDITCARD DATA', context)),
               centerTitle: true,
             ),
             resizeToAvoidBottomInset: false,
@@ -72,11 +72,11 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Center(
-                              child: Text(getWord(
+                              child: Text(translatedWord(
                                       'Card is valid and you will pay',
                                       context) +
                                   totalPrice.toString() +
-                                  getWord(
+                                  translatedWord(
                                       'EGP Are you sure to continue', context) +
                                   '?'),
                             ),
@@ -89,13 +89,13 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                                     .makePayment(totalPrice.toInt());
                                 Navigator.pop(context);
                               },
-                              child: Text(getWord('Yes', context),
+                              child: Text(translatedWord('Yes', context),
                                   style: TextStyle(color: Colors.green))),
                           TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text(getWord('NO', context),
+                              child: Text(translatedWord('NO', context),
                                   style: TextStyle(color: Colors.red))),
                         ],
                       ),
@@ -118,8 +118,8 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                   if (state is LoadedPaymentState) {
                     dialogIsShow = false;
                     await Fluttertoast.showToast(
-                        msg:
-                            getWord('Your Payment done successifully', context),
+                        msg: translatedWord(
+                            'Your Payment done successifully', context),
                         backgroundColor: Colors.green);
                     int counter = 0;
                     Navigator.popUntil(context, (_) => counter++ == 3);
@@ -143,14 +143,14 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                       Expanded(
                         child: SingleChildScrollView(
                           child: CreditCardForm(
-                            cvvCodeDecoration:
-                                customInputDecoration(getWord('CVV', context)),
+                            cvvCodeDecoration: customInputDecoration(
+                                translatedWord('CVV', context)),
                             cardHolderDecoration: customInputDecoration(
-                                getWord('Card holder', context)),
+                                translatedWord('Card holder', context)),
                             expiryDateDecoration: customInputDecoration(
-                                getWord('Expiry Date', context)),
+                                translatedWord('Expiry Date', context)),
                             cardNumberDecoration: customInputDecoration(
-                                getWord('Card number', context)),
+                                translatedWord('Card number', context)),
                             onCreditCardModelChange:
                                 PaymentCubit.getInstance(context)
                                     .changeCreditCardData,
@@ -164,7 +164,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                         ),
                       ),
                       DefaultButton(
-                          text: getWord('Validate and pay', context),
+                          text: translatedWord('Validate and pay', context),
                           widget: state is LoadingTokenState
                               ? TrimLoadingWidget()
                               : null,

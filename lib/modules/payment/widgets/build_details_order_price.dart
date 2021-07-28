@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/default_button.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/home/cubit/app_cubit.dart';
@@ -98,19 +98,20 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                 },
               ),
             BuildListTileCofirm(
-              leading: getWord('total', context),
+              leading: translatedWord('total', context),
               trailing: '${cartBloc.getTotalPrice().toStringAsFixed(2)} ' +
-                  getWord('bound', context),
+                  translatedWord('bound', context),
               fontSize: widget.fontSize,
             ),
             BuildListTileCofirm(
-              leading: getWord('shipping', context),
-              trailing: '$shippingFee ' + getWord('bound', context),
+              leading: translatedWord('shipping', context),
+              trailing: '$shippingFee ' + translatedWord('bound', context),
               fontSize: widget.fontSize,
             ),
             BuildListTileCofirm(
-              leading: getWord('Discount', context),
-              trailing: discountValue.toString() + getWord('bound', context),
+              leading: translatedWord('Discount', context),
+              trailing:
+                  discountValue.toString() + translatedWord('bound', context),
               fontSize: widget.fontSize,
             ),
             Divider(
@@ -119,10 +120,10 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
               color: Colors.black,
             ),
             BuildListTileCofirm(
-              leading: getWord('total price', context),
+              leading: translatedWord('total price', context),
               trailing:
                   '${(cartBloc.getTotalPrice() + shippingFee - discountValue).toStringAsFixed(2)} ' +
-                      getWord('bound', context),
+                      translatedWord('bound', context),
               fontSize: widget.fontSize,
             ),
             Padding(
@@ -139,8 +140,8 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                               : widget.pressed();
                         },
                   text: widget.stepNumber == 2
-                      ? getWord('Confirm order', context)
-                      : getWord('continue to pay', context),
+                      ? translatedWord('Confirm order', context)
+                      : translatedWord('continue to pay', context),
                   widget:
                       state is LoadingOrderState ? TrimLoadingWidget() : null,
                 ),
@@ -202,7 +203,8 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
         }
       } catch (e) {
         Fluttertoast.showToast(
-            msg: getWord('Please Make sure from internet connection', context));
+            msg: translatedWord(
+                'Please Make sure from internet connection', context));
       }
     }
   }
@@ -223,8 +225,8 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                         FocusScope.of(context).unfocus();
                         if (controller.text.isEmpty || controller.text == ' ') {
                           Fluttertoast.showToast(
-                              msg:
-                                  getWord('Pleas Enter coupoun code', context));
+                              msg: translatedWord(
+                                  'Pleas Enter coupoun code', context));
                         } else {
                           final response = await DioHelper.postData(
                               url: 'winCoupone',
@@ -249,12 +251,12 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                         }
                       } catch (e) {
                         Fluttertoast.showToast(
-                            msg: getWord(
+                            msg: translatedWord(
                                 'Please Make sure from internet connection',
                                 context));
                       }
                     },
-              text: getWord('apply', context),
+              text: translatedWord('apply', context),
               color: Color(0xff2C73A8),
             ),
           ),
@@ -266,7 +268,7 @@ class _BuildDetailsOrderPriceState extends State<BuildDetailsOrderPrice> {
                 enabled: !correctCopon,
                 controller: controller,
                 decoration: InputDecoration(
-                  hintText: getWord('coupon code', context),
+                  hintText: translatedWord('coupon code', context),
                 ),
               ),
             ),

@@ -3,7 +3,7 @@ import 'package:trim/constants/app_constant.dart';
 import 'package:trim/modules/home/cubit/home_cubit.dart';
 import 'package:trim/modules/home/models/salon_offer.dart';
 import 'package:trim/general_widgets/trim_cached_image.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 
 class BuildOffersItem extends StatelessWidget {
   final int offerIndex;
@@ -14,7 +14,7 @@ class BuildOffersItem extends StatelessWidget {
   Widget build(BuildContext context) {
     SalonOffer lastOfferItem =
         HomeCubit.getInstance(context).getlastOfferItem(offerIndex);
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Stack(children: [
         TrimCachedImage(src: lastOfferItem.image),
         Positioned(
@@ -29,7 +29,7 @@ class BuildOffersItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: getFontSizeVersion2(deviceInfo) * 0.75,
+                        fontSize: defaultFontSize(deviceInfo) * 0.75,
                         color: Colors.white,
                         fontWeight: FontWeight.bold)),
                 decoration: BoxDecoration(

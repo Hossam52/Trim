@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:trim/appLocale/getWord.dart';
-import 'package:trim/utils/ui/Core/BuilderWidget/InfoWidget.dart';
+import 'package:trim/appLocale/translatedWord.dart';
+import 'package:trim/constants/colors.dart';
+import 'package:trim/utils/ui/Core/BuilderWidget/responsive_widget.dart';
 import '../constants/app_constant.dart';
 
 class TrimTextField extends StatelessWidget {
@@ -27,7 +28,7 @@ class TrimTextField extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return InfoWidget(
+    return ResponsiveWidget(
       responsiveWidget: (_, deviceInfo) => Container(
         margin: const EdgeInsets.all(10),
         child: Directionality(
@@ -40,7 +41,7 @@ class TrimTextField extends StatelessWidget {
             validator: validator,
             obscureText: password,
             controller: controller,
-            style: TextStyle(fontSize: getFontSizeVersion2(deviceInfo) * 0.75),
+            style: TextStyle(fontSize: defaultFontSize(deviceInfo) * 0.75),
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               // contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),

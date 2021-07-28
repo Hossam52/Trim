@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trim/appLocale/getWord.dart';
+import 'package:trim/appLocale/translatedWord.dart';
 import 'package:trim/general_widgets/trim_loading_widget.dart';
 import 'package:trim/modules/auth/cubits/activate_cubit.dart';
 import 'package:trim/modules/auth/cubits/activate_states.dart';
@@ -59,15 +59,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               );
 
               if (changePasswordSuccess != null && changePasswordSuccess) {
-                showSnackBar(
-                    context, getWord('Changing password Success', context));
+                showSnackBar(context,
+                    translatedWord('Changing password Success', context));
               } else {
-                showSnackBar(
-                    context, getWord('Changing password failed', context));
+                showSnackBar(context,
+                    translatedWord('Changing password failed', context));
               }
             } else {
               showSnackBar(
-                  context, getWord('Changing password failed', context));
+                  context, translatedWord('Changing password failed', context));
             }
             Navigator.pop(context);
           }
@@ -85,12 +85,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       return AuthCubit.getInstance(context)
                           .validateLogin(val, context);
                     },
-                    placeHolder: getWord('Email', context)),
+                    placeHolder: translatedWord('Email', context)),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: DefaultButton(
-                  text: getWord('Search', context),
+                  text: translatedWord('Search', context),
                   onPressed: requestingActivateCode
                       ? null
                       : () async {
